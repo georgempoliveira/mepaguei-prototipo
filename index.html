@@ -3226,10 +3226,10 @@ screen('bhHome', {
   cls: 'bh-light',
   render: () => `<div class="scroll" style="background:var(--bh-subtle)">
     <div class="bhh-hdr"><div style="position:relative">${statusBar(true).replace('class="sb light"', 'class="sb light" style="position:absolute;left:0;right:0;top:0"')}
-      <div class="row" style="height:32px;justify-content:flex-end"><button type="button" aria-label="Notificações" data-go="bhNotif" style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;color:#fff;border-radius:9999px">${ic('bell', 18)}</button></div>
+      <div class="row jb" style="height:32px"><img src="assets/bh-logo-home.png" alt="bluehub" width="110" height="30"><button type="button" aria-label="Notificações" data-go="bhNotif" style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;color:#fff;border-radius:9999px">${ic('bell', 18)}</button></div>
       <div class="row" style="gap:8px;align-items:flex-start">${bhUser()}</div></div></div>
     <div class="col" style="gap:32px;padding-bottom:120px">
-      <section class="bhh-sec bhh-white" style="padding-top:24px">
+      <section class="bhh-sec bhh-white">
         <div class="col bhh-px" style="gap:8px"><span style="display:block;width:72px;height:3px;border-radius:2px;background:var(--bh-teal)"></span><p style="font-size:16px;line-height:24px;font-weight:700;color:var(--bh-ink)">Minhas Finanças</p></div>
         <div class="bhh-px"><button type="button" class="bhh-tile" data-act="mp" style="flex-direction:row;width:100%;gap:8px"><span class="f1" style="font-size:12px;line-height:18px;color:var(--bh-base)"><b style="font-weight:700">MIA, sua assistente financeira</b><br>Acompanhe gastos, antecipe compromissos, poupe automaticamente e receba insights para organizar suas finanças${MP_ATIVO() ? '<br><span class="badge success" style="display:inline-flex;margin-top:6px">Ativo</span>' : ''}</span><img src="assets/bhh-mia-foto.webp" alt="" width="127" height="126" style="border-radius:16px;object-fit:cover;flex:none"></button></div>
         <div class="bhh-car" style="align-items:stretch">${[['calendar-days', 'Médico das finanças', 'Agenda uma sessão com um consultor financeiro certificado'], ['chart-line', 'Aposentadoria', 'Use o simulador para descobrir como conquistar uma aposentadoria tranquila', 'apos'], ['circle-play', 'Clube do livro', 'Ouça os melhores livros de finanças no trânsito ou no treino!']].map(([i, t, d, a]) => bhTile([i, t, d, a, 190])).join('')}</div>
@@ -3380,13 +3380,23 @@ screen('bhPerfil', {
   cls: 'bh-light',
   render: (p) => { const open = p.open ?? -1;
     const A = [['user', 'Seus dados', [['Nome completo', S.user.nome || 'Marcelo Andrade de Souza'], ['CPF', (S.user.cpf || '123.456.789-00') + ' · não editável'], ['E-mail', S.user.email || 'marcelo@email.com']]], ['circle-help', 'Ajuda e suporte', [['Perguntas frequentes', 'Como usar cada benefício'], ['Falar com a assistente', 'Tire dúvidas sobre seus benefícios']]], ['settings', 'Conta', [['Alterar senha', 'Modifique sua senha de acesso'], ['Notificações', 'Lembretes e novidades do plano'], ['Privacidade e termos', 'Política e termos de uso']]]];
-    return `<div class="scroll"><div class="bh-hdr" style="padding-bottom:28px">${statusBar(true)}<div class="row jc" style="padding:8px 20px">${BH_LOGO_W}</div><div class="row g3" style="padding:20px 24px 0">${bhUser()}</div></div>
-    <div class="col g3" style="padding:20px 16px">
-      <div style="border-radius:16px;padding:16px;background:linear-gradient(135deg,#1f3fb8,#0b1d5c);color:#fff" class="col g2"><p class="h4">Amplie seus benefícios</p><p class="b14">Como titular, <b>você tem direito de adicionar os melhores benefícios da Bluehub</b> para você e seus familiares!</p>${btn('Ver mais', { act: 'vidaMais', attrs: 'style="background:#fff;color:var(--bh-ink);height:36px;margin-top:4px"' })}</div>
-      ${A.map(([i, t, rows], k) => `<div class="bh-acc"><button type="button" data-act="acc" data-k="${k}" aria-expanded="${open === k}"><span class="bh-ic">${ic(i, 18)}</span><span class="f1 b16 semi" style="color:var(--bh-ink)">${t}</span>${ic(open === k ? 'chevron-up' : 'chevron-down', 18)}</button>${open === k ? `<div class="in">${rows.map(([a, d]) => `<div class="li"><span class="lt col"><span class="b14 semi" style="color:var(--bh-ink)">${esc(a)}</span><span class="cap" style="color:var(--bh-muted)">${esc(d)}</span></span></div>`).join('')}</div>` : ''}</div>`).join('')}
-      <button type="button" class="row g3" data-act="bhSoon" data-n="Indique a Bluehub" style="background:var(--bh-blue-bg);border-radius:16px;padding:16px"><span class="bh-ic" style="background:var(--bh-blue);color:#fff">${ic('share-2', 18)}</span><span class="b16 semi" style="color:var(--bh-ink)">Indique a Bluehub</span></button>
-      <button type="button" class="b14 semi" data-act="sair" style="background:#eceef3;border-radius:var(--r-full);height:44px;color:var(--bh-ink)">Sair da conta</button>
-      <button type="button" class="b14 semi" data-act="delConta" style="color:var(--bh-blue);align-self:center;padding:10px 8px">Excluir conta</button>
+    const acc = (i, t, k, inner) => `<div class="bh-acc"><button type="button" data-act="${k === null ? 'bhSoon' : 'acc'}" ${k === null ? 'data-n="Indique a Bluehub"' : `data-k="${k}" aria-expanded="${open === k}"`} style="min-height:64px"><span class="bh-ic">${ic(i, 18)}</span><span class="f1 b16 semi" style="color:var(--bh-ink)">${t}</span>${k === null ? '' : ic(open === k ? 'chevron-up' : 'chevron-down', 18)}</button>${inner || ''}</div>`;
+    return `<div class="scroll" style="background:var(--bh-subtle)">
+      <div style="flex:none;position:relative;height:200px;background:var(--bh-blue);border-radius:0 0 28px 28px;padding:56px 24px 24px;display:flex;flex-direction:column;gap:32px">
+        ${statusBar(true).replace('class="sb light"', 'class="sb light" style="position:absolute;left:0;right:0;top:0"')}
+        <div class="row" style="height:24px"><button type="button" data-back aria-label="Voltar" style="color:#fff;display:flex">${ic('chevron-left', 24)}</button></div>
+        <div class="row" style="gap:8px;align-items:center">${bhUser()}</div></div>
+    <div class="col" style="gap:16px;padding:24px">
+      <div style="border-radius:16px;padding:16px;background:linear-gradient(135deg,#1f3fb8,#0b1d5c);color:#fff;display:flex;flex-direction:column;gap:16px">
+        <p style="font-size:18px;line-height:24px;font-weight:700;color:#f5f5f5">Amplie seus benefícios</p>
+        <p style="font-size:12px;line-height:18px;color:#dfe7ff">Como titular, <b>você tem direito de adicionar os melhores benefícios da Bluehub</b> para você e seus familiares!</p>
+        <button type="button" data-act="vidaMais" style="height:40px;border-radius:9999px;background:#fff;color:var(--bh-ink);font-size:12px;line-height:18px;font-weight:600">Ver mais</button></div>
+      <div class="col" style="gap:24px">
+        <div class="col" style="gap:16px">${A.map(([i, t, rows], k) => acc(i, t, k, open === k ? `<div class="in">${rows.map(([a, d]) => `<div class="li"><span class="lt col"><span class="b14 semi" style="color:var(--bh-ink)">${esc(a)}</span><span class="cap" style="color:var(--bh-muted)">${esc(d)}</span></span></div>`).join('')}</div>` : '')).join('')}</div>
+        <div class="bh-acc" style="background:var(--bh-blue-bg);border-color:var(--bh-blue-bg)"><button type="button" data-act="bhSoon" data-n="Indique a Bluehub" style="min-height:64px"><span class="bh-ic" style="background:var(--bh-blue);color:#fff">${ic('share-2', 18)}</span><span class="f1 b16 semi" style="color:var(--bh-ink)">Indique a Bluehub</span></button></div></div>
+      <div class="col" style="gap:40px;padding-top:8px">
+        <button type="button" data-act="sair" style="height:44px;border-radius:9999px;background:var(--bh-line);color:var(--bh-ink);font-size:14px;line-height:22px;font-weight:600">Sair da conta</button>
+        <button type="button" data-act="delConta" style="height:44px;border-radius:9999px;background:transparent;color:var(--bh-blue);font-size:14px;line-height:22px;font-weight:600">Excluir conta</button></div>
     </div></div>${bhNav('bhPerfil')}`; },
   acts: {
     acc: (b) => { const p = stack[stack.length - 1].p; const k = +b.dataset.k; p.open = p.open === k ? -1 : k; rerender(); },
