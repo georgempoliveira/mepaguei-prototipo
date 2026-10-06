@@ -1722,11 +1722,12 @@ function contaCard(kind) {
   const c = kind === 'p' ? S.origem : S.destino;
   if (!c) return `<button type="button" class="card row g3" data-act="ctab" data-k="${kind === 'p' ? 'pri' : 'cof'}" style="text-align:left"><span class="ico-c sm">${ic(kind === 'p' ? 'wallet' : 'piggy-bank', 16)}</span><span class="f1 col"><span class="b14 bold c-darker">${kind === 'p' ? 'Principal' : 'Cofrinho'}</span><span class="cap c-base">${kind === 'p' ? 'Conta de origem para poupar' : 'Conta de destino do valor poupado'}</span></span>${ic('chevron-right', 20, 'c-light')}</button>`;
   const b = BANKS[c.bank]; const conta = kind === 'p' ? b.contas[c.conta || 0] : null;
-  return `<div class="card col g1" style="border-color:var(--border-lighter)"><div class="row jb"><span class="badge ${kind === 'p' ? 'info' : 'success'}">${kind === 'p' ? 'Principal' : 'Cofrinho'}</span><button type="button" data-act="ctab" data-k="${kind === 'p' ? 'pri' : 'cof'}" aria-label="Editar" style="color:var(--ty-base);padding:2px">${ic('ellipsis-vertical', 18)}</button></div>
-    <div class="row g2" style="margin-top:4px">${bankIc(c.bank, true)}<p class="b16 semi c-darker">${b.curto}</p></div>
-    ${kind === 'p' ? `<p class="b14 c-dark">Agência | Conta: ${conta.ag} | ${conta.cc}</p><p class="b14 c-dark">Saldo Disponível: ${fmtBRL(conta.saldo)}</p>` : `<p class="b14 c-dark" style="overflow-wrap:anywhere">Chave Pix: ${esc(c.pix)}</p>`}</div>`;
+  return `<div class="card col g3" style="border-color:var(--border-lighter)">
+    <div class="row g3 ais">${bankIc(c.bank)}<div class="f1 col" style="gap:2px"><span class="cap semi c-primary">${kind === 'p' ? 'Principal' : 'Cofrinho'}</span><span class="b16 bold c-darker">${b.curto}</span></div><button type="button" data-act="ctab" data-k="${kind === 'p' ? 'pri' : 'cof'}" aria-label="Editar" style="color:var(--ty-base);padding:2px;align-self:flex-start">${ic('ellipsis-vertical', 18)}</button></div>
+    <div class="col g1" style="padding-left:52px">${kind === 'p' ? `<p class="b14 c-dark">Agência | Conta: <b class="c-darker">${conta.ag} | ${conta.cc}</b></p><p class="b14 c-dark">Saldo Disponível: <b class="c-darker">${fmtBRL(conta.saldo)}</b></p>` : `<p class="b14 c-dark">Chave Pix (E-mail):</p><p class="b14 bold c-darker" style="overflow-wrap:anywhere">${esc(c.pix)}</p>`}</div></div>`;
 }
 screen('central', {
+  cls: 'grad',
   render: (p) => {
     const tab = p.tab || 'def';
     let body = '';
@@ -1748,10 +1749,12 @@ screen('central', {
     else body = `<p class="b16 semi c-darker">Bancos conectados</p>${S.contas.length ? `<p class="b14 c-dark">Total de instituições conectadas: ${S.contas.length}</p><div class="col">${S.contas.map(bankRowMenu).join('')}</div>` : '<p class="b14 c-dark">Adicione suas instituições financeiras ao Me Paguei para ter a melhor experiência sobre sua vida financeira.</p>'}
       ${btn(ic('plus', 14) + ' Adicionar nova instituição', { v: 'o', cls: 'btn-xs auto', act: 'add', attrs: 'style="align-self:flex-start;padding:0 14px"' })}`;
     const foot = tab === 'def' ? btn(p.final ? 'Concordar e ir para o Início' : 'Ir para o Início', { act: 'home' }) : tab === 'pri' && S.contas.length ? btn('Salvar conta Principal', { act: 'savePri', next: true }) : '';
-    return `${statusBar()}${appHeader('Consentimento de contas', { back: !p.final })}
-    <div class="chips px5" style="padding-bottom:8px">${[['def', 'Definições'], ['pri', 'Principal'], ['cof', 'Cofrinho'], ['inst', 'Instituições']].map(([k, l]) => `<button type="button" class="chip ${k === tab ? 'on' : ''}" data-act="ctab" data-k="${k}">${l}</button>`).join('')}</div>
-    ${tab === 'def' ? '<p class="b16 c-dark px5" style="padding-bottom:4px">Gerencie suas contas, o saldo de segurança e suas conexões do Open Finance.</p>' : ''}
-    <div class="scroll px5 col g5" style="display:flex;padding-top:12px;padding-bottom:16px">${body}</div>${foot ? `<div style="padding:8px 20px 20px">${foot}</div>` : ''}${homeInd()}`;
+    return `${CURVE}${statusBar(true)}
+    <div class="bk" style="margin-top:16px;height:28px"><button type="button" data-back aria-label="Voltar" ${p.final ? 'style="visibility:hidden"' : ''}>${ic('chevron-left', 24)}</button>
+      <p class="h2" style="position:absolute;left:56px;right:56px;text-align:center;color:#fff">Consentimento de contas</p><span style="width:24px"></span></div>
+    <div class="chips" style="position:relative;z-index:2;padding:16px 20px 12px">${[['def', 'Definições'], ['pri', 'Principal'], ['cof', 'Cofrinho'], ['inst', 'Instituições']].map(([k, l]) => `<button type="button" class="chip glass ${k === tab ? 'on' : ''}" data-act="ctab" data-k="${k}">${l}</button>`).join('')}</div>
+    <div class="scroll" style="position:relative;z-index:2;display:flex;flex-direction:column">
+      <div class="col g5" style="flex:1 0 auto;background:#fff;border-radius:32px 32px 0 0;padding:28px 20px 20px">${body}</div></div>${foot ? `<div class="sheet-foot" style="background:#fff;padding-top:8px">${foot}</div>` : ''}${homeInd()}`;
   },
   mount: (el, p) => { if (p.tab === 'pri' && !p.init) { p.init = 1; S.tmpOrig = S.origem ? { ...S.origem } : null; S.flags.origOpen = S.origem ? S.origem.bank : S.contas[0]; S.flags.sseg = S.saldoSeg ? fmtBRL(S.saldoSeg) : ''; rerender(); } },
   valid: (p) => p.tab !== 'pri' || !!S.tmpOrig,
@@ -2445,7 +2448,15 @@ screen('ssOb2', {
     <span class="ico-c" style="width:56px;height:56px">${ic('rocket', 26)}</span><p class="h1 c-darker">Saldo Seguro</p><p class="b16 c-dark">Para projetar seu saldo para os próximos 30 dias, precisaremos das seguintes informações:</p>
     ${[['1. Saldo atual', 'O ponto de partida: o saldo das contas que você escolher.'], ['2. Entradas previstas', 'Salário, rendas extras e tudo que você espera receber em 30 dias.'], ['3. Despesas recorrentes', 'Despesas fixas e faturas de cartão que já têm data de pagamento prevista'], ['4. Despesas eventuais', 'Viagens, presentes e datas especiais. Usamos os aniversários que você cadastrou em Agenda. Se ainda não fez isso, acesse o Menu Controle'], ['5. Poupança automática', 'Dinheiro poupado não deveria estar disponível para gastos do dia-a-dia ;)']].map(([t, d]) => `<div class="card col g1" style="border-color:var(--border-lighter)"><p class="b16 semi c-darker">${t}</p><p class="b14 c-dark">${d}</p></div>`).join('')}
     <div style="padding-top:8px">${btn('Começar', { act: 'go' })}</div></div>${homeInd()}`,
-  acts: { go: () => { if (S.flags.ssEntendi) { ssBegin(); return; } openSheet(`<p class="h4 c-darker">Entenda a projeção</p><p class="b16 c-dark">Despesa é o que você consome. Pagamento é quando o dinheiro sai da conta. Nem sempre os dois acontecem juntos. Uma compra no cartão, por exemplo, é uma despesa hoje, mas só será paga no vencimento da fatura.</p><p class="b16 c-dark">O Saldo Seguro mostra quanto você pode assumir em pagamentos, sem comprometer suas finanças.</p>${checkbox('flags.ssEntendi', 'Não visualizar esta mensagem novamente', false)}`, { foot: btn('Entendi', { act: 'ok' }) }); },
+  acts: { go: () => { if (S.flags.ssEntendi) { ssBegin(); return; } openSheet(`<div class="col g6">
+      <span class="ico-c" style="width:56px;height:56px;background:var(--primary-lighter);color:var(--primary)">${ic('chart-no-axes-combined', 24)}</span>
+      <div class="col g4">
+        <p class="h4 c-primary">Entenda a projeção</p>
+        <p class="b14 semi c-dark">Despesa é o que você consome. Pagamento é quando o dinheiro sai da conta.</p>
+        <p class="b14 semi c-primary">Nem sempre os dois acontecem juntos. Uma compra no cartão, por exemplo, é uma despesa hoje, mas só será paga no vencimento da fatura.</p>
+        <p class="b14 c-dark">O Saldo Seguro mostra quanto você pode <b class="semi c-darker">assumir em pagamentos</b>, sem comprometer suas finanças.</p>
+      </div>
+      ${checkbox('flags.ssEntendi', 'Não visualizar esta mensagem novamente', false)}</div>`, { foot: btn('Entendi', { act: 'ok' }) }); },
     ok: () => { closeOverlays(true); ssBegin(); } },
 });
 function ssBegin() { S.ss = null; ssState(); if (!S.contas.length) { go('ssSemConta'); return; } go('ssContas'); }
