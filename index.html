@@ -1,5 +1,7 @@
 <!doctype html>
 <meta charset="utf-8">
+<meta name="color-scheme" content="light">
+<meta name="supported-color-schemes" content="light">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -17,7 +19,8 @@
 /* Layout: a single 375×812 phone, centered on desktop with a moderator panel beside it; full-bleed on phones.
    Tokens mirror the Me Paguei design system (Figma variables), named after them. */
 :root{
-  color-scheme: light;
+  color-scheme: only light;
+  forced-color-adjust: none;
   --bg-white:#ffffff; --bg-lighter:#f6f6f6; --bg-light:#fbfbfb; --bg-base:#747474; --bg-darker:#121212;
   --border-light:#d3d3d3; --border-lighter:#f3f3f3; --outline:#d7d9e4;
   --primary:#328ce3; --primary-700:#2573d0; --primary-darker:#1a3151; --primary-lighter:#f0f9fe; --primary-bg:#e6f3fd;
