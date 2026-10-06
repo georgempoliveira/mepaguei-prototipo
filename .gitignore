@@ -1,0 +1,6 @@
+node_modules/
+dist/
+dist-pub/
+audit/
+shots/
+__pycache__/
