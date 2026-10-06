@@ -2305,10 +2305,20 @@ const totEvt = () => -ssLanc().filter(x => x.cat === 'evento').reduce((a, x) => 
 const totPoup = () => -ssLanc().filter(x => x.cat === 'poup').reduce((a, x) => a + x.v, 0);
 
 /* ---------- cabeçalho dos passos ---------- */
+/* Header fixo = apenas o frame de 84px (status bar + voltar + título + passos).
+   O título da página e o conteúdo rolam juntos (Figma 17790:141485). */
 function ssStep({ step, title, sub, body, foot }) {
-  return ofScreen({ title: 'Projeção de Saldo Seguro', dots: 0,
-    body: body, foot }).replace('<span class="row g1"></span>', `<span class="row g1">${[1, 2, 3, 4, 5].map(k => `<i style="display:block;height:4px;border-radius:2px;width:${k === step ? 12 : 4}px;background:${k <= step ? '#fff' : 'rgba(255,255,255,.5)'}"></i>`).join('')}</span>`)
-    .replace('<div class="sheet"', `<div style="position:relative;z-index:2;padding:18px 20px 0;color:#fff"><p class="h2">${title}</p><p class="b16" style="color:#e9f1fb;margin-top:4px">${sub}</p></div><div class="sheet"`).replace('<p class="h2" style="position:absolute;left:56px;right:56px;text-align:center;color:#fff">Projeção de Saldo Seguro</p>', '<p class="b16 semi" style="position:absolute;left:56px;right:56px;text-align:center;color:#fff">Projeção de Saldo Seguro</p>');
+  const dots = [1, 2, 3, 4, 5].map(k => `<i style="display:block;height:4px;border-radius:2px;width:${k === step ? 12 : 4}px;background:${k <= step ? '#fff' : 'rgba(255,255,255,.5)'}"></i>`).join('');
+  return `${CURVE}${statusBar(true)}
+  <div class="bk" style="margin-top:16px;height:24px">
+    <button type="button" data-back aria-label="Voltar">${ic('chevron-left', 24)}</button>
+    <p class="b16 semi" style="position:absolute;left:56px;right:56px;text-align:center;color:#fff">Projeção de Saldo Seguro</p>
+    <span class="row g1">${dots}</span></div>
+  <div class="scroll" style="position:relative;z-index:2;display:flex;flex-direction:column">
+    <div style="flex:none;padding:18px 20px 4px;color:#fff"><p class="h2">${title}</p><p class="b16" style="color:#e9f1fb;margin-top:4px">${sub}</p></div>
+    <div style="flex:1 0 auto;background:#fff;margin-top:16px;border-radius:32px 32px 0 0;padding:28px 20px 24px;display:flex;flex-direction:column;gap:24px">${body}</div>
+  </div>
+  ${foot ? `<div class="sheet-foot" style="background:#fff">${foot}</div>` : ''}${homeInd()}`;
 }
 const ssFoot = (label, total, cap, act = 'next', dis = false) => `<div class="col g1" style="padding-bottom:4px"><p class="b14 semi c-primary">${label}</p><p class="h2 c-darker num">${fmtBRL(total)}</p><p class="cap c-base">${cap}</p></div>${btn('Avançar', { act, next: true })}${btn('Cancelar', { v: 'o', act: 'ssCancel' })}`;
 GLOBAL_ACTS.ssCancel = () => confirmDlg({ icon: 'circle-alert', tone: 'warning', title: 'Sair da projeção?', text: 'Se você sair agora, as informações preenchidas neste estudo serão perdidas.', ok: 'Sair', okAct: 'ssCancelOk', cancel: 'Continuar preenchendo' });
