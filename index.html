@@ -72,6 +72,7 @@ img{display:block}
   #stage{padding:0;display:block;height:100dvh;gap:0}
   #phone-wrap{width:100vw;height:100dvh;transform:none!important;margin:0!important}
   #phone{width:100vw;height:100dvh;border-radius:0;box-shadow:none}
+  html,body,#stage,#phone{touch-action:manipulation;overscroll-behavior:none}
   .sb{height:max(10px, env(safe-area-inset-top,0px))!important;visibility:hidden}
   .hi{display:none!important}
 }
@@ -3542,6 +3543,11 @@ if (window.PROTO_PUB && matchMedia('(max-width:480px)').matches) {
     const once = () => { try { if (!inFS()) reqFS.call(root); } catch (e) {} };
     window.addEventListener('pointerdown', once, { once: true });
   }
+  /* trava o zoom por pinça e duplo-toque (inclusive iOS, que ignora user-scalable=no) */
+  ['gesturestart', 'gesturechange', 'gestureend'].forEach(ev => document.addEventListener(ev, e => e.preventDefault()));
+  document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preventDefault(); }, { passive: false });
+  let lastTap = 0;
+  document.addEventListener('touchend', e => { const n = Date.now(); if (n - lastTap < 350) e.preventDefault(); lastTap = n; }, { passive: false });
 }
 
 </script>
