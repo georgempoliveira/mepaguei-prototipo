@@ -1,3 +1,13 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Me Paguei">
+<meta name="theme-color" content="#040c23">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="assets/app-icon.png">
 <title>Me Paguei · Teste</title>
 <style>
 @font-face{font-family:'Inter';font-style:normal;font-weight:400;font-display:block;src:url(assets/fonts/inter-400.woff2) format('woff2')}
@@ -3527,6 +3537,11 @@ if (window.PROTO_PUB && matchMedia('(max-width:480px)').matches) {
   const sync = () => { b.hidden = !!inFS(); };
   document.addEventListener('fullscreenchange', sync);
   document.addEventListener('webkitfullscreenchange', sync);
+  /* entra em tela cheia no primeiro toque (Android; iOS ignora silenciosamente) */
+  if (reqFS && !window.matchMedia('(display-mode: fullscreen)').matches && !window.navigator.standalone) {
+    const once = () => { try { if (!inFS()) reqFS.call(root); } catch (e) {} };
+    window.addEventListener('pointerdown', once, { once: true });
+  }
 }
 
 </script>
