@@ -3252,7 +3252,7 @@ screen('bhHome', {
         <div class="col bhh-px" style="gap:8px"><span style="display:block;width:72px;height:3px;border-radius:2px;background:var(--bh-teal)"></span><p style="font-size:16px;line-height:24px;font-weight:700;color:var(--bh-ink)">Minhas Finanças</p></div>
         <div class="bhh-px"><button type="button" class="bhh-tile" data-act="mp" style="flex-direction:row;width:100%;gap:8px"><span class="f1" style="font-size:12px;line-height:18px;color:var(--bh-base)"><b style="font-weight:700">MIA, sua assistente financeira</b><br>Acompanhe gastos, antecipe compromissos, poupe automaticamente e receba insights para organizar suas finanças${MP_ATIVO() ? '<br><span class="badge success" style="display:inline-flex;margin-top:6px">Ativo</span>' : ''}</span><img src="assets/bhh-mia-foto.webp" alt="" width="127" height="126" style="border-radius:16px;object-fit:cover;flex:none"></button></div>
         <div class="bhh-car" style="align-items:stretch">${[['calendar-days', 'Médico das finanças', 'Agenda uma sessão com um consultor financeiro certificado'], ['chart-line', 'Aposentadoria', 'Use o simulador para descobrir como conquistar uma aposentadoria tranquila', 'apos'], ['circle-play', 'Clube do livro', 'Ouça os melhores livros de finanças no trânsito ou no treino!']].map(([i, t, d, a]) => bhTile([i, t, d, a, 190])).join('')}</div>
-        <div class="row bhh-px" style="justify-content:flex-end"><button type="button" data-act="bhtab" data-tab="bhBenef" style="font-size:12px;line-height:18px;font-weight:600;color:var(--bh-ink)">Ver todos (5)</button></div></section></div>
+        </section>
       <section class="bhh-sec"><div class="bhh-st"><p>Blue+ · Economia Familiar</p><button type="button" data-act="bhtab" data-tab="bhBenef">Ver todos (3)</button></div>
         <div class="bhh-car">${bhPhoto('bhc-blue0.webp', 'BLUE+', 'Programa de Economia Familiar')}${[['sun', 'Conta de energia', 'Descontos de até 20% com a Serena'], ['heart', 'Desconto Farmácia', 'Familiar. Pelo app TEM Saúde.'], ['star', 'Academias', 'TotalPass. Só para CPF contratante.']].map(bhTile).join('')}</div></section>
       <section class="bhh-sec"><div class="bhh-st"><p>Minha Saúde</p><button type="button" data-act="bhtab" data-tab="bhBenef">Ver todos (4)</button></div>
@@ -3269,7 +3269,7 @@ screen('bhHome', {
         <img src="assets/bhh-amplie-foto.webp" alt="" style="width:100%;height:170px;object-fit:cover;display:block">
         <div class="col" style="gap:12px;padding:20px 20px 24px">
           <p style="font-size:18px;line-height:24px;font-weight:700;color:#fff">Amplie suas proteções</p>
-          <p style="font-size:12px;line-height:18px;color:#dfe7ff">Acompanhamento com psicólogo, plano odontológico, coberturas maiores e outros benefícios, por uma fração do valor de mercado.</p>
+          <p style="font-size:14px;line-height:22px;font-weight:600;color:#fff">Acompanhamento com psicólogo, plano odontológico, coberturas maiores e outros benefícios, por uma fração do valor de mercado</p>
           <button type="button" data-act="vida" style="height:44px;border-radius:9999px;background:#fff;color:var(--bh-ink);font-size:14px;line-height:22px;font-weight:600;margin-top:4px">Conhecer minhas vantagens</button>
         </div></div></div>
       <div class="bhh-px"><button type="button" data-act="bhSoon" data-n="WhatsApp" style="width:100%;height:100px;background:#fff;border:1px solid var(--bh-line);border-radius:16px;padding:16px;display:flex;align-items:center;gap:16px;text-align:left">
