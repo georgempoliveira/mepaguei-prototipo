@@ -1223,7 +1223,9 @@ const TABS = [['home', 'house', 'Início'], ['poupar', 'wallet', 'Poupar'], ['cl
 function navbar(active) {
   return `<nav class="nav" aria-label="Menu principal">${TABS.map(([id, i, l]) => `<button type="button" class="${id === active ? 'on' : ''}" data-act="tab" data-tab="${id}" ${id === active ? 'aria-current="page"' : ''}><span class="pill">${ic(i, 20)}</span>${l}</button>`).join('')}</nav>${homeInd()}`;
 }
-GLOBAL_ACTS.tab = (b) => { const t = b.dataset.tab; const top = stack[stack.length - 1]; if (top && top.id === t && stack.length === 1) { const sc = cur.querySelector('.scroll'); if (sc) sc.scrollTo({ top: 0, behavior: 'smooth' }); return; } reset(t, {}, 'none'); };
+GLOBAL_ACTS.tab = (b) => { let t = b.dataset.tab;
+  /* Clareza ainda sem nenhum estudo: entra pela tela de apresentação (17790:141394) */
+  if (t === 'clareza' && !S.flags.clarezaIntro && !S.ss && !S.saldoSeguro) t = 'clarezaIntro'; const top = stack[stack.length - 1]; if (top && top.id === t && stack.length === 1) { const sc = cur.querySelector('.scroll'); if (sc) sc.scrollTo({ top: 0, behavior: 'smooth' }); return; } reset(t, {}, 'none'); };
 
 /* ---------- Home ---------- */
 const BLUEHUB_IC = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="9" r="5"/><path d="M6 20h12"/></svg>`;
@@ -2347,6 +2349,22 @@ const periodoChip = () => `<div class="row g2 cap semi c-dark" style="background
 const miaBox = (title, text, act = '', label = 'Entendi', sub = '') => `<div class="ins" style="box-shadow:none"><div class="row g2"><span class="ava-mia sm"><img src="assets/mia-avatar.webp" alt=""></span><div class="col"><span class="b14 semi c-ia">${sub ? 'MIA' : 'Insight da MIA'}</span>${sub ? `<span class="cap c-base">${sub}</span>` : ''}</div>${sub ? '' : '<img src="assets/tip.png" width="14" height="14" alt="">'}</div>${title ? `<p class="b14 bold c-dark">${title}</p>` : ''}<p class="cap c-dark" style="white-space:pre-line">${text}</p>${act ? btn(label, { cls: 'btn-ia', act }) : ''}</div>`;
 
 /* ---------- Clareza (aba) ---------- */
+/* 00.01 - Saldo Seguro · Entrada · Apresentação (17790:141394): porta de entrada do menu Clareza */
+screen('clarezaIntro', {
+  render: () => `${statusBar()}
+  <div class="row" style="flex:none;padding:17px 20px 0;height:49px"><button type="button" data-back aria-label="Voltar" style="color:var(--ty-darker);display:flex">${ic('chevron-left', 24)}</button></div>
+  <div class="scroll col" style="padding:4px 20px 0;gap:14px">
+    <img src="assets/cl-intro.webp" alt="Mulher sorrindo olhando o celular em um café" style="width:100%;display:block">
+    <div class="col g6" style="padding-bottom:16px">
+      <div class="col g4">
+        <p class="h1 c-darker" style="text-wrap:wrap">Dois estudos para você cuidar do seu dinheiro hoje e amanhã<span class="c-primary">.</span></p>
+        <p class="b16 c-dark">Descubra quanto você pode gastar com segurança, levando em conta seus lançamentos futuros.</p>
+      </div>
+      ${btn('Começar', { act: 'go' })}
+    </div></div>${homeInd()}`,
+  acts: { go: () => { S.flags.clarezaIntro = true; reset('clareza', { tab: 'ss' }, 'fade'); } },
+});
+
 screen('clareza', {
   render: (p) => {
     const tab = p.tab || 'ss'; const s = S.ss; const ativo = s && s.ativo;
@@ -2720,6 +2738,7 @@ seedDemo = function () {
   s.miaE = s.miaG = true; s.ativo = true; updHomeSS();
 };
 
+flowEntry('Clareza (Saldo Seguro)', 'Entrada do menu Clareza (apresentação)', () => { if (!S.contas.length) seedDemo(); S.ss = null; S.saldoSeguro = null; S.flags.clarezaIntro = false; reset('clarezaIntro'); });
 flowEntry('Clareza (Saldo Seguro)', 'Criar estudo do zero', () => { if (!S.contas.length) { seedDemo(); } S.ss = null; S.saldoSeguro = null; reset('clareza', { tab: 'ss' }); });
 flowEntry('Clareza (Saldo Seguro)', 'Projeção pronta', () => { seedDemo(); reset('clareza', { tab: 'ss' }); });
 flowEntry('Clareza (Saldo Seguro)', 'Projeção de Faturas', () => { if (!S.contas.length) seedDemo(); reset('clareza', { tab: 'fat' }); });
