@@ -54,8 +54,30 @@ timeout 300 git -c http.extraheader= push origin main
 Link: **https://georgempoliveira.github.io/mepaguei-prototipo/** (propaga em ~1 min; peça
 ao cliente abrir em **aba anônima** para evitar cache).
 
-> ⚠️ O repositório Git contém **apenas o build publicado**, não o `src/`.
-> O código-fonte vive só em `/home/claude/mepaguei`.
+### Restaurar o fonte (se a sessão acabar / o container for reciclado)
+O repositório versiona **o build publicado E o código-fonte**:
+
+```
+mepaguei-prototipo/
+├─ index.html, manifest.json, assets/   ← build publicado (GitHub Pages)
+├─ CLAUDE.md, prd.md, design.md         ← documentação
+├─ restore.sh                           ← recria o diretório de trabalho
+└─ source/
+   ├─ src/              (JS + CSS + shell.html)
+   ├─ *.py              (build.py, full.py, fx.py, cmp.py, …)
+   ├─ vendor-icons/     (123 SVGs Lucide usados — build funciona sem npm)
+   └─ package.json
+```
+
+```bash
+git clone https://github.com/georgegeooliveira-14/mepaguei-prototipo
+cd mepaguei-prototipo && ./restore.sh          # destino padrão: /home/claude/mepaguei
+cd /home/claude/mepaguei && python3 build.py
+```
+
+`build.py` procura os ícones em `node_modules/lucide-static/icons` e, se não houver,
+cai em **`vendor-icons/`**. Só rode `npm install` se precisar de um ícone **novo**
+(depois, espelhe-o em `vendor-icons/`).
 
 ### Modos da URL
 `#participante` esconde o painel do moderador · `#cmp` modo auditoria (mostra status bar e

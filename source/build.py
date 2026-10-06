@@ -10,12 +10,19 @@ js=f'window.PROTO_PUB={"true" if PUB else "false"};\n'+js
 names=set(re.findall(r"ic\(\s*['\"]([a-z0-9-]+)['\"]",js))|set(re.findall(r"icon\s*:\s*['\"]([a-z0-9-]+)['\"]",js))|set(re.findall(r"data-ic=['\"]([a-z0-9-]+)['\"]",js))
 names|=set(re.findall(r"/\*ic\*/['\"]([a-z0-9-]+)['\"]",js))
 import os as _o
-names|={n for n in re.findall(r"['\"]([a-z][a-z0-9-]{1,30})['\"]",js) if _o.path.exists(f'{root}/node_modules/lucide-static/icons/{n}.svg')}
+# ícones: node_modules quando existir; senão o espelho versionado em vendor-icons/
+ICON_DIRS=[f'{root}/node_modules/lucide-static/icons', f'{root}/vendor-icons']
+def icon_path(n):
+    for d in ICON_DIRS:
+        q=f'{d}/{n}.svg'
+        if _o.path.exists(q): return q
+    return None
+names|={n for n in re.findall(r"['\"]([a-z][a-z0-9-]{1,30})['\"]",js) if icon_path(n)}
 icons={}
 missing=[]
 for n in sorted(names):
-    p=f'{root}/node_modules/lucide-static/icons/{n}.svg'
-    if not os.path.exists(p): missing.append(n); continue
+    p=icon_path(n)
+    if not p: missing.append(n); continue
     s=open(p).read()
     inner=re.search(r'<svg[^>]*>(.*)</svg>',s,re.S).group(1)
     inner=re.sub(r'\s+',' ',inner).strip()
