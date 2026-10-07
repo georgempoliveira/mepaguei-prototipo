@@ -1359,7 +1359,8 @@ function setupCard() {
     ['Ativar Poupança Automática', hasPoup(), 'tab:poupar'],
     ['Habilitar Radar de Gastos', !!S.radar, 'tab:controle'],
   ];
-  if (S.contas.length) steps.push(['Projeção de Faturas', !!S.faturas, 'faturas']);
+  /* marca como concluída assim que o usuário visita a Projeção de Faturas */
+  if (S.contas.length) steps.push(['Projeção de Faturas', !!(S.flags.fatVisto || S.faturas), 'faturas']);
   const left = steps.filter(s => !s[1]).length;
   if (!left) return '';
   return `<div class="cfg">
