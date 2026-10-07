@@ -2089,8 +2089,9 @@ function trocoBody() {
     <div class="col"><p class="cap semi c-base" style="padding:8px 0">Histórico</p>${H.length ? H.map((h, k) => histItem({ icon: 'coins', ok: h.ok, t: h.ok ? h.loja : 'Falha por saldo insuficiente', sub: h.d, val: h.ok ? fmtBRL(h.pou) : 'R$ 0', sub2: h.ok ? fmtBRL(h.compra) : '', act: h.ok ? 'compra' : '', data: `data-k="${k}"` })).join('') : emptyHist}</div>`;
 }
 function notCfg(k) {
+  const ICO = { vf: ['piggy-bank', 'var(--primary)', 'var(--primary-lighter)'], placar: ['trophy', 'var(--warning)', 'var(--warning-bg)'], troco: ['coins', 'var(--success)', 'var(--success-bg)'] }[k];
   const m = { vf: ['Configure o Valor fixo', 'Escolha quanto e com que frequência guardar. O Me Paguei transfere para o seu cofrinho no automático.', [['calendar-clock', 'Escolha a frequência dos depósitos.'], ['banknote', 'Defina o valor que quer guardar.']]], placar: ['Configure o Placar do bem', 'Una a torcida pelo seu clube ao hábito de guardar dinheiro. A cada vitória, o valor escolhido vai direto para a sua reserva.', [['flag', 'Escolha o seu time do coração.'], ['banknote', 'Defina o valor que quer poupar por vitória.']]], troco: ['Ative o Troco inteligente', 'Compre com o cartão de crédito da sua conta principal e o Me Paguei guarda o troco no seu cofrinho de forma automática.', [['coins', 'Escolha entre arredondar os centavos ou guardar um valor fixo por compra.'], ['rocket', 'Ative o multiplicador opcional para acelerar seus objetivos.']]] }[k];
-  return `<div class="col g4" style="padding-top:8px"><p class="h2 c-darker">${m[0]}</p><p class="b14 c-dark">${m[1]}</p>${m[2].map(([i, t]) => `<div class="row g3"><span class="ico-c sm">${ic(i, 16)}</span><p class="b14 c-dark">${t}</p></div>`).join('')}${btn('Configurar', { act: 'ativar', attrs: `data-k="${k}"` })}</div>`;
+  return `<div class="col g4" style="padding-top:8px"><span class="ico-c" style="width:56px;height:56px;background:${ICO[2]};color:${ICO[1]}">${ic(ICO[0], 26)}</span><p class="h2 c-darker">${m[0]}</p><p class="b14 c-dark">${m[1]}</p>${m[2].map(([i, t]) => `<div class="row g3"><span class="ico-c sm">${ic(i, 16)}</span><p class="b14 c-dark">${t}</p></div>`).join('')}${btn('Configurar', { act: 'ativar', attrs: `data-k="${k}"` })}</div>`;
 }
 screen('poupar', {
   render: (p) => {
@@ -2102,12 +2103,14 @@ screen('poupar', {
         <div class="row g3" style="overflow-x:auto;scrollbar-width:none;margin:0 -20px;padding:0 20px 4px">${fonteCard('vf', 'piggy-bank', 'Valor fixo', 'var(--btn-primary)', '#fff')}${fonteCard('placar', 'trophy', 'Placar do bem', 'var(--warning)', '#fff')}${fonteCard('troco', 'coins', 'Troco inteligente', 'var(--success)', '#fff')}</div>
         ${objetivoCard()}<div class="col g1" style="margin-top:8px"><p class="h3 c-darker">Progresso financeiro</p><p class="b14 c-dark">Veja quanto você evoluiu até agora.</p></div>${progressoChart()}`
       : tab === 'vf' ? vfBody() : tab === 'placar' ? placarBody() : trocoBody();
+    /* modalidade ainda não configurada: sem o hero de saldo, como no Figma (item 18) */
+    const semCfg = tab !== 'total' && !P0[tab];
     return `<div class="scroll gscroll ${S.flags.hide ? 'hide-v' : ''}">
       <div style="position:relative">${CURVE}<div style="position:relative">${statusBar(true)}
         <div class="row jb" style="padding:8px 20px 0"><p class="h2" style="color:#fff">Poupanças</p><div class="row g2"><button type="button" class="hb" data-act="hideVals" aria-label="${S.flags.hide ? 'Mostrar valores' : 'Ocultar valores'}" style="width:32px;height:32px;border-radius:50%;background:var(--btn-primary);color:#fff;display:flex;align-items:center;justify-content:center">${ic(S.flags.hide ? 'eye-off' : 'eye', 18)}</button><button type="button" data-act="cfg" aria-label="Configurações" style="width:32px;height:32px;border-radius:50%;background:var(--btn-primary);color:#fff;display:flex;align-items:center;justify-content:center">${ic('settings', 18)}</button></div></div>
         <div class="chips" style="padding:20px 20px 0">${PTABS.map(([k, l]) => `<button type="button" class="chip glass ${k === tab ? 'on' : ''}" data-act="ptab" data-k="${k}">${l}</button>`).join('')}</div>
-        <div class="row jb ais" style="padding:24px 20px 0;color:#fff"><div class="col g1"><p class="num" style="font-size:32px;line-height:40px;font-weight:700">${money(amount)}</p><p class="b14">Total economizado</p></div>${tab === 'total' ? flows : statusBadge(P0[tab])}</div>
-        <p class="cap" style="padding:12px 20px 0;color:#fff">Última atualização em ${ddmmyyyy(hoje())}</p></div></div>
+        ${semCfg ? '' : `<div class="row jb ais" style="padding:24px 20px 0;color:#fff"><div class="col g1"><p class="num" style="font-size:32px;line-height:40px;font-weight:700">${money(amount)}</p><p class="b14">Total economizado</p></div>${tab === 'total' ? flows : statusBadge(P0[tab])}</div>`}
+        ${semCfg ? '' : `<p class="cap" style="padding:12px 20px 0;color:#fff">Última atualização em ${ddmmyyyy(hoje())}</p>`}</div></div>
       <div class="hbody" style="padding:24px 20px">${body}</div></div>${navbar('poupar')}`;
   },
   mount: (el, p) => { if (p.openObj) { p.openObj = false; later(() => SCREENS.poupar.acts.objNew(), 350); } },
@@ -2230,8 +2233,7 @@ screen('vfValor', {
 });
 screen('vfResumo', {
   cls: 'grad',
-  render: () => ofScreen({ title: 'Resumo', body: `<div class="col">${[['Frequência do depósito', freqTxt(S.tmpVf.freq), 'eFreq'], ['Valor do depósito', fmtBRL(parseBRL(S.tmpVf.valorTxt)), 'eVal'], ['Primeiro depósito', dataLonga(proxDeposito(S.tmpVf.freq)), '']].map(([t, v, a]) => `<div class="li"><span class="lt col"><span class="b16 semi c-darker">${t}</span><span class="b14 c-base">${v}</span></span>${a ? `<button type="button" data-act="${a}" aria-label="Editar ${t}" style="color:var(--ty-dark)">${ic('pencil', 18)}</button>` : ''}</div>`).join('')}</div>
-    <div class="card flat col g1"><p class="b14 semi c-darker">De onde sai e para onde vai</p><div class="row g2">${bankIc(S.origem.bank, true)}<span class="b14 c-dark">${BANKS[S.origem.bank].curto}</span>${ic('arrow-right', 14)}${bankIc(S.destino.bank, true)}<span class="b14 c-dark">${BANKS[S.destino.bank].curto}</span></div></div>`,
+  render: () => ofScreen({ title: 'Resumo', body: `<div class="col">${[['Frequência do depósito', freqTxt(S.tmpVf.freq), 'eFreq'], ['Valor do depósito', fmtBRL(parseBRL(S.tmpVf.valorTxt)), 'eVal']].map(([t, v, a]) => `<div class="li"><span class="lt col"><span class="b16 semi c-darker">${t}</span><span class="b14 c-base">${v}</span></span><button type="button" data-act="${a}" aria-label="Editar ${t}" style="color:var(--ty-dark)">${ic('pencil', 18)}</button></div>`).join('')}</div>`,
     foot: btn('Salvar', { act: 'save' }) }),
   acts: {
     eFreq: () => { S.tmpVf.fromResumo = true; go('vfFreq', { fromResumo: true, init: 1 }); },
