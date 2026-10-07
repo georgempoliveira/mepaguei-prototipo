@@ -120,6 +120,18 @@ let stack = [];
 let cur = null;
 const P = () => (stack[stack.length - 1] || {}).p || {};
 
+/* No celular o frame ocupa a tela toda, mas o navegador (barra que recolhe, área segura,
+   modo standalone) pode deixar uma sobra de alguns pixels. Em vez de brigar com o viewport,
+   pintamos a "mesa" atrás do frame com a cor da própria tela — a sobra fica invisível.
+   No desktop o palco continua cinza, para o celular aparecer como um aparelho. */
+function pintaFundo(el) {
+  if (!matchMedia('(max-width:600px)').matches) return;
+  let c = getComputedStyle(el).backgroundColor;
+  if (!c || /rgba\(.*,\s*0\)$/.test(c)) c = '#ffffff';   // .grad usa imagem: cai no branco da folha
+  document.documentElement.style.background = c;
+  document.body.style.background = c;          // o body cobre a área interna; o html, a sobra
+  const m = $('meta[name="theme-color"]'); if (m) m.setAttribute('content', c);
+}
 function render(dir) {
   const top = stack[stack.length - 1]; if (!top) return;
   const def = SCREENS[top.id]; if (!def) { console.warn('tela inexistente', top.id); return; }
@@ -138,6 +150,7 @@ function render(dir) {
     if (dir !== 'none') setTimeout(() => old.remove(), 340);
   }
   cur = el;
+  pintaFundo(el);
   clearTimers();
   closeOverlays(true);
   if (top.scroll) { const sc = el.querySelector('.scroll, .sheet-in'); if (sc) sc.scrollTop = top.scroll; }

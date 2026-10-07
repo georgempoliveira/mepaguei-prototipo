@@ -217,6 +217,11 @@ Para desabilitar o botão até a escolha: dê `cls:'js-x'` e `$$('.js-x',ov).for
    não acompanha o recolher da barra do navegador e sobra uma faixa do `--stage` no rodapé.
    Pelo mesmo motivo, elementos decorativos de fundo (foto, curvas, anéis) usam `width:100%`,
    nunca `width:375px`, e blocos no pé da tela são ancorados por `bottom:`, não por `top:`.
+   **Como o viewport do iOS/Android é imprevisível** (barra que recolhe, área segura, standalone),
+   não adianta só ajustar altura: `pintaFundo()` (em `core.js`) pinta `html`, `body` e o
+   `theme-color` com a **cor da própria tela** a cada render, no celular. Assim qualquer sobra
+   fica invisível. No desktop o palco segue cinza. Se criar uma tela com fundo próprio, garanta
+   que a cor esteja no `background-color` do `.scr` (gradiente cai no branco da folha).
 9. **Sempre confira `ERR []`** no `full.py` — erro de JS deixa a tela em branco.
 
 ---
