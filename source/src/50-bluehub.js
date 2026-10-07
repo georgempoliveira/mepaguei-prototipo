@@ -119,7 +119,8 @@ screen('bhProc', {
 });
 
 /* 01.06 Plano corporativo (15413:36303) */
-const bhFeat = ([i, t, d, when = 'Há 2 dias']) => `<div class="bh-feat"><span class="bh-fi">${ic(i, 16)}</span><div class="col f1" style="gap:8px"><div class="col" style="gap:2px"><p class="t">${t}</p><p class="d">${d}</p></div>${when ? `<p class="w">${when}</p>` : ''}</div></div>`;
+/* sem data relativa: o Figma não traz "Há 2 dias" nestes cards */
+const bhFeat = ([i, t, d, when = '']) => `<div class="bh-feat"><span class="bh-fi">${ic(i, 16)}</span><div class="col f1" style="gap:8px"><div class="col" style="gap:2px"><p class="t">${t}</p><p class="d">${d}</p></div>${when ? `<p class="w">${when}</p>` : ''}</div></div>`;
 screen('bhPlano', {
   cls: 'bh',
   render: () => `${BH_DECO}${statusBar(true)}
