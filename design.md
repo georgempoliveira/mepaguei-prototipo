@@ -212,7 +212,12 @@ Para desabilitar o botão até a escolha: dê `cls:'js-x'` e `$$('.js-x',ov).for
    aperte os espaços verticais e **avise o cliente** do desvio.
 7. **Ícones**: só existem os que o `build.py` encontra nas chamadas `ic('nome')`. Confira o
    aviso `MISSING ICONS` depois do build.
-8. **Sempre confira `ERR []`** no `full.py` — erro de JS deixa a tela em branco.
+8. **Telas mais altas/largas que 375×812**: no celular o frame preenche o viewport com
+   `height:100%` (html/body são `position:fixed;inset:0`). **Não use `100dvh`** — no iOS ele
+   não acompanha o recolher da barra do navegador e sobra uma faixa do `--stage` no rodapé.
+   Pelo mesmo motivo, elementos decorativos de fundo (foto, curvas, anéis) usam `width:100%`,
+   nunca `width:375px`, e blocos no pé da tela são ancorados por `bottom:`, não por `top:`.
+9. **Sempre confira `ERR []`** no `full.py` — erro de JS deixa a tela em branco.
 
 ---
 

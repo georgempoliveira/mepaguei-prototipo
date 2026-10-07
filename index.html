@@ -70,11 +70,14 @@ img{display:block}
 .mod-sheet-h{display:flex;justify-content:space-between;align-items:center}
 .mod-sheet-h button{font-size:18px;padding:4px 8px}
 @media (max-width: 900px){ #mod{display:none} }
-@media (max-width: 480px){
-  html,body{height:100dvh;overflow:hidden;position:fixed;inset:0;width:100%}
-  #stage{padding:0;display:block;height:100dvh;gap:0}
-  #phone-wrap{width:100vw;height:100dvh;transform:none!important;margin:0!important}
-  #phone{width:100vw;height:100dvh;border-radius:0;box-shadow:none}
+/* Celular: o frame preenche exatamente o viewport. Usa 100% (html/body são position:fixed;inset:0)
+   em vez de 100dvh/100vw — no iOS o dvh não acompanha o recolher da barra do navegador e sobrava
+   uma faixa do --stage no rodapé. */
+@media (max-width: 600px){
+  html,body{height:100%;overflow:hidden;position:fixed;inset:0;width:100%}
+  #stage{padding:0;display:block;height:100%;gap:0}
+  #phone-wrap{width:100%;height:100%;transform:none!important;margin:0!important}
+  #phone{width:100%;height:100%;border-radius:0;box-shadow:none}
   html,body,#stage,#phone{touch-action:manipulation;overscroll-behavior:none}
   .sb{height:max(10px, env(safe-area-inset-top,0px))!important;visibility:hidden}
   .hi{display:none!important}
@@ -130,7 +133,7 @@ img{display:block}
 
 /* gradient header screens (cadastro, login…) */
 .grad{background:var(--grad);color:var(--ty-lighter)}
-.grad .curve{position:absolute;left:0;top:0;width:375px;height:auto;pointer-events:none;z-index:0}
+.grad .curve{position:absolute;left:0;top:0;width:100%;height:auto;pointer-events:none;z-index:0}
 .bk{position:relative;z-index:2;flex:none;height:24px;padding-inline:16px;display:flex;align-items:center;justify-content:space-between}
 .bk .mark{position:absolute;left:50%;top:1.5px;transform:translateX(-50%);width:44.5px;height:20.8px}
 .bk .step{font-size:12px;line-height:18px;font-weight:600;color:#c2e6fb}
@@ -308,7 +311,7 @@ textarea.ta:focus{border-color:var(--primary)}
 
 /* blue hero header (app sections) */
 .hero{background:var(--grad);color:#fff;position:relative;flex:none;overflow:hidden}
-.hero .curve{position:absolute;left:0;top:0;width:375px;pointer-events:none}
+.hero .curve{position:absolute;left:0;top:0;width:100%;pointer-events:none}
 .hero > *{position:relative}
 .glass-btn{width:36px;height:36px;border-radius:var(--r-full);background:rgba(251,251,251,.2);display:flex;align-items:center;justify-content:center;color:#fff}
 .body-sheet{background:#fff;border-radius:24px 24px 0 0;margin-top:-24px;position:relative;z-index:2}
@@ -394,7 +397,7 @@ textarea.ta:focus{border-color:var(--primary)}
 .bh-acc .in{padding:0 16px 8px;display:flex;flex-direction:column}
 .bh-acc .in .li{border-color:var(--bh-line)}
 .toast.warn{background:var(--warning)}
-.curve{position:absolute;left:0;top:0;width:375px;height:auto;pointer-events:none;z-index:0}
+.curve{position:absolute;left:0;top:0;width:100%;height:auto;pointer-events:none;z-index:0}
 .gscroll{background:var(--grad) top/100% 520px no-repeat,#fff}
 body.sem-painel #mod{display:none}
 /* modo comparação (auditoria) */
@@ -450,7 +453,7 @@ body.cmp .hi{display:block!important}
 /* ---------- BlueHub · telas escuras (cadastro / login) ---------- */
 .bh{--bh-btn:#3279ff;--bh-dim:#98d8f8}
 .bhd-sub{position:absolute;left:0;top:0;width:223px;height:229px;pointer-events:none}
-.bhd-rings{position:absolute;left:0;top:147px;width:375px;height:665px;pointer-events:none}
+.bhd-rings{position:absolute;left:0;top:147px;width:100%;height:665px;pointer-events:none}
 .bhd-nav{position:relative;z-index:2;height:24px;padding:0 24px;display:flex;align-items:center;justify-content:space-between;flex:none}
 .bhd-nav > button,.bhd-nav > span:first-child{width:24px;height:24px;color:#fff;display:flex}
 .bhd-nav > img{position:absolute;left:143.5px;top:0}
@@ -496,7 +499,7 @@ body.cmp .hi{display:block!important}
 .bhs-pat{position:absolute;left:0;top:260px;pointer-events:none}
 .bhs-logo{position:absolute;left:63px;top:311px;animation:pop .6s .15s cubic-bezier(.2,.8,.2,1) both}
 .bhs-by{position:absolute;left:18px;right:20px;top:711px;height:26px;display:flex;align-items:center;justify-content:center;font-size:12px;line-height:18px;color:#f5f5f5}
-.bhw-photo{position:absolute;left:0;top:-6px;width:375px;height:637px;overflow:hidden}
+.bhw-photo{position:absolute;left:0;top:-6px;width:100%;height:637px;overflow:hidden}
 .bhw-photo img{position:absolute;left:-379px;top:0;width:1133px;height:637px;max-width:none}
 .bhw-photo::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.048),rgba(102,102,102,.2))}
 .bhw-grad{position:absolute;inset:0;background:radial-gradient(ellipse 820px 490px at 188px 280px,rgba(16,47,137,0) 0%,rgba(10,31,89,.25) 29%,#040c23 70%)}
@@ -3124,10 +3127,11 @@ screen('bhWelcome', {
   render: () => `<div class="bhw-photo"><img src="assets/bh-familia1.webp" alt="Família sorrindo abraçada"></div><div class="bhw-grad"></div>
     <img src="assets/bh-deco-sub2.svg" alt="" style="position:absolute;left:0;top:0;width:173px;height:158px;pointer-events:none">
     ${statusBar(true)}<img src="assets/bluehub-logo-white.png" alt="bluehub" width="148" height="40" style="position:absolute;left:21px;top:74px">
-    <div class="col g4" style="position:absolute;left:20px;right:20px;top:497px">
-      <p class="h1" style="color:#f5f5f5;text-wrap:wrap">Tudo para cuidar da sua vida e de quem você ama, agora ao seu alcance.</p>
-      <p class="b16" style="color:#f5f5f5">Sua Jornada Blue começa aqui.</p></div>
-    <div class="col g4" style="position:absolute;left:20px;right:20px;top:657px">${bhBtn('Começar', { lg: true, go: 'bhCad' })}${bhBtn('Entrar', { v: 'oc', lg: true, go: 'bhLogin' })}</div>
+    <div class="col" style="position:absolute;left:20px;right:20px;bottom:51px;gap:24px">
+      <div class="col g4">
+        <p class="h1" style="color:#f5f5f5;text-wrap:wrap">Tudo para cuidar da sua vida e de quem você ama, agora ao seu alcance.</p>
+        <p class="b16" style="color:#f5f5f5">Sua Jornada Blue começa aqui.</p></div>
+      <div class="col g4">${bhBtn('Começar', { lg: true, go: 'bhCad' })}${bhBtn('Entrar', { v: 'oc', lg: true, go: 'bhLogin' })}</div></div>
     <div class="hi bhw-hi"></div>`,
 });
 

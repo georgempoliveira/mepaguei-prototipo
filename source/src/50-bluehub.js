@@ -36,10 +36,11 @@ screen('bhWelcome', {
   render: () => `<div class="bhw-photo"><img src="assets/bh-familia1.webp" alt="Família sorrindo abraçada"></div><div class="bhw-grad"></div>
     <img src="assets/bh-deco-sub2.svg" alt="" style="position:absolute;left:0;top:0;width:173px;height:158px;pointer-events:none">
     ${statusBar(true)}<img src="assets/bluehub-logo-white.png" alt="bluehub" width="148" height="40" style="position:absolute;left:21px;top:74px">
-    <div class="col g4" style="position:absolute;left:20px;right:20px;top:497px">
-      <p class="h1" style="color:#f5f5f5;text-wrap:wrap">Tudo para cuidar da sua vida e de quem você ama, agora ao seu alcance.</p>
-      <p class="b16" style="color:#f5f5f5">Sua Jornada Blue começa aqui.</p></div>
-    <div class="col g4" style="position:absolute;left:20px;right:20px;top:657px">${bhBtn('Começar', { lg: true, go: 'bhCad' })}${bhBtn('Entrar', { v: 'oc', lg: true, go: 'bhLogin' })}</div>
+    <div class="col" style="position:absolute;left:20px;right:20px;bottom:51px;gap:24px">
+      <div class="col g4">
+        <p class="h1" style="color:#f5f5f5;text-wrap:wrap">Tudo para cuidar da sua vida e de quem você ama, agora ao seu alcance.</p>
+        <p class="b16" style="color:#f5f5f5">Sua Jornada Blue começa aqui.</p></div>
+      <div class="col g4">${bhBtn('Começar', { lg: true, go: 'bhCad' })}${bhBtn('Entrar', { v: 'oc', lg: true, go: 'bhLogin' })}</div></div>
     <div class="hi bhw-hi"></div>`,
 });
 
