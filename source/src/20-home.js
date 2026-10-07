@@ -59,7 +59,9 @@ function donut(pct, size = 72, color = 'var(--ia)', stroke = 12, inner = '') {
   const r = (size - stroke) / 2, c = 2 * Math.PI * r, d = Math.max(0, Math.min(1, pct)) * c;
   return `<div class="donut" style="width:${size}px;height:${size}px"><svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}"><circle cx="${size / 2}" cy="${size / 2}" r="${r}" fill="none" stroke="#d9d9d9" stroke-width="${stroke}"/><circle cx="${size / 2}" cy="${size / 2}" r="${r}" fill="none" stroke="${color}" stroke-width="${stroke}" stroke-dasharray="${d} ${c}" transform="rotate(-90 ${size / 2} ${size / 2})"/></svg><span>${inner}</span></div>`;
 }
-function faturasChart() {
+/* régua de meses (17191:36505) — `hi` é o mês atual, em destaque; antes dele a linha é
+   cheia (realizado) e depois dela vira tracejada (projeção) */
+function faturasChart(hi = 2) {
   const M = [['Ago/26', 1000], ['Set/26', 2350], ['Out/26', 1850], ['Nov/26', 950], ['Dez/26', 800]];
   const w = 84, gap = 8, H = 150, top = 46, bot = 40, max = 2600;
   const y = v => top + (1 - v / max) * (H - top - bot) + 4;
@@ -67,14 +69,14 @@ function faturasChart() {
   const W = M.length * (w + gap);
   const pts = M.map((m, i) => [xs[i], y(m[1])]);
   return `<div style="overflow-x:auto;margin:0 -16px;padding:0 16px;scrollbar-width:none"><svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="Projeção de faturas por mês">
-    ${M.map((m, i) => `<rect x="${i * (w + gap)}" y="0" width="${w}" height="${H}" rx="10" fill="${i === 1 ? '#bfe0fb' : '#f1f1f3'}" ${i === 1 ? 'stroke="#43a5ee"' : ''}/>
-      <text x="${xs[i]}" y="26" text-anchor="middle" font-size="14" font-weight="${i === 1 ? 700 : 400}" fill="${i === 1 ? '#171717' : '#404040'}">${m[0]}</text>
+    ${M.map((m, i) => `<rect x="${i * (w + gap)}" y="0" width="${w}" height="${H}" rx="10" fill="${i === hi ? '#bfe0fb' : '#f1f1f3'}" ${i === hi ? 'stroke="#43a5ee"' : ''}/>
+      <text x="${xs[i]}" y="26" text-anchor="middle" font-size="14" font-weight="${i === hi ? 700 : 400}" fill="${i === hi ? '#171717' : '#404040'}">${m[0]}</text>
       <text x="${xs[i]}" y="${H - 14}" text-anchor="middle" font-size="12" fill="#404040" class="money">R$ ${m[1].toLocaleString('pt-BR')}</text>`).join('')}
-    <path d="M0 ${pts[0][1] + 6} L${pts[0][0]} ${pts[0][1]} L${pts[1][0]} ${pts[1][1]} L${pts[1][0]} ${H - bot + 8} L0 ${H - bot + 8}Z" fill="#348352" opacity=".15"/>
-    <path d="M${pts[1][0]} ${pts[1][1]} ${pts.slice(2).map(p => `L${p[0]} ${p[1]}`).join(' ')} L${W} ${pts[4][1] + 4} L${W} ${H - bot + 8} L${pts[1][0]} ${H - bot + 8}Z" fill="#5b5fc7" opacity=".14"/>
-    <polyline points="0,${pts[0][1] + 6} ${pts[0][0]},${pts[0][1]} ${pts[1][0]},${pts[1][1]}" fill="none" stroke="#348352" stroke-width="2"/>
-    <polyline points="${pts.slice(1).map(p => p.join(',')).join(' ')} ${W},${pts[4][1] + 4}" fill="none" stroke="#1a3151" stroke-width="1.5" stroke-dasharray="4 4"/>
-    ${pts.map((p, i) => `<circle cx="${p[0]}" cy="${p[1]}" r="${i === 1 ? 5 : 4}" fill="${i === 0 ? '#348352' : i === 1 ? '#1a3151' : '#fff'}" stroke="${i === 0 ? '#348352' : '#1a3151'}" stroke-width="2"/>`).join('')}
+    <path d="M0 ${pts[0][1] + 6} L${pts.slice(0, hi + 1).map(p => `${p[0]} ${p[1]}`).join(' L')} L${pts[hi][0]} ${H - bot + 8} L0 ${H - bot + 8}Z" fill="#348352" opacity=".15"/>
+    <path d="M${pts[hi][0]} ${pts[hi][1]} ${pts.slice(hi + 1).map(p => `L${p[0]} ${p[1]}`).join(' ')} L${W} ${pts[pts.length - 1][1] + 4} L${W} ${H - bot + 8} L${pts[hi][0]} ${H - bot + 8}Z" fill="#5b5fc7" opacity=".14"/>
+    <polyline points="0,${pts[0][1] + 6} ${pts.slice(0, hi + 1).map(p => p.join(',')).join(' ')}" fill="none" stroke="#348352" stroke-width="2"/>
+    <polyline points="${pts.slice(hi).map(p => p.join(',')).join(' ')} ${W},${pts[pts.length - 1][1] + 4}" fill="none" stroke="#1a3151" stroke-width="1.5" stroke-dasharray="4 4"/>
+    ${pts.map((p, i) => `<circle cx="${p[0]}" cy="${p[1]}" r="${i === hi ? 5 : 4}" fill="${i < hi ? '#348352' : i === hi ? '#1a3151' : '#fff'}" stroke="${i < hi ? '#348352' : '#1a3151'}" stroke-width="2"/>`).join('')}
   </svg></div>`;
 }
 const RADAR_CATS = [['Cartões', 'credit-card', 20], ['Delivery', 'bike', 45], ['Mercado', 'shopping-cart', 75], ['Transporte', 'car', 100]];
