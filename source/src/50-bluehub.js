@@ -256,10 +256,11 @@ screen('bhTrilhas', {
   render: () => `${statusBar()}
   <div class="row" style="flex:none;padding:8px 16px"><button type="button" data-back aria-label="Voltar" style="color:var(--bh-ink)">${ic('chevron-left', 24)}</button></div>
   <div class="scroll" style="background:#fff">
-    <div class="col" style="gap:8px;padding:8px 24px 20px">
+    <div class="col" style="gap:16px;padding:8px 24px 16px">
       <p style="font-size:24px;line-height:32px;font-weight:700;color:var(--bh-ink)">Pra tudo ficar Blue</p>
       <p style="font-size:14px;line-height:22px;color:var(--bh-muted)">Trilhas de conteúdo prático para tratar dos temas que mais impactam sua vida financeira</p></div>
-    <div class="col" style="gap:16px;padding:0 24px 32px">${TRILHAS.map(([t], k) => `<button type="button" data-act="aula" data-n="${t}" style="display:block;width:100%"><img src="assets/bht-${k}.webp" alt="${t}" style="width:100%;border-radius:16px;display:block"></button>`).join('')}</div>
+    ${TRILHAS.map(([t], k) => `<div style="padding:24px 24px 16px"><button type="button" data-act="aula" data-n="${t}" style="display:block;width:100%"><img src="assets/bht-${k}.webp" alt="${t}" style="width:100%;border-radius:16px;display:block"></button></div><div style="height:1px;background:var(--bh-line)"></div>`).join('')}
+    <div style="height:24px"></div>
   </div>${homeInd()}`,
   acts: { aula: (b) => toast(`${b.dataset.n} abre fora do protótipo`, 'success', 'circle-play') },
 });
@@ -365,19 +366,52 @@ screen('bhBenef', {
     apos: () => SCREENS.bhHome.acts.apos(),
   },
 });
+/* 03.03 Bluehub · Carteirinha (18004:32727) */
+const CART_TEL = [
+  ['Seguros de Vida e Auxílio Funeral', 'SulAmérica · Central de Serviços',
+    [['link', 'sulamericavida.docway.com.br', ''], ['link', 'Espaço do cliente - acessar minha apólice', ''],
+     ['tel', '4004 4935', 'Seg-sex, 8h às 18h30'], ['tel', '0800 722 0504', 'SAC 24h, feriados e finais de semana'],
+     ['tel', '0800 702 2242', 'SAC 24h, feriados e finais de semana'], ['tel', '0800 725 3374', 'Ouvidoria']],
+    'Orientações iniciais e direcionamento sobre o acionamento do seguro. Não substitui o SAC 24h para urgências.'],
+  ['Médico na Tela Familiar', 'SulAmérica · Central de Assistências',
+    [['link', 'sulamericavida.docway.com.br', ''], ['tel', '4004 4935', 'Capitais e regiões metropolitanas'], ['tel', '0800 726 4935', 'Demais localidades']], ''],
+  ['Assistência Residencial', 'Assistência 24h',
+    [['tel', '4090 1073', 'Capitais e regiões metropolitanas'], ['tel', '0800 778 1073', 'Demais localidades'], ['tel', '+55 11 4126 9317', 'Exterior']],
+    'Canal exclusivo para pessoas com deficiência auditiva e de fala.'],
+  ['Consultas e exames presenciais', 'Central de Serviços',
+    [['link', 'temsaude.com/maywd', ''], ['tel', '4000 1681', 'Capitais e regiões metropolitanas'], ['tel', '0800 836 8836', 'Demais localidades · seg-sex, 9h às 18h (exceto feriados)']], ''],
+];
 screen('bhCart', {
   cls: 'bh-light',
-  render: () => `${statusBar()}<div class="row jc" style="padding:8px 20px">${BH_LOGO_D}</div><div class="scroll"><div class="col g5" style="padding:16px 20px 20px">
-    <p class="h1" style="color:var(--bh-ink)">Carteirinha</p>
-    <div style="border-radius:20px;padding:20px;background:linear-gradient(135deg,#3279ff,#0b2a8a);color:#fff;display:flex;flex-direction:column;gap:18px;box-shadow:0 10px 24px rgba(50,121,255,.3)">
-      <div class="row jb"><img src="assets/bluehub-logo-white.png" alt="bluehub" width="96" height="26"><span class="badge" style="background:rgba(255,255,255,.2);color:#fff">Ultrablue</span></div>
-      <div><p class="cap" style="opacity:.8">Titular</p><p class="h3">${esc(S.user.nome || 'Marcelo Pimentel')}</p></div>
-      <div class="row g6"><div><p class="cap" style="opacity:.8">CPF</p><p class="b14 semi num">${esc(S.user.cpf || '123.456.789-00')}</p></div><div><p class="cap" style="opacity:.8">Empresa</p><p class="b14 semi">CESAR</p></div></div></div>
-    ${btn('Salvar carteirinha', { act: 'bhSoon', attrs: 'data-n="Salvar carteirinha" style="background:var(--bh-blue)"' })}
-    <p class="b14" style="color:var(--bh-muted)">Para acionar os benefícios por telefone, utilize os contatos abaixo:</p>
-    <p class="h4" style="color:var(--bh-ink)">Telefones úteis</p>
-    ${[['Seguros de Vida e Auxílio Funeral', '4004 4935', 'Seg–sex, 8h às 18h30'], ['Médico na Tela Familiar', '4004 4935', 'Capitais e regiões metropolitanas'], ['Assistência Residencial', '4090 1073', 'Capitais e regiões metropolitanas'], ['Rede de Saúde Familiar', '4000 1681', 'Capitais e regiões metropolitanas']].map(([t, n, d]) => `<div class="bh-card"><p class="b16 semi" style="color:var(--bh-ink)">${t}</p><p class="row g2 b16 semi num" style="color:var(--bh-blue);user-select:all">${ic('phone', 16)} ${n}</p><p class="cap" style="color:var(--bh-muted)">${d}</p></div>`).join('')}
-  </div></div>${bhNav('bhCart')}`,
+  render: (p) => { const open = p.open ?? 0;
+    return `${statusBar()}<div class="row jc" style="flex:none;padding:8px 20px">${BH_LOGO_D}</div>
+    <div class="scroll"><div class="col" style="gap:20px;padding:8px 24px 20px">
+      <p style="font-size:24px;line-height:32px;font-weight:700;color:var(--bh-ink)">Carteirinha</p>
+      <div style="position:relative;overflow:hidden;border-radius:20px;padding:20px;background:linear-gradient(120deg,#1b3bd6,#0a1b6b);color:#fff;display:flex;flex-direction:column;gap:14px">
+        <img src="assets/bh-deco-rings.svg" alt="" style="position:absolute;right:-30px;top:-20px;width:170px;opacity:.5;pointer-events:none">
+        <img src="assets/bluehub-logo-white.png" alt="bluehub" width="88" height="24" style="position:relative">
+        <p class="num" style="font-size:22px;line-height:30px;font-weight:700;position:relative">${esc(S.user.cpf || '123.456.789-00')}</p>
+        <div class="col" style="gap:10px;position:relative">
+          <div><p style="font-size:14px;line-height:22px;font-weight:600">${esc(S.user.nome || 'Marcelo Andrade de Souza')}</p><p style="font-size:11px;line-height:16px;opacity:.75">Nome do beneficiário</p></div>
+          <div><p style="font-size:14px;line-height:22px;font-weight:600">UltraBlue</p><p style="font-size:11px;line-height:16px;opacity:.75">Tipo do plano</p></div>
+          <div class="row g3" style="align-items:center"><div class="f1"><p style="font-size:14px;line-height:22px;font-weight:600">CESAR</p><p style="font-size:11px;line-height:16px;opacity:.75">Contratante</p></div>
+            <span style="background:#2fd0e0;color:#03204a;border-radius:9999px;padding:2px 10px;font-size:10px;font-weight:700;letter-spacing:.04em">TITULAR</span>
+            <span style="font-size:12px;opacity:.9">Desde 08/2026</span></div></div></div>
+      <button type="button" data-act="bhSoon" data-n="Salvar carteirinha" style="height:48px;border-radius:9999px;background:transparent;color:var(--bh-blue);font-size:14px;font-weight:600;box-shadow:inset 0 0 0 1.5px var(--bh-blue)">Salvar carteirinha</button>
+      <p style="font-size:14px;line-height:22px;color:var(--bh-muted)">Para acionar os benefícios por telefone, utilize os contatos abaixo:</p>
+      <p style="font-size:16px;line-height:24px;font-weight:700;color:var(--bh-ink)">Telefones úteis</p>
+      ${CART_TEL.map(([t, sub, rows, zap], k) => `<div style="background:#fff;border:1px solid var(--bh-line);border-radius:16px;overflow:hidden">
+        <button type="button" data-act="cacc" data-k="${k}" aria-expanded="${open === k}" class="row g3" style="width:100%;padding:16px;text-align:left"><span class="col g1 f1"><span style="font-size:14px;line-height:22px;font-weight:600;color:var(--bh-ink)">${t}</span><span style="font-size:12px;line-height:18px;color:var(--bh-muted)">${sub}</span></span><span style="color:var(--bh-muted);display:flex">${ic(open === k ? 'chevron-up' : 'chevron-down', 18)}</span></button>
+        ${open === k ? `<div class="col" style="padding:0 16px 16px;gap:12px">
+          ${rows.map(([tipo, v, d]) => `<div class="row g3 ais"><span class="bh-ic" style="width:32px;height:32px;flex:none">${ic(tipo === 'link' ? 'external-link' : 'phone', 15)}</span><span class="col g1 f1">${tipo === 'link'
+            ? `<span style="font-size:13px;line-height:20px;color:var(--bh-blue);text-decoration:underline;overflow-wrap:anywhere">${v}</span>`
+            : `<span class="num" style="font-size:14px;line-height:22px;font-weight:600;color:var(--bh-ink);user-select:all">${v}</span>${d ? `<span style="font-size:12px;line-height:18px;color:var(--bh-muted)">${d}</span>` : ''}`}</span></div>`).join('')}
+          ${zap ? `<div class="col g2" style="background:#eefaf1;border:1px solid #cdecd6;border-radius:12px;padding:12px">
+            <p style="font-size:12px;line-height:18px;color:#1f5c38">${zap}</p>
+            <button type="button" class="row g2 jc" data-act="bhSoon" data-n="WhatsApp" style="height:40px;border-radius:9999px;background:#1f7a46;color:#fff;font-size:13px;font-weight:600">${ic('message-circle', 16)} Falar no WhatsApp</button></div>` : ''}
+        </div>` : ''}</div>`).join('')}
+    </div></div>${bhNav('bhCart')}`; },
+  acts: { cacc: (b) => { const p = stack[stack.length - 1].p; const k = +b.dataset.k; p.open = p.open === k ? -1 : k; rerender(); } },
 });
 screen('bhPerfil', {
   cls: 'bh-light',
