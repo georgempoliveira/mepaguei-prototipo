@@ -109,8 +109,8 @@ GLOBAL_ACTS.cfgAfter = (b) => { closeOverlays(true); startFeature(b.dataset.k); 
 screen('poupIntro', {
   render: () => `${statusBar()}<div class="ah"><button type="button" class="bkb" data-act="tabHome" aria-label="Voltar">${ic('chevron-left', 24)}</button></div>
   <div class="col g4 px5" style="flex:1;padding-bottom:20px">
-    <div style="position:relative;margin-bottom:14px"><div style="position:absolute;left:40px;right:40px;bottom:-14px;height:30px;border-radius:0 0 28px 28px;background:#d6ebfc"></div><div style="position:absolute;left:12px;right:12px;bottom:-6px;height:30px;border-radius:0 0 28px 28px;background:#c6e3fb"></div>
-      <img src="assets/poup-intro.webp" alt="Mulher sorrindo olhando o celular" style="position:relative;width:100%;height:348px;object-fit:cover;border-radius:28px"></div>
+    <div style="position:relative;margin-bottom:14px;flex:1;min-height:150px;display:flex"><div style="position:absolute;left:40px;right:40px;bottom:-14px;height:30px;border-radius:0 0 28px 28px;background:#d6ebfc"></div><div style="position:absolute;left:12px;right:12px;bottom:-6px;height:30px;border-radius:0 0 28px 28px;background:#c6e3fb"></div>
+      <img src="assets/poup-intro.webp" alt="Mulher sorrindo olhando o celular" style="position:relative;width:100%;height:100%;min-height:0;object-fit:cover;border-radius:28px"></div>
     <p class="h1 c-darker" style="margin-top:auto">Poupe de forma automática, sem esforço<span class="dot-blue">.</span></p>
     <p class="b14 c-dark">Aqui você tem total controle pra transferir e retirar seus valores quando precisar.</p>
     ${btn('Explorar', { act: 'go' })}</div>${homeInd()}`,

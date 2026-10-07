@@ -13,7 +13,7 @@ reset('bhSplash', {}, 'none');
 if (location.hash === '#mapa') $('#mod-sheet').hidden = innerWidth > 900;
 
 /* botão de tela cheia — só na versão de teste, no mobile */
-if (window.PROTO_PUB && matchMedia('(max-width:480px)').matches) {
+if (window.PROTO_PUB && matchMedia('(max-width:600px)').matches) {
   const root = document.documentElement;
   const reqFS = root.requestFullscreen || root.webkitRequestFullscreen;
   const exitFS = document.exitFullscreen || document.webkitExitFullscreen;
@@ -22,6 +22,32 @@ if (window.PROTO_PUB && matchMedia('(max-width:480px)').matches) {
   b.id = 'fs-btn'; b.type = 'button'; b.setAttribute('aria-label', 'Tela cheia');
   b.innerHTML = ic('maximize', 16) + '<span>Tela cheia</span>';
   document.body.appendChild(b);
+  /* Arrastável: o botão não pode tapar algo que o participante precise tocar.
+     Move < 6px conta como toque; a partir daí vira arrasto e o clique é cancelado. */
+  (() => {
+    let dx = 0, dy = 0, sx = 0, sy = 0, arrastando = false, moveu = false;
+    const poe = (x, y) => {
+      const m = 8, w = b.offsetWidth, h = b.offsetHeight;
+      b.style.left = Math.max(m, Math.min(innerWidth - w - m, x)) + 'px';
+      b.style.top = Math.max(m, Math.min(innerHeight - h - m, y)) + 'px';
+      b.style.right = 'auto'; b.style.bottom = 'auto';
+    };
+    b.addEventListener('pointerdown', e => {
+      const r = b.getBoundingClientRect();
+      dx = e.clientX - r.left; dy = e.clientY - r.top; sx = e.clientX; sy = e.clientY;
+      arrastando = true; moveu = false;
+      try { b.setPointerCapture(e.pointerId); } catch (err) {}
+    });
+    b.addEventListener('pointermove', e => {
+      if (!arrastando) return;
+      if (!moveu && Math.hypot(e.clientX - sx, e.clientY - sy) > 6) moveu = true;
+      if (moveu) { e.preventDefault(); b.classList.add('drag'); poe(e.clientX - dx, e.clientY - dy); }
+    });
+    const solta = e => { arrastando = false; b.classList.remove('drag'); try { b.releasePointerCapture(e.pointerId); } catch (err) {} };
+    b.addEventListener('pointerup', solta); b.addEventListener('pointercancel', solta);
+    b.addEventListener('click', e => { if (moveu) { e.preventDefault(); e.stopImmediatePropagation(); moveu = false; } }, true);
+    addEventListener('resize', () => { if (b.style.left) poe(parseFloat(b.style.left), parseFloat(b.style.top)); });
+  })();
   b.addEventListener('click', () => {
     if (!reqFS) { toast('No iPhone: toque em Compartilhar e em "Adicionar à Tela de Início" para abrir em tela cheia', 'success', 'info'); return; }
     try { (inFS() ? exitFS.call(document) : reqFS.call(root)); } catch (e) {}

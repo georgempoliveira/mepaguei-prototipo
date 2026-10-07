@@ -387,7 +387,8 @@ body.cmp .sb{height:44px!important;visibility:visible!important}
 body.cmp .hi{display:block!important}
 
 /* botão de tela cheia flutuante (FAB) — versão de teste, mobile */
-#fs-btn{position:fixed;z-index:200;right:16px;bottom:calc(env(safe-area-inset-bottom,0px) + 92px);width:44px;height:44px;border-radius:9999px;display:flex;align-items:center;justify-content:center;background:rgba(3,12,35,.62);color:#fff;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);box-shadow:0 4px 14px rgba(0,0,0,.32)}
+#fs-btn{position:fixed;z-index:200;touch-action:none;cursor:grab;right:16px;bottom:calc(env(safe-area-inset-bottom,0px) + 92px);width:44px;height:44px;border-radius:9999px;display:flex;align-items:center;justify-content:center;background:rgba(3,12,35,.62);color:#fff;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);box-shadow:0 4px 14px rgba(0,0,0,.32)}
+#fs-btn.drag{cursor:grabbing;transform:scale(1.08);box-shadow:0 8px 22px rgba(0,0,0,.42)}
 #fs-btn svg{width:20px;height:20px}
 #fs-btn span{display:none}
 #fs-btn:active{transform:scale(.94)}

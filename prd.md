@@ -147,7 +147,13 @@ faturas, saldo seguro) — use sempre que precisar de uma tela com dados.
    `objWizard(1,false)` **zera** `S.tmpObj`.
 5. **A apresentação da Clareza e os onboardings só aparecem uma vez** por sessão.
 6. **Excluir conta (BlueHub)** abre alerta e, ao confirmar, zera o estado e volta para o início.
-7. **CEP busca o endereço de verdade** (ViaCEP). Estados: `S.flags.cepSt` = `load` (buscando) ·
+7. **Listas "Consulte suas entradas / seus gastos" são SOMENTE LEITURA** — servem de base para
+   a pessoa lembrar valores; não existe botão "Usar"/"Adicionar". O cadastro é sempre manual.
+8. **Cada categoria de gasto tem cor e ícone próprios** (`CAT_COR` em `40-saldoseguro.js`).
+9. **Todo insight da MIA tem "Entendi"** e recolhe no avatar — use o helper `miaBlock(flag,…)`,
+   nunca `miaBox` sem `act`.
+10. **Botão flutuante de tela cheia é arrastável** (só no build pub, em telas ≤600px).
+11. **CEP busca o endereço de verdade** (ViaCEP). Estados: `S.flags.cepSt` = `load` (buscando) ·
    `ok` (preencheu) · `err` (não encontrado — campos liberados para digitar à mão). O contador
    `cepSeq` descarta resposta atrasada de um CEP já reescrito.
 
