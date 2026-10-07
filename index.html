@@ -2599,7 +2599,7 @@ const SS_OB = ({ fechar, titulo, sub, corpo, dot, foot }) => `${statusBar()}
     <p class="h1 c-darker">${titulo}</p>
     <p class="b16 c-dark">${sub}</p>
     ${corpo}
-    <div class="row jc g1" style="padding-top:16px">${[0, 1].map(k => `<i style="display:block;height:4px;border-radius:2px;width:${k === dot ? 14 : 6}px;background:${k === dot ? 'var(--primary)' : 'var(--border-light)'}"></i>`).join('')}</div>
+    <div class="row jc g1 mt-auto" style="padding-top:16px">${[0, 1].map(k => `<i style="display:block;height:4px;border-radius:2px;width:${k === dot ? 14 : 6}px;background:${k === dot ? 'var(--primary)' : 'var(--border-light)'}"></i>`).join('')}</div>
     <div style="padding-top:8px">${foot}</div></div>${homeInd()}`;
 const obItem = (i, t, d) => `<div class="row g3 ais"><span class="ico-c sm">${ic(i, 16)}</span><div class="col g1"><p class="b16 semi c-darker">${t}</p><p class="b14 c-dark">${d}</p></div></div>`;
 
