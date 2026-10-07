@@ -105,7 +105,7 @@ screen('bhSenha', {
   cls: 'bh',
   render: () => bhScreen({ title: 'Criar senha', sub: 'Crie uma senha forte seguindo as instruções', dots: 3, pt: 12.5, pb: 20.5, body: `<div class="col g6 bh-pw">${pwBlock()}</div>`, foot: bhBtn('Finalizar cadastro', { next: true, act: 'next' }) }),
   mount: paintPw, onInput: (i, el) => paintPw(el), valid: pwValid,
-  acts: { next: () => go('bhProc', { msg: 'Analisando suas informações...', next: 'bhPlano' }) },
+  acts: { next: () => { novaConta(S.user.cpf); go('bhProc', { msg: 'Analisando suas informações...', next: 'bhPlano' }); } },
 });
 
 /* 01.05 Processamento (15413:36733) e 01.10 Pré-home (15413:36621): logo + texto sobre os arcos, sem spinner */
@@ -151,7 +151,10 @@ screen('bhLogin', {
       <div class="col g4" style="align-items:center"><p class="b16" style="color:#121212">Não possui uma conta? <button type="button" class="bh-lnk2" data-act="cad">Cadastre-se</button></p><button type="button" class="bh-lnk2 b16" data-act="esqueci">Esqueci a senha</button></div>` }),
   valid: () => (S.flags.lcpf || '').length === 14 && !!S.flags.lpw,
   acts: {
-    entrar: () => { if (!S.user.nome) S.user.nome = 'Marcelo Pimentel'; S.user.cpf = S.flags.lcpf; go('bhProc', { msg: 'Preparando os seus benefícios...', next: 'bhHome', root: true }); },
+    entrar: () => { const cpf = S.flags.lcpf; const volta = abreConta(cpf);
+      if (!volta) { S.user.cpf = cpf; }
+      if (!S.user.nome) S.user.nome = 'Marcelo Pimentel';
+      go('bhProc', { msg: volta ? 'Bem-vindo de volta! Carregando suas informações...' : 'Preparando os seus benefícios...', next: 'bhHome', root: true }); },
     cad: () => replace('bhCad', {}, 'fade'),
     esqueci: () => go('bhEsq'),
   },
@@ -436,17 +439,18 @@ screen('bhPerfil', {
         <button type="button" data-act="sair" style="height:44px;border-radius:9999px;background:var(--bh-line);color:var(--bh-ink);font-size:14px;line-height:22px;font-weight:600">Sair da conta</button>
         <button type="button" data-act="delConta" style="height:44px;border-radius:9999px;background:transparent;color:var(--bh-blue);font-size:14px;line-height:22px;font-weight:600">Excluir conta</button></div>
     </div></div>${bhNav('bhPerfil')}`; },
-  mount: (el) => { const i = $('#bhfoto', el); if (i) i.addEventListener('change', e => { const f = e.target.files[0]; if (f) { S.user.bhFoto = URL.createObjectURL(f); rerender(); toast('Foto atualizada'); } }); },
+  /* dataURL (e não objectURL): assim a foto sobrevive a sair e entrar de novo */
+  mount: (el) => { const i = $('#bhfoto', el); if (i) i.addEventListener('change', e => { const f = e.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = () => { S.user.bhFoto = r.result; rerender(); toast('Foto atualizada'); }; r.readAsDataURL(f); }); },
   acts: {
     acc: (b) => { const p = stack[stack.length - 1].p; const k = +b.dataset.k; p.open = p.open === k ? -1 : k; rerender(); },
-    sair: () => reset('bhWelcome'),
+    sair: () => { fechaConta(false); reset('bhWelcome'); },
     vidaMais: () => go('bhVida'),
     delConta: () => openDialog(`<div class="col g4" style="text-align:left">
       <span class="ico-c sq" style="background:var(--bh-blue-bg);color:var(--bh-blue)">${ic('trash-2', 22)}</span>
       <p class="h4" style="color:var(--bh-ink)">Excluir sua conta?</p>
       <p class="b14" style="color:var(--bh-muted)">Ao confirmar, sua conta e todos os seus dados serão excluídos definitivamente. Essa ação não pode ser desfeita e você perderá o acesso aos benefícios do seu plano.</p>
       <div class="col g3">${btn('Excluir conta', { act: 'delOk', attrs: 'style="background:var(--bh-blue)"' })}${btn('Cancelar', { v: 'o', act: 'closeov', attrs: 'style="color:var(--bh-blue);box-shadow:inset 0 0 0 1px var(--bh-blue)"' })}</div></div>`),
-    delOk: () => { closeOverlays(true); S = freshState(); reset('bhWelcome', {}, 'fade'); later(() => toast('Conta excluída', 'success', 'circle-check'), 400); },
+    delOk: () => { closeOverlays(true); fechaConta(true); reset('bhWelcome', {}, 'fade'); later(() => toast('Conta excluída', 'success', 'circle-check'), 400); },
   },
 });
 screen('bhNotif', {
@@ -460,7 +464,7 @@ screen('bhNotif', {
   </div>${homeInd()}`,
 });
 
-flowEntry('BlueHub', 'Cadastro no BlueHub (início do teste)', () => { S = freshState(); reset('bhSplash'); });
+flowEntry('BlueHub', 'Cadastro no BlueHub (início do teste)', () => { fechaConta(false); reset('bhSplash'); });
 flowEntry('BlueHub', 'Home do BlueHub', () => { if (!S.user.nome) Object.assign(S.user, { nome: 'Marcelo Pimentel', email: 'marcelo.pimentel@gmail.com', cpf: '123.456.789-00' }); reset('bhHome'); });
 flowEntry('BlueHub', 'Trilhas (Pra tudo ficar Blue)', () => { if (!S.user.nome) S.user.nome = 'Marcelo Pimentel'; reset('bhHome'); go('bhTrilhas'); });
 flowEntry('BlueHub', 'Plano Vida+', () => { if (!S.user.nome) S.user.nome = 'Marcelo Pimentel'; reset('bhHome'); go('bhVida'); });

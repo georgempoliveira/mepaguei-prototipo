@@ -17,6 +17,45 @@ function freshState() {
   };
 }
 let S = freshState();
+
+/* ---------- sessão do participante (sessionStorage, por CPF) ----------
+   O protótipo continua não gravando nada no aparelho: sessionStorage vive só
+   enquanto a aba está aberta e é apagado pelo navegador quando ela fecha.
+   Serve para o participante sair do Bluehub, entrar de novo com CPF + senha e
+   reencontrar tudo como deixou. */
+const KCONTA = 'mp.conta.';
+const soDig = s => String(s || '').replace(/\D/g, '');
+const sess = (fn, alt) => { try { return fn(sessionStorage); } catch (e) { return alt; } };
+let contaAtual = '';                     /* CPF (só dígitos) da sessão aberta */
+/* a maior parte de S.flags é rascunho de formulário/sheet aberta e não deve voltar.
+   Só estas marcam progresso do participante e por isso são guardadas. */
+const FLAGS_PERSIST = ['hide', 'poupIntroSeen', 'radarIntroSeen', 'fatVisto', 'agendaSeen',
+  'clarezaIntro', 'ssEntendi', 'mpAtivo', 'viaBH', 'termsOk', 'ofOk', 'startChoice',
+  'sseg', 'miaPess', 'miaS', 'miaR', 'miaA'];
+function salvaConta() {
+  if (!contaAtual) return;
+  const { flags, ...resto } = S;
+  resto.flags = {};
+  FLAGS_PERSIST.forEach(k => { if (flags[k] !== undefined) resto.flags[k] = flags[k]; });
+  sess(ss => ss.setItem(KCONTA + contaAtual, JSON.stringify(resto)));
+}
+/* novaConta: cadastro recém-feito — passa a gravar neste CPF sem restaurar nada */
+function novaConta(cpf) { const k = soDig(cpf); if (k.length === 11) { contaAtual = k; salvaConta(); } }
+function abreConta(cpf) {
+  const k = soDig(cpf); if (k.length !== 11) return false;
+  const raw = sess(ss => ss.getItem(KCONTA + k), null);
+  contaAtual = k;
+  if (!raw) return false;
+  /* o JSON transforma Date em texto ISO (ex.: S.ss.inicio); aqui volta a ser Date */
+  const ISO = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
+  try { const d = JSON.parse(raw, (k, v) => (typeof v === 'string' && ISO.test(v) ? new Date(v) : v));
+    S = Object.assign(freshState(), d); S.flags = Object.assign({}, d.flags); return true; } catch (e) { return false; }
+}
+function fechaConta(apaga) {
+  if (apaga && contaAtual) sess(ss => ss.removeItem(KCONTA + contaAtual));
+  else salvaConta();
+  contaAtual = ''; S = freshState();
+}
 const iniciais = (n) => { const p = String(n || 'Marcelo Pimentel').trim().split(/\s+/).filter(Boolean); return ((p[0] || '')[0] + (p.length > 1 ? (p[p.length - 1] || '')[0] : '')).toUpperCase(); };
 const firstName = () => (S.user.nome.trim().split(/\s+/)[0] || 'Marcelo');
 /* foto única do usuário: a que ele envia no BlueHub vale também no Me Paguei */
@@ -162,6 +201,7 @@ function render(dir) {
   }
   cur = el;
   pintaFundo(el);
+  salvaConta();
   clearTimers();
   closeOverlays(true);
   if (top.scroll) { const sc = el.querySelector('.scroll, .sheet-in'); if (sc) sc.scrollTop = top.scroll; }
@@ -300,7 +340,7 @@ function buildMod() {
 document.addEventListener('click', e => {
   const m = e.target.closest('[data-mod]');
   if (m) { const [g, i] = m.dataset.mod.split('.').map(Number); $('#mod-sheet').hidden = true; closeOverlays(true); FLOWS[g].items[i].fn(); return; }
-  if (e.target.closest('[data-mod-reset]')) { $('#mod-sheet').hidden = true; S = freshState(); closeOverlays(true); reset('bhSplash'); return; }
+  if (e.target.closest('[data-mod-reset]')) { $('#mod-sheet').hidden = true; fechaConta(false); closeOverlays(true); reset('bhSplash'); return; }
   if (e.target.closest('[data-mod-close]') || e.target.id === 'mod-sheet') { $('#mod-sheet').hidden = true; }
 }, true);
 /* três toques rápidos na barra de status abrem o painel (útil no celular) */

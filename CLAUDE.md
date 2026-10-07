@@ -11,7 +11,8 @@
 ## Resumo em 10 linhas
 App clicável do **Me Paguei** (+ app parceiro **BlueHub**) em HTML/CSS/JS puro, sem backend,
 usado em **teste de usabilidade moderado**. Frame 375×812, fonte Inter local.
-**Nada é salvo** (estado só em memória `S`) e a interface é **sempre light**.
+**Nada fica gravado no aparelho** (estado em `S` + `sessionStorage` por CPF, que o navegador
+apaga ao fechar a aba) e a interface é **sempre light**.
 Fonte da verdade visual: Figma `yU7YFh3p9777jIi0c23vGX`, página "Done" — **somente leitura**.
 
 ```bash

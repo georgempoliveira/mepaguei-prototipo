@@ -21,7 +21,7 @@ Este repositório é um **protótipo navegável em HTML/CSS/JS puro** (sem backe
 ### Regras de produto inegociáveis do protótipo
 | Regra | Motivo |
 |---|---|
-| **Nada é persistido.** Estado só em memória (`S`); sem localStorage/cookies | Requisito de privacidade do teste; recarregar a página zera tudo |
+| **Nada fica gravado no aparelho.** Estado em memória (`S`) + `sessionStorage` por CPF, apagado pelo navegador ao fechar a aba; sem localStorage/cookies | Requisito de privacidade do teste. O participante pode sair do Bluehub e entrar de novo (CPF + senha) que reencontra tudo como deixou; fechou a aba, acabou |
 | **Sempre em modo light**, mesmo se o aparelho estiver em dark | Fidelidade visual no teste (ver `design.md` §9) |
 | Frame **375×812** | Padrão do Figma |
 | Textos na **voz da MIA** | Ver §6 |
