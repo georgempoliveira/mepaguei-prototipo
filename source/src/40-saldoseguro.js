@@ -522,7 +522,7 @@ screen('faturas', { render: () => '', mount: () => { if (primeiraVezClareza()) {
 const seedDemo1 = seedDemo;
 seedDemo = function () {
   seedDemo1();
-  if (!S.user.renda) S.user.renda = 'R$ 10.000';
+  if (!S.user.renda) S.user.renda = 'R$ 10.000,00';
   if (!S.user.pessoas.length) S.user.pessoas = [{ nome: 'Marcela Pimentel', nasc: ddmm(addDays(hoje(), 9)) + '/1995', par: 'Cônjuge' }, { nome: 'Caio Pimentel', nasc: ddmm(addDays(hoje(), 21)) + '/2016', par: 'Filho(a)' }];
   S.ss = null; const s = ssState();
   s.renda = [{ nome: 'Salário', rec: true, tipo: 'util', dia: 5, valor: 7000 }];
