@@ -101,9 +101,8 @@ function homeBody() {
       <div class="row g3"><span style="width:44px;height:44px;border-radius:50%;background:var(--bg-lighter);color:#d3d3d3;display:flex;align-items:center;justify-content:center;flex:none">${ic('plus', 20)}</span><p class="b14 c-dark">O que você quer realizar? viagem, casa própria, novo veículo…</p></div>
       ${btn('Criar objetivo financeiro ' + ic('chevron-right', 16), { v: 'o', cls: 'btn-xs', act: 'step', attrs: 'data-to="objetivo"' })}</div>`);
   }
-  if (S.flags.fatVisto) parts.push(`<div class="hc"><div class="col g1"><p class="b16 semi c-darker">Projeção de faturas</p><p class="cap c-base">Acompanhe as faturas das contas conectadas e antecipe o impacto delas no seu saldo.</p></div>
-      ${btn('Ver projeção de faturas ' + ic('chevron-right', 16), { v: 'o', cls: 'btn-xs', act: 'step', attrs: 'data-to="faturas"' })}</div>`);
-  else if (S.faturas) parts.push(`<div class="hc"><button type="button" class="hct" data-act="step" data-to="faturas"><p>Projeção de faturas</p>${ic('chevron-right', 18)}</button><p class="cap c-base" style="margin-top:-8px">Faturas das contas conectadas</p>${faturasChart()}</div>`);
+  /* depois de visitar a Projeção de Faturas, o card vira a régua de meses (17191:36505) */
+  if (S.flags.fatVisto || S.faturas) parts.push(`<div class="hc"><button type="button" class="hct" data-act="step" data-to="faturas"><p>Projeção de faturas</p>${ic('chevron-right', 18)}</button><p class="cap c-base" style="margin-top:-8px">Faturas das contas conectadas</p>${faturasChart()}</div>`);
   else parts.push(`<div class="hc"><div class="col g1"><p class="b16 semi c-darker">Projeção de faturas</p><p class="cap c-base">Acompanhe as faturas das contas conectadas</p></div>
       <div class="row jb" style="position:relative;padding:4px 0"><span style="position:absolute;left:6px;right:6px;top:11px;border-top:1.5px dashed #d3d3d3"></span>${['Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'].map(m => `<span class="col g1" style="align-items:center;position:relative">${ic('circle', 14, 'c-light')}<span class="cap" style="color:#d3d3d3">${m}</span></span>`).join('')}</div>
       ${btn('Conectar cartões ' + ic('chevron-right', 16), { v: 'o', cls: 'btn-xs', act: 'step', attrs: `data-to="${conn ? 'faturas' : 'of1'}"` })}</div>`);

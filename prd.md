@@ -140,7 +140,9 @@ faturas, saldo seguro) — use sempre que precisar de uma tela com dados.
 1. **Insight da MIA recolhe, não some.** Clicar em "Entendi" **encolhe** o card para o avatar
    da MIA (`miaMini`); clicar no avatar **expande de novo**. Vale para `miaP` e `miaE`.
 2. **Card de Projeção de Faturas na home** muda depois da primeira visita (`flags.fatVisto`):
-   de "Conectar cartões" para **título + texto descritivo + CTA "Ver projeção de faturas"**.
+   de "Conectar cartões" para a **régua de meses** (`faturasChart()`, frame 17191:36505) —
+   título com chevron, "Faturas das contas conectadas" e os tiles Ago/Set/Out… com o mês atual
+   destacado.
 3. **Senha**: o campo "Confirmar senha" ganha **borda vermelha + mensagem** assim que o que foi
    digitado deixa de bater com a senha (não espera terminar de digitar).
 4. **Chips de sugestão preenchem o input na hora** (objetivo). Nunca reabrir a folha para isso —

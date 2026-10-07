@@ -191,7 +191,7 @@ screen('central', {
       ${btn(ic('plus', 14) + ' Adicionar nova instituição', { v: 'o', cls: 'btn-xs auto', act: 'add', attrs: 'style="align-self:flex-start;padding:0 14px"' })}</div>`;
     if (tab === 'def') body = `<div class="col g3"><p class="b16 bold c-darker">Contas para Poupança</p><p class="b14 c-dark">${S.origem && S.destino ? 'Confira as contas Principal e Cofrinho vinculadas as funcionalidades de poupança do Me Paguei' : 'Escolha as contas principal e cofrinho para as transferências automáticas'}</p>
         ${contaCard('p')}${contaCard('d')}
-        ${S.origem && S.destino ? `<button type="button" class="row g1 cap semi c-primary" data-act="swap" style="align-self:flex-start">${ic('arrow-down-up', 14)} Inverter contas</button>` : ''}</div>
+</div>
       <div class="divider"></div>
       <div class="col g2"><div class="row jb"><p class="b16 bold c-darker">Saldo de segurança</p>${S.saldoSeg ? `<button type="button" data-act="editSeg" aria-label="Editar saldo de segurança" style="color:var(--ty-base)">${ic('ellipsis-vertical', 18)}</button>` : ''}</div><p class="b14 c-dark">Valor mínimo mantido na conta principal para proteger seu saldo</p>
         ${S.saldoSeg ? `<p class="b16 semi c-darker">${fmtBRL(S.saldoSeg)}</p>` : btn('Definir saldo', { v: 'o', cls: 'btn-xs auto', act: 'editSeg', attrs: 'style="align-self:flex-start;padding:0 14px"' })}</div>
