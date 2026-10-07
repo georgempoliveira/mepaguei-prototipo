@@ -416,6 +416,11 @@ body.cmp .hi{display:block!important}
 .mia-mini{position:relative;width:48px;height:48px;flex:none;align-self:flex-start}
 .mia-mini>img:first-child{width:48px;height:48px;border-radius:50%;object-fit:cover;display:block}
 .mia-mini .sp{position:absolute;right:-2px;top:-2px}
+
+/* indicador de etapas em dots (cadastro/perfil) */
+.step-dots{display:flex;gap:4px;align-items:center}
+.step-dots i{display:block;width:5px;height:5px;border-radius:3px;background:rgba(255,255,255,.45)}
+.step-dots i.on{width:16px;background:#fff}
 /* BlueHub · Home (Figma 03.01.01 · 15413:36895) */
 .bhh-hdr{background:#fff;flex:none}
 .bhh-hdr > div{background:var(--bh-blue);height:200px;padding:56px 24px 24px;border-radius:0 0 28px 28px;display:flex;flex-direction:column;gap:32px;color:#fff}
@@ -584,6 +589,7 @@ function freshState() {
   };
 }
 let S = freshState();
+const iniciais = (n) => { const p = String(n || 'Marcelo Pimentel').trim().split(/\s+/).filter(Boolean); return ((p[0] || '')[0] + (p.length > 1 ? (p[p.length - 1] || '')[0] : '')).toUpperCase(); };
 const firstName = () => (S.user.nome.trim().split(/\s+/)[0] || 'Marcelo');
 
 /* ---------- formatadores ---------- */
@@ -627,7 +633,7 @@ const ME_MARK = `<img class="mark" src="assets/me-mark.png" alt="Me Paguei" widt
 /* tela com cabeçalho em gradiente + folha clara (padrão de cadastro/login) */
 function gradScreen({ title, sub = '', step = '', back = true, body = '', foot = '', mark = true }) {
   return `${CURVE}${statusBar(true)}
-  <div class="bk">${back ? `<button type="button" data-back aria-label="Voltar">${ic('chevron-left', 24)}</button>` : '<span style="width:24px"></span>'}${mark ? ME_MARK : ''}<span class="step">${esc(step)}</span></div>
+  <div class="bk">${back ? `<button type="button" data-back aria-label="Voltar">${ic('chevron-left', 24)}</button>` : '<span style="width:24px"></span>'}${mark ? ME_MARK : ''}${/^\d+\/\d+$/.test(step) ? `<span class="step-dots">${Array.from({ length: +step.split('/')[1] }, (_, i) => `<i class="${i === +step.split('/')[0] - 1 ? 'on' : ''}"></i>`).join('')}</span>` : `<span class="step">${esc(step)}</span>`}</div>
   <div class="ttl"><p class="h2">${title}</p>${sub ? `<p class="b14">${sub}</p>` : ''}</div>
   <div class="sheet"><div class="sheet-in">${body}</div>${foot ? `<div class="sheet-foot">${foot}</div>` : ''}</div>
   ${homeInd()}`;
@@ -1084,31 +1090,28 @@ screen('obj', {
 
 /* ---------- perfil · etapa 1 de 4 ---------- */
 let fotoURL = '';
+/* profissões mais comuns do mercado brasileiro (item 12) */
+const PROFISSOES = ['Assistente Administrativo', 'Analista de Sistemas', 'Auxiliar de Serviços Gerais', 'Enfermeiro(a)', 'Motorista', 'Professor(a)', 'Vendedor(a)', 'Técnico(a) de Enfermagem', 'Operador(a) de Caixa', 'Autônomo(a)', 'Outra'];
 screen('perf1', {
   cls: 'grad',
   render: () => gradScreen({
-    title: 'Informações básicas', sub: 'Informe seus dados iniciais para que possamos dar início à personalização do seu perfil.', step: 'Etapa 1 de 4',
+    title: 'Informações básicas', sub: 'Informe seus dados iniciais para que possamos dar início à personalização do seu perfil.', step: '1/4',
     body: `<div class="col g2" style="align-items:center">
-      <label for="foto" style="position:relative;width:128px;height:128px;border-radius:50%;background:${fotoURL ? `url(${fotoURL}) center/cover` : 'var(--primary-lighter)'};display:flex;align-items:center;justify-content:center;color:var(--primary);cursor:pointer">
-        ${fotoURL ? '' : `<span class="h1">${esc((S.user.nome || 'M').trim()[0].toUpperCase())}</span>`}
-        <span style="position:absolute;right:2px;bottom:6px;width:32px;height:32px;border-radius:50%;background:var(--primary-darker);color:#fff;display:flex;align-items:center;justify-content:center;border:2px solid #fff">${ic('pencil', 14)}</span>
-        <input id="foto" type="file" accept="image/*" style="position:absolute;width:1px;height:1px;opacity:0">
-      </label>
-      <p class="cap c-base center" style="max-width:240px">Adicione uma foto para deixar o app com a sua cara. (opcional)</p>
+      <span style="width:128px;height:128px;border-radius:50%;background:var(--btn-primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:40px;line-height:48px;font-weight:700">${esc(iniciais(S.user.nome))}</span>
+      <p class="cap c-base center" style="max-width:240px">Sua foto pode ser alterada no seu perfil do BlueHub.</p>
     </div>
     ${selectField({ id: 'gen', label: 'Gênero', bind: 'user.genero', options: ['Feminino', 'Masculino', 'Não-binário', 'Prefiro não informar'] })}
     ${field({ id: 'nasc', label: 'Quando você nasceu?', ph: 'dd/mm/aaaa', bind: 'user.nasc', mask: 'data' })}`,
     foot: btn('Continuar', { next: true, go: 'perf2' }),
   }),
-  mount: (el) => { $('#foto', el).addEventListener('change', e => { const f = e.target.files[0]; if (f) { fotoURL = URL.createObjectURL(f); refresh(); } }); },
   valid: () => S.user.genero && S.user.nasc.length === 10,
 });
 screen('perf2', {
   cls: 'grad',
   render: () => gradScreen({
-    title: 'Perfil profissional', sub: 'Estes dados são importantes para compreendermos seu momento atual.', step: 'Etapa 2 de 4',
+    title: 'Perfil profissional', sub: 'Estes dados são importantes para compreendermos seu momento atual.', step: '2/4',
     body: `${selectField({ id: 'civil', label: 'Estado Civil', bind: 'user.civil', ph: 'Selecione uma opção', options: ['Solteiro(a)', 'Casado(a)', 'União estável', 'Divorciado(a)', 'Viúvo(a)'], helper: 'Nos ajuda a entender melhor seu momento de vida.' })}
-    ${field({ id: 'prof', label: 'Profissão', ph: 'Gerente de Projetos', bind: 'user.profissao' })}
+    ${selectField({ id: 'prof', label: 'Profissão', bind: 'user.profissao', ph: 'Ex: Assistente Administrativo', options: PROFISSOES })}
     ${field({ id: 'renda', label: 'Qual o valor da sua renda mensal?', ph: 'R$ 10.000', bind: 'user.renda', mask: 'brl0', helper: 'Essa informação será utilizada para melhor atender seus interesses no Me Paguei' })}`,
     foot: btn('Continuar', { next: true, go: 'perf3' }),
   }),
@@ -1151,7 +1154,7 @@ screen('perf3', {
     const st = S.flags.cepSt || '';
     const ok = st === 'ok' || st === 'err';
     return gradScreen({
-      title: 'Endereço', sub: 'Informe seu endereço residencial para fins de validação cadastral.', step: 'Etapa 3 de 4',
+      title: 'Endereço', sub: 'Informe seu endereço residencial para fins de validação cadastral.', step: '3/4',
       body: `${field({ id: 'cep', label: 'CEP', ph: '12345-078', bind: 'user.cep', mask: 'cep', icon: 'search', helper: st === 'load' ? 'Buscando endereço...' : '' })}
       ${st === 'err' ? '<p class="fld-h err" style="margin-top:-8px">CEP não encontrado. Confira o número ou preencha o endereço abaixo.</p>' : ''}
       <div class="row g3 ais">${field({ id: 'rua', label: 'Rua / Logradouro', ph: 'Rua Bione', bind: 'user.rua', dis: !ok, cls: 'f1' })}<div style="width:96px">${field({ id: 'num', label: 'Número', ph: '123', bind: 'user.numero', dis: !ok, mode: 'numeric' })}</div></div>
@@ -1171,12 +1174,12 @@ screen('perf3', {
 screen('perf4', {
   cls: 'grad',
   render: () => gradScreen({
-    title: 'Informações de contato', sub: 'Insira seu número de telefone para validação de segurança e recebimento de comunicações.', step: 'Etapa 4 de 4',
+    title: 'Informações de contato', sub: 'Insira seu número de telefone para validação de segurança e recebimento de comunicações.', step: '4/4',
     body: field({ id: 'cel', label: 'Celular', ph: '(99) 99999-9999', bind: 'user.cel', mask: 'cel', type: 'tel' }),
     foot: btn('Continuar', { next: true, act: 'next' }),
   }),
   valid: () => S.user.cel.length >= 14,
-  acts: { next: () => go('token', { kind: 'sms', step: 'Etapa 4 de 4', next: 'pessoas' }) },
+  acts: { next: () => go('token', { kind: 'sms', step: '4/4', next: 'perfProc' }) },
 });
 
 /* ---------- pessoas próximas ---------- */
@@ -1187,6 +1190,8 @@ function memberItem(m, k, menu = true) {
     <div class="col g1 f1"><p class="b16 semi c-dark">${esc(m.nome)}</p><p class="row g1h b14 c-dark">${ic('cake', 16)} ${esc(aniv(m.nasc))}</p><p class="row g1h b14 c-dark">${ic('users', 16)} ${esc(m.par)}</p></div>
     ${menu ? `<button type="button" data-act="mmenu" data-k="${k}" aria-label="Opções de ${esc(m.nome)}" style="padding:4px;color:var(--ty-base)">${ic('ellipsis-vertical', 20)}</button>` : ''}</div>`;
 }
+/* ponte: o perfil termina direto no processamento (as pessoas próximas viraram parte da Agenda) */
+screen('perfProc', { render: () => '', mount: () => { stack.pop(); go('proc', { msg: 'Salvando dados...', next: 'perfilOk' }, 'none'); } });
 screen('pessoas', {
   cls: 'grad',
   render: () => {
@@ -1313,7 +1318,7 @@ GLOBAL_ACTS.tab = (b) => { let t = b.dataset.tab;
 const BLUEHUB_IC = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="9" r="5"/><path d="M6 20h12"/></svg>`;
 function homeHeader() {
   return `<div class="hh">
-    <button type="button" class="av" data-go="config" aria-label="Configurações e perfil">${fotoURL ? `<img src="${fotoURL}" alt="">` : `<img src="assets/avatar-user.webp" alt="">`}</button>
+    <button type="button" class="av" data-go="perfilInfo" aria-label="Meu perfil">${fotoURL ? `<img src="${fotoURL}" alt="">` : `<img src="assets/avatar-user.webp" alt="">`}</button>
     <button type="button" class="f1" data-go="config" style="text-align:left;color:#fff"><p class="b14" style="line-height:18px">Olá,</p><p class="b14 bold" style="line-height:18px">${esc(firstName())}</p></button>
     <button type="button" class="hb" data-act="hideVals" aria-label="${S.flags.hide ? 'Mostrar valores' : 'Ocultar valores'}">${ic(S.flags.hide ? 'eye-off' : 'eye', 18)}</button>
     <button type="button" class="hb" data-go="notif" aria-label="Notificações" style="position:relative">${ic('bell', 18)}${S.notif && S.notif.length ? '<span style="position:absolute;top:4px;right:6px;width:7px;height:7px;border-radius:50%;background:#ff5a5a;border:1.5px solid var(--btn-primary)"></span>' : ''}</button>
@@ -3299,7 +3304,7 @@ screen('bhPlano', {
   <div class="col" style="position:relative;gap:8px;padding:32px 24px 31px"><p class="cap semi" style="color:var(--bh-teal)">VÍNCULO CONFIRMADO</p><p class="h1" style="color:#fff">Encontramos o seu plano!</p></div>
   <div class="bhd-sheet" style="background:var(--bh-subtle);border-radius:28px 28px 0 0"><div class="bhd-in" style="padding:32px 24px 16px;gap:24px">
     <div class="col g2" style="box-shadow:inset 0 0 0 1px var(--bh-blue);background:var(--bh-blue-bg);border-radius:16px;padding:16px"><p class="cap semi" style="color:var(--bh-blue)">O seu plano é o:</p><p class="h2" style="color:var(--bh-ink)">Blue Alicerce</p><p class="cap" style="color:var(--bh-base)">Seguro de vida de R$ 100 mil.<br>21 benefícios e 19 trilhas liberados.</p></div>
-    <div class="col g4">${[['lock', 'Contratado por', 'CESAR · desde 08/2026'], ['star', 'Você é o titular', 'A cobertura principal está no seu nome'], ['heart', 'Alguns benefícios são familiares', 'Farmácia, teleconsulta e exames valem para quem mora com você']].map(bhFeat).join('')}</div>
+    <div class="col g4">${[['lock', 'Contratado por', 'CESAR'], ['star', 'Você é o titular', 'A cobertura principal está no seu nome'], ['heart', 'Alguns benefícios são familiares', 'Farmácia, teleconsulta e exames valem para quem mora com você']].map(bhFeat).join('')}</div>
     <p class="cap" style="color:var(--bh-muted)">Dúvidas sobre a cobertura? Consulte o FAQ ou entre em contato pelo WhatsApp, em Suporte.</p>
     ${bhBtn('Acessar meus benefícios', { v: 'dk', lg: true, go: 'bhPre' })}
   </div></div><div class="hi" style="background:var(--bh-subtle)"></div>`,
@@ -3364,7 +3369,15 @@ const BH_TABS = [['bhHome', 'house', 'Início'], ['bhBenef', 'wallet-cards', 'Be
 const bhNav = (a) => `<nav class="bhh-nav" aria-label="Menu BlueHub">${BH_TABS.map(([id, i, l]) => `<button type="button" class="${id === a ? 'on' : ''}" data-act="bhtab" data-tab="${id}" ${id === a ? 'aria-current="page"' : ''}><span class="pill">${ic(i, 24)}</span>${l}</button>`).join('')}</nav><div class="bhh-hi hi-bh"><i></i></div>`;
 GLOBAL_ACTS.bhtab = (b) => reset(b.dataset.tab, {}, 'none');
 GLOBAL_ACTS.bhSoon = (b) => toast(`${b.dataset.n || 'Este benefício'} abre fora do protótipo`, 'success', 'external-link');
-const bhUser = () => `<span style="width:52px;height:52px;border-radius:999px;overflow:hidden;flex:none"><img src="assets/avatar-user.webp" alt="" style="width:100%;height:100%;object-fit:cover"></span><div class="col f1" style="gap:2px;min-width:0"><p style="font-size:24px;line-height:32px;font-weight:700;color:#fff">Olá, ${esc(firstName())}</p><p style="font-size:12px;line-height:18px;color:#fff">Plano Ultrablue | CESAR</p></div>`;
+const bhFoto = (px) => S.user.bhFoto
+  ? `<img src="${S.user.bhFoto}" alt="" style="width:100%;height:100%;object-fit:cover">`
+  : `<span style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#fff;color:var(--bh-blue);font-weight:700;font-size:${Math.round(px * 0.36)}px">${esc(iniciais(S.user.nome))}</span>`;
+/* no Perfil o avatar é editável: lápis sobre a imagem abre o seletor de arquivo */
+const bhUserEdit = () => `<label for="bhfoto" style="position:relative;width:52px;height:52px;border-radius:999px;overflow:hidden;flex:none;cursor:pointer">${bhFoto(52)}
+  <span style="position:absolute;right:-2px;bottom:-2px;width:22px;height:22px;border-radius:50%;background:var(--bh-blue);color:#fff;display:flex;align-items:center;justify-content:center;border:2px solid #fff">${ic('pencil', 11)}</span>
+  <input id="bhfoto" type="file" accept="image/*" style="position:absolute;width:1px;height:1px;opacity:0"></label>
+  <div class="col f1" style="gap:2px;min-width:0"><p style="font-size:24px;line-height:32px;font-weight:700;color:#fff">Olá, ${esc(firstName())}</p><p style="font-size:12px;line-height:18px;color:#fff">Plano Ultrablue | CESAR</p></div>`;
+const bhUser = () => `<button type="button" data-go="bhPerfil" aria-label="Ver meu perfil" style="width:52px;height:52px;border-radius:999px;overflow:hidden;flex:none">${bhFoto(52)}</button><div class="col f1" style="gap:2px;min-width:0"><p style="font-size:24px;line-height:32px;font-weight:700;color:#fff">Olá, ${esc(firstName())}</p><p style="font-size:12px;line-height:18px;color:#fff">Plano Ultrablue | CESAR</p></div>`;
 const MP_ATIVO = () => !!S.flags.mpAtivo;
 const bhTile = ([i, t, d, act, w = 200]) => `<button type="button" class="bhh-tile" style="width:${w}px" data-act="${act || 'bhSoon'}" data-n="${t}"><span class="bhh-ic">${ic(i, 18)}</span><span class="t">${t}</span><span class="d">${d}</span></button>`;
 const bhPhoto = (img, o, h) => `<button type="button" class="bhh-photo" data-act="bhSoon" data-n="${h}"><img src="assets/${img}" alt=""><div><p class="o">${o}</p><p class="h">${h}</p></div></button>`;
@@ -3532,7 +3545,7 @@ screen('bhPerfil', {
       <div style="flex:none;position:relative;height:200px;background:var(--bh-blue);border-radius:0 0 28px 28px;padding:56px 24px 24px;display:flex;flex-direction:column;gap:32px">
         ${statusBar(true).replace('class="sb light"', 'class="sb light" style="position:absolute;left:0;right:0;top:0"')}
         <div class="row" style="height:24px"><button type="button" data-back aria-label="Voltar" style="color:#fff;display:flex">${ic('chevron-left', 24)}</button></div>
-        <div class="row" style="gap:8px;align-items:center">${bhUser()}</div></div>
+        <div class="row" style="gap:8px;align-items:center">${bhUserEdit()}</div></div>
     <div class="col" style="gap:16px;padding:24px">
       <div style="border-radius:16px;padding:16px;background:linear-gradient(135deg,#1f3fb8,#0b1d5c);color:#fff;display:flex;flex-direction:column;gap:16px">
         <p style="font-size:18px;line-height:24px;font-weight:700;color:#f5f5f5">Amplie seus benefícios</p>
@@ -3545,6 +3558,7 @@ screen('bhPerfil', {
         <button type="button" data-act="sair" style="height:44px;border-radius:9999px;background:var(--bh-line);color:var(--bh-ink);font-size:14px;line-height:22px;font-weight:600">Sair da conta</button>
         <button type="button" data-act="delConta" style="height:44px;border-radius:9999px;background:transparent;color:var(--bh-blue);font-size:14px;line-height:22px;font-weight:600">Excluir conta</button></div>
     </div></div>${bhNav('bhPerfil')}`; },
+  mount: (el) => { const i = $('#bhfoto', el); if (i) i.addEventListener('change', e => { const f = e.target.files[0]; if (f) { S.user.bhFoto = URL.createObjectURL(f); rerender(); toast('Foto atualizada'); } }); },
   acts: {
     acc: (b) => { const p = stack[stack.length - 1].p; const k = +b.dataset.k; p.open = p.open === k ? -1 : k; rerender(); },
     sair: () => reset('bhWelcome'),

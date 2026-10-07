@@ -31,7 +31,7 @@ GLOBAL_ACTS.tab = (b) => { let t = b.dataset.tab;
 const BLUEHUB_IC = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="9" r="5"/><path d="M6 20h12"/></svg>`;
 function homeHeader() {
   return `<div class="hh">
-    <button type="button" class="av" data-go="config" aria-label="Configurações e perfil">${fotoURL ? `<img src="${fotoURL}" alt="">` : `<img src="assets/avatar-user.webp" alt="">`}</button>
+    <button type="button" class="av" data-go="perfilInfo" aria-label="Meu perfil">${fotoURL ? `<img src="${fotoURL}" alt="">` : `<img src="assets/avatar-user.webp" alt="">`}</button>
     <button type="button" class="f1" data-go="config" style="text-align:left;color:#fff"><p class="b14" style="line-height:18px">Olá,</p><p class="b14 bold" style="line-height:18px">${esc(firstName())}</p></button>
     <button type="button" class="hb" data-act="hideVals" aria-label="${S.flags.hide ? 'Mostrar valores' : 'Ocultar valores'}">${ic(S.flags.hide ? 'eye-off' : 'eye', 18)}</button>
     <button type="button" class="hb" data-go="notif" aria-label="Notificações" style="position:relative">${ic('bell', 18)}${S.notif && S.notif.length ? '<span style="position:absolute;top:4px;right:6px;width:7px;height:7px;border-radius:50%;background:#ff5a5a;border:1.5px solid var(--btn-primary)"></span>' : ''}</button>

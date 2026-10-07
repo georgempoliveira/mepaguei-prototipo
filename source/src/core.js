@@ -17,6 +17,7 @@ function freshState() {
   };
 }
 let S = freshState();
+const iniciais = (n) => { const p = String(n || 'Marcelo Pimentel').trim().split(/\s+/).filter(Boolean); return ((p[0] || '')[0] + (p.length > 1 ? (p[p.length - 1] || '')[0] : '')).toUpperCase(); };
 const firstName = () => (S.user.nome.trim().split(/\s+/)[0] || 'Marcelo');
 
 /* ---------- formatadores ---------- */
@@ -60,7 +61,7 @@ const ME_MARK = `<img class="mark" src="assets/me-mark.png" alt="Me Paguei" widt
 /* tela com cabeçalho em gradiente + folha clara (padrão de cadastro/login) */
 function gradScreen({ title, sub = '', step = '', back = true, body = '', foot = '', mark = true }) {
   return `${CURVE}${statusBar(true)}
-  <div class="bk">${back ? `<button type="button" data-back aria-label="Voltar">${ic('chevron-left', 24)}</button>` : '<span style="width:24px"></span>'}${mark ? ME_MARK : ''}<span class="step">${esc(step)}</span></div>
+  <div class="bk">${back ? `<button type="button" data-back aria-label="Voltar">${ic('chevron-left', 24)}</button>` : '<span style="width:24px"></span>'}${mark ? ME_MARK : ''}${/^\d+\/\d+$/.test(step) ? `<span class="step-dots">${Array.from({ length: +step.split('/')[1] }, (_, i) => `<i class="${i === +step.split('/')[0] - 1 ? 'on' : ''}"></i>`).join('')}</span>` : `<span class="step">${esc(step)}</span>`}</div>
   <div class="ttl"><p class="h2">${title}</p>${sub ? `<p class="b14">${sub}</p>` : ''}</div>
   <div class="sheet"><div class="sheet-in">${body}</div>${foot ? `<div class="sheet-foot">${foot}</div>` : ''}</div>
   ${homeInd()}`;

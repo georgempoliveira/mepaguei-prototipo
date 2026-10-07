@@ -127,7 +127,7 @@ screen('bhPlano', {
   <div class="col" style="position:relative;gap:8px;padding:32px 24px 31px"><p class="cap semi" style="color:var(--bh-teal)">VÍNCULO CONFIRMADO</p><p class="h1" style="color:#fff">Encontramos o seu plano!</p></div>
   <div class="bhd-sheet" style="background:var(--bh-subtle);border-radius:28px 28px 0 0"><div class="bhd-in" style="padding:32px 24px 16px;gap:24px">
     <div class="col g2" style="box-shadow:inset 0 0 0 1px var(--bh-blue);background:var(--bh-blue-bg);border-radius:16px;padding:16px"><p class="cap semi" style="color:var(--bh-blue)">O seu plano é o:</p><p class="h2" style="color:var(--bh-ink)">Blue Alicerce</p><p class="cap" style="color:var(--bh-base)">Seguro de vida de R$ 100 mil.<br>21 benefícios e 19 trilhas liberados.</p></div>
-    <div class="col g4">${[['lock', 'Contratado por', 'CESAR · desde 08/2026'], ['star', 'Você é o titular', 'A cobertura principal está no seu nome'], ['heart', 'Alguns benefícios são familiares', 'Farmácia, teleconsulta e exames valem para quem mora com você']].map(bhFeat).join('')}</div>
+    <div class="col g4">${[['lock', 'Contratado por', 'CESAR'], ['star', 'Você é o titular', 'A cobertura principal está no seu nome'], ['heart', 'Alguns benefícios são familiares', 'Farmácia, teleconsulta e exames valem para quem mora com você']].map(bhFeat).join('')}</div>
     <p class="cap" style="color:var(--bh-muted)">Dúvidas sobre a cobertura? Consulte o FAQ ou entre em contato pelo WhatsApp, em Suporte.</p>
     ${bhBtn('Acessar meus benefícios', { v: 'dk', lg: true, go: 'bhPre' })}
   </div></div><div class="hi" style="background:var(--bh-subtle)"></div>`,
@@ -192,7 +192,15 @@ const BH_TABS = [['bhHome', 'house', 'Início'], ['bhBenef', 'wallet-cards', 'Be
 const bhNav = (a) => `<nav class="bhh-nav" aria-label="Menu BlueHub">${BH_TABS.map(([id, i, l]) => `<button type="button" class="${id === a ? 'on' : ''}" data-act="bhtab" data-tab="${id}" ${id === a ? 'aria-current="page"' : ''}><span class="pill">${ic(i, 24)}</span>${l}</button>`).join('')}</nav><div class="bhh-hi hi-bh"><i></i></div>`;
 GLOBAL_ACTS.bhtab = (b) => reset(b.dataset.tab, {}, 'none');
 GLOBAL_ACTS.bhSoon = (b) => toast(`${b.dataset.n || 'Este benefício'} abre fora do protótipo`, 'success', 'external-link');
-const bhUser = () => `<span style="width:52px;height:52px;border-radius:999px;overflow:hidden;flex:none"><img src="assets/avatar-user.webp" alt="" style="width:100%;height:100%;object-fit:cover"></span><div class="col f1" style="gap:2px;min-width:0"><p style="font-size:24px;line-height:32px;font-weight:700;color:#fff">Olá, ${esc(firstName())}</p><p style="font-size:12px;line-height:18px;color:#fff">Plano Ultrablue | CESAR</p></div>`;
+const bhFoto = (px) => S.user.bhFoto
+  ? `<img src="${S.user.bhFoto}" alt="" style="width:100%;height:100%;object-fit:cover">`
+  : `<span style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#fff;color:var(--bh-blue);font-weight:700;font-size:${Math.round(px * 0.36)}px">${esc(iniciais(S.user.nome))}</span>`;
+/* no Perfil o avatar é editável: lápis sobre a imagem abre o seletor de arquivo */
+const bhUserEdit = () => `<label for="bhfoto" style="position:relative;width:52px;height:52px;border-radius:999px;overflow:hidden;flex:none;cursor:pointer">${bhFoto(52)}
+  <span style="position:absolute;right:-2px;bottom:-2px;width:22px;height:22px;border-radius:50%;background:var(--bh-blue);color:#fff;display:flex;align-items:center;justify-content:center;border:2px solid #fff">${ic('pencil', 11)}</span>
+  <input id="bhfoto" type="file" accept="image/*" style="position:absolute;width:1px;height:1px;opacity:0"></label>
+  <div class="col f1" style="gap:2px;min-width:0"><p style="font-size:24px;line-height:32px;font-weight:700;color:#fff">Olá, ${esc(firstName())}</p><p style="font-size:12px;line-height:18px;color:#fff">Plano Ultrablue | CESAR</p></div>`;
+const bhUser = () => `<button type="button" data-go="bhPerfil" aria-label="Ver meu perfil" style="width:52px;height:52px;border-radius:999px;overflow:hidden;flex:none">${bhFoto(52)}</button><div class="col f1" style="gap:2px;min-width:0"><p style="font-size:24px;line-height:32px;font-weight:700;color:#fff">Olá, ${esc(firstName())}</p><p style="font-size:12px;line-height:18px;color:#fff">Plano Ultrablue | CESAR</p></div>`;
 const MP_ATIVO = () => !!S.flags.mpAtivo;
 const bhTile = ([i, t, d, act, w = 200]) => `<button type="button" class="bhh-tile" style="width:${w}px" data-act="${act || 'bhSoon'}" data-n="${t}"><span class="bhh-ic">${ic(i, 18)}</span><span class="t">${t}</span><span class="d">${d}</span></button>`;
 const bhPhoto = (img, o, h) => `<button type="button" class="bhh-photo" data-act="bhSoon" data-n="${h}"><img src="assets/${img}" alt=""><div><p class="o">${o}</p><p class="h">${h}</p></div></button>`;
@@ -360,7 +368,7 @@ screen('bhPerfil', {
       <div style="flex:none;position:relative;height:200px;background:var(--bh-blue);border-radius:0 0 28px 28px;padding:56px 24px 24px;display:flex;flex-direction:column;gap:32px">
         ${statusBar(true).replace('class="sb light"', 'class="sb light" style="position:absolute;left:0;right:0;top:0"')}
         <div class="row" style="height:24px"><button type="button" data-back aria-label="Voltar" style="color:#fff;display:flex">${ic('chevron-left', 24)}</button></div>
-        <div class="row" style="gap:8px;align-items:center">${bhUser()}</div></div>
+        <div class="row" style="gap:8px;align-items:center">${bhUserEdit()}</div></div>
     <div class="col" style="gap:16px;padding:24px">
       <div style="border-radius:16px;padding:16px;background:linear-gradient(135deg,#1f3fb8,#0b1d5c);color:#fff;display:flex;flex-direction:column;gap:16px">
         <p style="font-size:18px;line-height:24px;font-weight:700;color:#f5f5f5">Amplie seus benefícios</p>
@@ -373,6 +381,7 @@ screen('bhPerfil', {
         <button type="button" data-act="sair" style="height:44px;border-radius:9999px;background:var(--bh-line);color:var(--bh-ink);font-size:14px;line-height:22px;font-weight:600">Sair da conta</button>
         <button type="button" data-act="delConta" style="height:44px;border-radius:9999px;background:transparent;color:var(--bh-blue);font-size:14px;line-height:22px;font-weight:600">Excluir conta</button></div>
     </div></div>${bhNav('bhPerfil')}`; },
+  mount: (el) => { const i = $('#bhfoto', el); if (i) i.addEventListener('change', e => { const f = e.target.files[0]; if (f) { S.user.bhFoto = URL.createObjectURL(f); rerender(); toast('Foto atualizada'); } }); },
   acts: {
     acc: (b) => { const p = stack[stack.length - 1].p; const k = +b.dataset.k; p.open = p.open === k ? -1 : k; rerender(); },
     sair: () => reset('bhWelcome'),

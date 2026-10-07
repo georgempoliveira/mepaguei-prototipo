@@ -210,31 +210,28 @@ screen('obj', {
 
 /* ---------- perfil · etapa 1 de 4 ---------- */
 let fotoURL = '';
+/* profissões mais comuns do mercado brasileiro (item 12) */
+const PROFISSOES = ['Assistente Administrativo', 'Analista de Sistemas', 'Auxiliar de Serviços Gerais', 'Enfermeiro(a)', 'Motorista', 'Professor(a)', 'Vendedor(a)', 'Técnico(a) de Enfermagem', 'Operador(a) de Caixa', 'Autônomo(a)', 'Outra'];
 screen('perf1', {
   cls: 'grad',
   render: () => gradScreen({
-    title: 'Informações básicas', sub: 'Informe seus dados iniciais para que possamos dar início à personalização do seu perfil.', step: 'Etapa 1 de 4',
+    title: 'Informações básicas', sub: 'Informe seus dados iniciais para que possamos dar início à personalização do seu perfil.', step: '1/4',
     body: `<div class="col g2" style="align-items:center">
-      <label for="foto" style="position:relative;width:128px;height:128px;border-radius:50%;background:${fotoURL ? `url(${fotoURL}) center/cover` : 'var(--primary-lighter)'};display:flex;align-items:center;justify-content:center;color:var(--primary);cursor:pointer">
-        ${fotoURL ? '' : `<span class="h1">${esc((S.user.nome || 'M').trim()[0].toUpperCase())}</span>`}
-        <span style="position:absolute;right:2px;bottom:6px;width:32px;height:32px;border-radius:50%;background:var(--primary-darker);color:#fff;display:flex;align-items:center;justify-content:center;border:2px solid #fff">${ic('pencil', 14)}</span>
-        <input id="foto" type="file" accept="image/*" style="position:absolute;width:1px;height:1px;opacity:0">
-      </label>
-      <p class="cap c-base center" style="max-width:240px">Adicione uma foto para deixar o app com a sua cara. (opcional)</p>
+      <span style="width:128px;height:128px;border-radius:50%;background:var(--btn-primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:40px;line-height:48px;font-weight:700">${esc(iniciais(S.user.nome))}</span>
+      <p class="cap c-base center" style="max-width:240px">Sua foto pode ser alterada no seu perfil do BlueHub.</p>
     </div>
     ${selectField({ id: 'gen', label: 'Gênero', bind: 'user.genero', options: ['Feminino', 'Masculino', 'Não-binário', 'Prefiro não informar'] })}
     ${field({ id: 'nasc', label: 'Quando você nasceu?', ph: 'dd/mm/aaaa', bind: 'user.nasc', mask: 'data' })}`,
     foot: btn('Continuar', { next: true, go: 'perf2' }),
   }),
-  mount: (el) => { $('#foto', el).addEventListener('change', e => { const f = e.target.files[0]; if (f) { fotoURL = URL.createObjectURL(f); refresh(); } }); },
   valid: () => S.user.genero && S.user.nasc.length === 10,
 });
 screen('perf2', {
   cls: 'grad',
   render: () => gradScreen({
-    title: 'Perfil profissional', sub: 'Estes dados são importantes para compreendermos seu momento atual.', step: 'Etapa 2 de 4',
+    title: 'Perfil profissional', sub: 'Estes dados são importantes para compreendermos seu momento atual.', step: '2/4',
     body: `${selectField({ id: 'civil', label: 'Estado Civil', bind: 'user.civil', ph: 'Selecione uma opção', options: ['Solteiro(a)', 'Casado(a)', 'União estável', 'Divorciado(a)', 'Viúvo(a)'], helper: 'Nos ajuda a entender melhor seu momento de vida.' })}
-    ${field({ id: 'prof', label: 'Profissão', ph: 'Gerente de Projetos', bind: 'user.profissao' })}
+    ${selectField({ id: 'prof', label: 'Profissão', bind: 'user.profissao', ph: 'Ex: Assistente Administrativo', options: PROFISSOES })}
     ${field({ id: 'renda', label: 'Qual o valor da sua renda mensal?', ph: 'R$ 10.000', bind: 'user.renda', mask: 'brl0', helper: 'Essa informação será utilizada para melhor atender seus interesses no Me Paguei' })}`,
     foot: btn('Continuar', { next: true, go: 'perf3' }),
   }),
@@ -277,7 +274,7 @@ screen('perf3', {
     const st = S.flags.cepSt || '';
     const ok = st === 'ok' || st === 'err';
     return gradScreen({
-      title: 'Endereço', sub: 'Informe seu endereço residencial para fins de validação cadastral.', step: 'Etapa 3 de 4',
+      title: 'Endereço', sub: 'Informe seu endereço residencial para fins de validação cadastral.', step: '3/4',
       body: `${field({ id: 'cep', label: 'CEP', ph: '12345-078', bind: 'user.cep', mask: 'cep', icon: 'search', helper: st === 'load' ? 'Buscando endereço...' : '' })}
       ${st === 'err' ? '<p class="fld-h err" style="margin-top:-8px">CEP não encontrado. Confira o número ou preencha o endereço abaixo.</p>' : ''}
       <div class="row g3 ais">${field({ id: 'rua', label: 'Rua / Logradouro', ph: 'Rua Bione', bind: 'user.rua', dis: !ok, cls: 'f1' })}<div style="width:96px">${field({ id: 'num', label: 'Número', ph: '123', bind: 'user.numero', dis: !ok, mode: 'numeric' })}</div></div>
@@ -297,12 +294,12 @@ screen('perf3', {
 screen('perf4', {
   cls: 'grad',
   render: () => gradScreen({
-    title: 'Informações de contato', sub: 'Insira seu número de telefone para validação de segurança e recebimento de comunicações.', step: 'Etapa 4 de 4',
+    title: 'Informações de contato', sub: 'Insira seu número de telefone para validação de segurança e recebimento de comunicações.', step: '4/4',
     body: field({ id: 'cel', label: 'Celular', ph: '(99) 99999-9999', bind: 'user.cel', mask: 'cel', type: 'tel' }),
     foot: btn('Continuar', { next: true, act: 'next' }),
   }),
   valid: () => S.user.cel.length >= 14,
-  acts: { next: () => go('token', { kind: 'sms', step: 'Etapa 4 de 4', next: 'pessoas' }) },
+  acts: { next: () => go('token', { kind: 'sms', step: '4/4', next: 'perfProc' }) },
 });
 
 /* ---------- pessoas próximas ---------- */
@@ -313,6 +310,8 @@ function memberItem(m, k, menu = true) {
     <div class="col g1 f1"><p class="b16 semi c-dark">${esc(m.nome)}</p><p class="row g1h b14 c-dark">${ic('cake', 16)} ${esc(aniv(m.nasc))}</p><p class="row g1h b14 c-dark">${ic('users', 16)} ${esc(m.par)}</p></div>
     ${menu ? `<button type="button" data-act="mmenu" data-k="${k}" aria-label="Opções de ${esc(m.nome)}" style="padding:4px;color:var(--ty-base)">${ic('ellipsis-vertical', 20)}</button>` : ''}</div>`;
 }
+/* ponte: o perfil termina direto no processamento (as pessoas próximas viraram parte da Agenda) */
+screen('perfProc', { render: () => '', mount: () => { stack.pop(); go('proc', { msg: 'Salvando dados...', next: 'perfilOk' }, 'none'); } });
 screen('pessoas', {
   cls: 'grad',
   render: () => {
