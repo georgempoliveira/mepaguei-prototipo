@@ -428,9 +428,11 @@ document.addEventListener('click', e => {
   if (e.target.closest('[data-mod-reset]')) { $('#mod-sheet').hidden = true; fechaConta(false); closeOverlays(true); reset('bhSplash'); return; }
   if (e.target.closest('[data-mod-close]') || e.target.id === 'mod-sheet') { $('#mod-sheet').hidden = true; }
 }, true);
-/* três toques rápidos na barra de status abrem o painel (útil no celular) */
+/* Três toques rápidos na barra de status abrem o painel — inclusive na versão publicada,
+   senão o moderador não teria como ver o registro no aparelho do participante.
+   O gesto é discreto o bastante (3 toques em 450ms nos 48px do topo) para ninguém cair nele. */
 let tapN = 0, tapT = 0;
-if (!window.PROTO_PUB) document.addEventListener('pointerdown', e => {
+document.addEventListener('pointerdown', e => {
   const r = $('#phone').getBoundingClientRect();
   if (e.clientY - r.top > 48) return;
   const now = Date.now(); tapN = now - tapT < 450 ? tapN + 1 : 1; tapT = now;

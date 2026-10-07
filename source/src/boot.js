@@ -8,7 +8,8 @@ FLOWS.sort((a, b) => (b.g === 'BlueHub') - (a.g === 'BlueHub'));
 FLOWS.forEach(f => { if (f.g === 'Primeiro acesso') f.g = 'Me Paguei sem BlueHub'; });
 buildMod(); fit();
 if (/cmp/.test(location.hash)) document.body.classList.add('cmp');
-if (window.PROTO_PUB || /participante/.test(location.hash)) document.body.classList.add('sem-painel');
+/* #moderador deixa a barra lateral visível também no link publicado (uso no desktop) */
+if ((window.PROTO_PUB || /participante/.test(location.hash)) && !/moderador/.test(location.hash)) document.body.classList.add('sem-painel');
 reset('bhSplash', {}, 'none');
 if (location.hash === '#mapa') $('#mod-sheet').hidden = innerWidth > 900;
 
