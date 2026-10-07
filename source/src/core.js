@@ -211,16 +211,21 @@ function arrastaParaFechar(ov) {
   let y0 = 0, dy = 0, arr = false;
   bs.addEventListener('pointerdown', e => {
     if (dentro && dentro.contains(e.target) && dentro.scrollTop > 0) return;
-    arr = true; y0 = e.clientY; dy = 0; bs.style.transition = 'none';
-    try { bs.setPointerCapture(e.pointerId); } catch (err) {}
+    arr = true; y0 = e.clientY; dy = 0;
+    /* NÃO captura o ponteiro aqui: isso roubaria o clique dos botões do rodapé.
+       A captura só começa quando o dedo realmente anda (> 6px). */
   });
   bs.addEventListener('pointermove', e => {
     if (!arr) return;
-    dy = Math.max(0, e.clientY - y0);
+    const d = e.clientY - y0;
+    if (dy === 0 && Math.abs(d) < 6) return;
+    if (dy === 0) { bs.style.transition = 'none'; try { bs.setPointerCapture(e.pointerId); } catch (err) {} }
+    dy = Math.max(0, d);
     bs.style.transform = dy ? `translateY(${dy}px)` : '';
   });
   const fim = () => {
     if (!arr) return; arr = false;
+    if (!dy) return;                       /* foi um toque, não um arrasto */
     bs.style.transition = 'transform .25s cubic-bezier(.2,.8,.2,1)';
     if (dy > 80 || dy > bs.offsetHeight * 0.25) { bs.style.transform = 'translateY(100%)'; later(() => closeTopOverlay(), 200); }
     else bs.style.transform = '';
@@ -250,6 +255,7 @@ function toast(msg, type = 'success', icon) {
 
 /* ---------- eventos (delegação) ---------- */
 const GLOBAL_ACTS = {
+  closeov: () => closeTopOverlay(),      /* era definido tela a tela: faltava em várias */
   'toggle-pw': (b) => { const i = b.parentElement.querySelector('input'); const show = i.type === 'password'; i.type = show ? 'text' : 'password'; b.innerHTML = ic(show ? 'eye' : 'eye-off', 18); },
   check: (b) => { const on = !b.classList.contains('on'); b.classList.toggle('on', on); b.setAttribute('aria-checked', on); setPath(b.dataset.key, on); refreshValid(); },
   radio: (b) => { const g = b.dataset.group; $$(`[data-group="${g}"]`, b.closest('.ov') || cur).forEach(x => { const on = x === b; x.classList.toggle('on', on); x.setAttribute('aria-checked', on); const r = x.querySelector('.rad'); if (r) r.classList.toggle('on', on); }); setPath(g, b.dataset.val); refreshValid(); },
