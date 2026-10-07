@@ -43,7 +43,7 @@ screen('controle', {
     mprev: () => { const p = stack[stack.length - 1].p; p.mo = (p.mo || 0) - 1; rerender(); },
     mnext: () => { const p = stack[stack.length - 1].p; p.mo = (p.mo || 0) + 1; rerender(); },
     dsel: (b) => dayDetail(b.dataset.d),
-    agPessoas: () => go('pessoas', { agenda: true }),
+    agPessoas: () => { S.tmpM = { nome: '', nasc: '', par: '' }; go('pessoaForm', { k: -1, agenda: true }); },
     agSkip: () => { S.flags.agendaSeen = true; rerender(); },
     miaA: () => { S.flags.miaA = true; rerender(); },
     evNovo: () => eventoSheet(),
@@ -205,10 +205,13 @@ function lancDia(date) {
 }
 const DOTS = { aniv: '#d14fe0', ev: '#d14fe0', fer: '#d14fe0', fat: '#2573d0' };
 function agendaBody(p) {
-  if (!S.user.pessoas.length && !S.flags.agendaSeen) return `<div class="col g3"><p class="h3 c-darker">Cadastrar pessoas próximas</p><p class="b14 c-dark">Adicione familiares e amigos para lembrar datas importantes e se antecipar aos gastos com presentes e comemorações</p>${btn('Adicionar pessoas próximas', { act: 'agPessoas', icon: 'user-plus' })}</div>
+  if (!S.user.pessoas.length && !S.flags.agendaSeen) return `<div class="col g4" style="align-items:center;text-align:center;background:var(--bg-lighter);border-radius:var(--r-3xl);padding:24px 20px">
+      <span class="ico-c" style="width:48px;height:48px">${ic('user-plus', 22)}</span>
+      <div class="col g2"><p class="b16 semi c-darker">Cadastrar pessoas próximas</p><p class="b14 c-dark">Adicione familiares e amigos para lembrar datas importantes e se antecipar aos gastos com presentes e comemorações</p></div>
+      ${btn('Adicionar pessoas próximas', { act: 'agPessoas', icon: 'user-plus' })}</div>
     <p class="b16 semi c-darker">Por que adicionar pessoas à sua agenda?</p>
     ${[['cake', 'Lembrete de aniversários', 'Como não fazem parte das contas mensais, aniversários são fáceis de esquecer. Cadastre as datas para antecipar presentes, festas e comemorações no seu planejamento'], ['rocket', 'Conexão com Saldo Seguro', 'Ao cadastrar pessoas próximas, eu também considero essas datas quando estiverem no período da sua projeção de Saldo Seguro'], ['calendar-clock', 'Antecipação de despesas', 'Prepare seu orçamento com antecedência para festas, celebrações e compromissos ao longo do ano.'], ['gift', 'Controle de orçamentos festivos', 'Defina limites saudáveis para lembrancinhas e comemorações sem comprometer seus objetivos financeiros.']].map(([i, t, d]) => `<div class="card row g3 ais" style="border-color:var(--border-lighter)"><span class="ico-c sm">${ic(i, 16)}</span><div class="col g1"><p class="b14 semi c-darker">${t}</p><p class="b14 c-dark">${d}</p></div></div>`).join('')}
-    ${btn('Pular', { v: 'o', act: 'agSkip' })}`;
+    <div class="col g3" style="padding-top:4px">${btn('Cadastrar aniversários', { act: 'agPessoas' })}<button type="button" class="b14 semi c-primary center" data-act="agSkip" style="padding:6px">Pular</button></div>`;
   const base = hoje(); const mo = p.mo || 0; const M = new Date(base.getFullYear(), base.getMonth() + mo, 1);
   const first = M.getDay(), days = new Date(M.getFullYear(), M.getMonth() + 1, 0).getDate();
   const cells = []; for (let i = 0; i < first; i++) cells.push(''); for (let d = 1; d <= days; d++) cells.push(d);

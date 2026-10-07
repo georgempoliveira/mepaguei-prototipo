@@ -303,7 +303,7 @@ screen('perf4', {
 });
 
 /* ---------- pessoas próximas ---------- */
-const PARENTESCO = ['Cônjuge', 'Filho(a)', 'Mãe', 'Pai', 'Irmão(ã)', 'Avó / Avô', 'Amigo(a)', 'Outro'];
+const PARENTESCO = ['Mãe', 'Pai', 'Parceiro(a)', 'Filhos e afilhados', 'Irmãos', 'Avós, tios, primos', 'Amigos de infância', 'Outras especiais'];
 function aniv(d) { const m = d.match(/^(\d{2})\/(\d{2})/); if (!m) return d; const mes = MESES[+m[2] - 1] || ''; return `${+m[1]} de ${mes.charAt(0).toUpperCase() + mes.slice(1)}`; }
 function memberItem(m, k, menu = true) {
   return `<div class="card row g3 ais" style="border-color:var(--border-lighter)"><span class="ico-c sm" style="background:var(--bg-lighter);color:var(--ty-base)">${ic('user', 18)}</span>
@@ -337,14 +337,19 @@ screen('pessoas', {
 screen('pessoaForm', {
   cls: 'grad',
   render: (p) => gradScreen({
-    title: 'Cadastrar pessoas próximas', sub: 'Cadastre pessoas que fazem parte da sua rotina financeira para antecipar despesas.', step: 'Etapa 4 de 4',
-    body: `${field({ id: 'mn', label: 'Nome', ph: 'ex: Marcelo Pimentel', bind: 'tmpM.nome' })}
-      ${field({ id: 'md', label: 'Data de nascimento', ph: 'dd/mm/aaaa', bind: 'tmpM.nasc', mask: 'data', icon: 'calendar-days' })}
-      ${selectField({ id: 'mp', label: 'Grau de parentesco', bind: 'tmpM.par', options: PARENTESCO })}`,
+    title: 'Cadastro de pessoas próximas', sub: 'Adicione aniversários de familiares e amigos próximos dentro da sua agenda.', step: 'Agenda',
+    body: `${S.flags.miaPess ? miaMini('miaPess') : miaBox('Quem é importante para você também faz parte da sua vida financeira', ['Aniversários são fáceis de esquecer no planejamento, mas acontecem o ano inteiro — e são previsíveis.\n\nCadastre as pessoas que fazem parte da sua vida para que eu possa levar essas datas em conta', 'Assim, quando a data entrar no período da sua projeção, eu já considero o gasto e você não é pego de surpresa'], 'miaPess')}
+      ${field({ id: 'mn', label: 'Nome', ph: 'ex: Marcelo Pimentel', bind: 'tmpM.nome' })}
+      ${field({ id: 'md', label: 'Dia e mês de aniversário', ph: 'Selecionar', bind: 'tmpM.nasc', mask: 'data', icon: 'calendar-days' })}
+      ${field({ id: 'mp', label: 'Grau de parentesco', ph: 'ex: Mãe', bind: 'tmpM.par' })}
+      <p class="cap c-base">Considere, no mínimo, pessoas como:</p>
+      <div class="row g2" style="flex-wrap:wrap">${PARENTESCO.map(x => `<button type="button" class="chip" data-act="psug" data-v="${esc(x)}" style="height:30px;font-size:12px;color:var(--ia);border-color:${S.tmpM && S.tmpM.par === x ? 'var(--ia)' : '#d9c2f7'};background:${S.tmpM && S.tmpM.par === x ? 'var(--ia-bg)' : '#fff'}">${ic('cake', 14)} ${esc(x)}</button>`).join('')}</div>`,
     foot: btn('Salvar', { next: true, act: 'save' }) + (p.k >= 0 ? btn('Cancelar edição', { v: 'o', act: 'cancel' }) : ''),
   }),
   valid: () => S.tmpM && S.tmpM.nome.trim() && S.tmpM.nasc.length === 10 && S.tmpM.par,
   acts: {
+    psug: (b) => { S.tmpM.par = b.dataset.v; refresh(); },
+    miaPess: () => { S.flags.miaPess = !S.flags.miaPess; rerender(); },
     save: () => { const k = P().k; if (k >= 0) S.user.pessoas[k] = { ...S.tmpM }; else S.user.pessoas.push({ ...S.tmpM }); back(); toast(k >= 0 ? 'Dados atualizados' : 'Pessoa adicionada'); },
     cancel: () => back(),
   },
