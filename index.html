@@ -3449,11 +3449,11 @@ screen('bhHome', {
       <section class="bhh-sec"><div class="bhh-st"><p>Pra tudo ficar Blue</p><button type="button" data-act="trilhas">Ver as trilhas</button></div>
         <div class="bhh-car">${[['Objetivos e Finanças', '9 aulas'], ['Foco & Performance', '3 aulas'], ['Hábitos poderosos', '3 aulas'], ['Energia e Bem-estar', '4 aulas']].map(([t, a], k) => `<button type="button" class="bhh-video" data-act="trilha" data-k="${k}"><img src="assets/bhc-tri${k}.webp" alt=""><span style="font-size:14px;line-height:22px;font-weight:600;color:var(--bh-ink)">${t}</span><span style="font-size:12px;line-height:18px;color:var(--bh-muted)">${a}</span></button>`).join('')}</div></section>
       <div class="bhh-px"><div style="overflow:hidden;background:var(--bh-blue);border-radius:20px;display:flex;flex-direction:column">
-        <img src="assets/bhh-amplie-foto.webp" alt="" style="width:100%;height:170px;object-fit:cover;display:block">
+        <img src="assets/bhh-amplie-foto.webp" alt="Mulher no sofá usando o celular" style="width:100%;height:150px;object-fit:cover;display:block">
         <div class="col" style="gap:12px;padding:20px 20px 24px">
           <p style="font-size:18px;line-height:24px;font-weight:700;color:#fff">Amplie suas proteções</p>
           <p style="font-size:14px;line-height:22px;font-weight:600;color:#fff">Acompanhamento com psicólogo, plano odontológico, coberturas maiores e outros benefícios, por uma fração do valor de mercado</p>
-          <button type="button" data-act="vida" style="height:44px;border-radius:9999px;background:#fff;color:var(--bh-ink);font-size:14px;line-height:22px;font-weight:600;margin-top:4px">Conhecer minhas vantagens</button>
+          <button type="button" data-go="bhCobertura" style="height:44px;border-radius:9999px;background:#fff;color:var(--bh-ink);font-size:14px;line-height:22px;font-weight:600;margin-top:4px">Conhecer minhas vantagens</button>
         </div></div></div>
       <div class="bhh-px"><button type="button" data-act="bhSoon" data-n="WhatsApp" style="width:100%;height:100px;background:#fff;border:1px solid var(--bh-line);border-radius:16px;padding:16px;display:flex;align-items:center;gap:16px;text-align:left">
         <span style="width:40px;height:40px;border-radius:10px;background:var(--bh-blue-bg);color:var(--bh-blue);display:flex;align-items:center;justify-content:center;flex:none">${ic('circle-help', 24)}</span>
@@ -3526,14 +3526,34 @@ screen('bhVida', {
   acts: { proteger: () => toast('A contratação segue no site da Bluehub', 'success', 'external-link') },
 });
 
+/* 03.08.01 - Bluehub · Cobertura (15413:37424) */
+const COBERTURAS = [['Plano Odontológico - R$11,90', 'Mais de 270 procedimentos odontológicos disponíveis.'], ['Apoio Psicológico Online', 'Consulta psicológica via vídeo chamada.'], ['Cobertura personalizada para proteger a saúde dos seus filhos.', 'Consulte condições.']];
+screen('bhCobertura', {
+  cls: 'bh-light',
+  render: () => `${statusBar()}
+    <div class="row jc" style="flex:none;padding:8px 20px;position:relative">${BH_LOGO_D}<button type="button" data-back aria-label="Voltar" style="position:absolute;left:16px;top:8px;color:var(--bh-ink)">${ic('chevron-left', 24)}</button></div>
+    <div class="scroll" style="background:#fff">
+      <div class="col" style="gap:8px;padding:16px 24px 20px">
+        <p style="font-size:24px;line-height:32px;font-weight:700;color:var(--bh-ink)">Mais opções de cobertura</p>
+        <p style="font-size:14px;line-height:22px;color:var(--bh-muted)">Você pode ampliar seus benefícios. Entre em contato conosco para ativar mais opções.</p></div>
+      <div class="col" style="gap:16px;padding:20px 24px 24px;background:var(--bh-subtle)">
+        <p style="font-size:16px;line-height:24px;font-weight:600;color:var(--bh-ink)">Quais são suas prioridades?</p>
+        ${COBERTURAS.map(([t, d]) => `<div class="row g3 ais" style="background:#fff;border-radius:16px;padding:16px"><span class="bh-ic">${ic('plus', 18)}</span><span class="col g1 f1"><span style="font-size:14px;line-height:22px;font-weight:600;color:var(--bh-ink)">${t}</span><span style="font-size:12px;line-height:18px;color:var(--bh-muted)">${d}</span></span></div>`).join('')}
+        <div class="col g2" style="padding-top:8px">
+          <p style="font-size:16px;line-height:24px;font-weight:600;color:var(--bh-ink)">Fale conosco</p>
+          <p style="font-size:12px;line-height:18px;color:var(--bh-muted)">Atendimento de segunda a sexta, das 9h às 18h.</p>
+          <button type="button" class="row g2 jc" data-act="bhSoon" data-n="WhatsApp" style="height:48px;border-radius:9999px;background:var(--bh-blue);color:#fff;font-size:14px;font-weight:600;margin-top:8px">${ic('message-circle', 18)} Falar no WhatsApp</button></div>
+      </div></div>${homeInd()}`,
+});
+
 /* página do Me Paguei dentro do BlueHub */
 screen('bhMP', {
   cls: 'bh-light',
   render: () => `<div style="background:var(--bh-blue);color:#fff;flex:none">${statusBar(true)}<div class="row g3" style="padding:8px 16px 14px"><button type="button" data-back aria-label="Voltar" style="color:#fff">${ic('chevron-left', 22)}</button><div class="f1"><p class="h4">Saúde Financeira</p><p class="cap" style="color:#dfe7ff">Me Paguei - Assistente Financeiro</p></div><button type="button" data-back aria-label="Fechar" style="color:#fff">${ic('x', 22)}</button></div></div>
   <div class="scroll" style="background:#fff"><div class="col g5" style="padding:20px">
-    <div style="position:relative;height:340px;margin-bottom:6px">
+    <div style="position:relative;height:474px;flex:none;margin-bottom:6px">
       <div style="position:absolute;left:36px;right:36px;bottom:-8px;height:30px;border-radius:0 0 28px 28px;background:#c9e4fb"></div>
-      <img src="assets/welcome.webp" alt="Homem sorrindo segurando o celular" style="position:relative;width:100%;height:340px;object-fit:cover;object-position:center 20%;border-radius:28px">
+      <img src="assets/welcome.webp" alt="Homem sorrindo segurando o celular" style="position:relative;width:100%;height:474px;object-fit:cover;object-position:center 20%;border-radius:28px">
       <div style="position:absolute;left:0;top:0;width:96px;height:52px;background:#fff;border-radius:0 0 20px 0;display:flex;align-items:center;justify-content:center"><img src="assets/logo-color.png" alt="Me Paguei" width="56" height="34"></div></div>
     <div class="col g2"><p class="h1" style="color:var(--bh-ink)">Me Paguei</p><p class="b16" style="color:var(--bh-muted)">Cuidar das suas finanças nunca foi tão fácil.</p></div>
     <p class="b16 bold" style="color:var(--bh-ink)">O que você acessa através do Me Paguei:</p>
