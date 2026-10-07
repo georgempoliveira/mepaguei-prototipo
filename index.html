@@ -1052,7 +1052,8 @@ screen('splash', {
   cls: 'splash',
   render: () => `<div style="position:absolute;inset:0;background:var(--primary)"></div>${statusBar(true)}
     <div class="col jc" style="flex:1;align-items:center;position:relative"><img src="assets/logo-white.png" alt="Me Paguei" width="102" height="72" style="animation:pop .6s .2s cubic-bezier(.2,.8,.2,1) both"></div>${homeInd(true)}`,
-  mount: () => later(() => reset('onboarding', {}, 'fade'), 1700),
+  /* `next` permite reusar a splash ao voltar do Bluehub para o Me Paguei (item 3) */
+  mount: (el, p) => later(() => reset((p && p.next) || 'onboarding', {}, 'fade'), 1700),
 });
 
 const OB = [
@@ -2070,9 +2071,22 @@ const FREQ = { sem: ['Semanalmente', 'Depósito feito toda semana'], quinz: ['Qu
 const freqTxt = f => ({ sem: 'Semanalmente, todo domingo', quinz: 'Quinzenalmente, a cada 2 domingos', mesIni: 'Mensalmente no primeiro domingo do mês', mesFim: 'Mensalmente no último domingo do mês' }[f] || '');
 const valorLabel = f => ({ sem: 'Valor todo domingo', quinz: 'Valor a cada 2 domingos', mesIni: 'Valor todo primeiro domingo do mês', mesFim: 'Valor todo último domingo do mês' }[f] || 'Valor do depósito');
 
-const TEAMS = [['athletico', 'Athletico Paranaense', 'Paraná - Brasil'], ['atleticomg', 'Atlético Mineiro', 'Minas Gerais - Brasil'], ['bahia', 'Bahia', 'Bahia - Brasil'], ['botafogo', 'Botafogo', 'Rio de Janeiro - Brasil'], ['chapecoense', 'Chapecoense', 'Santa Catarina - Brasil'], ['coritiba', 'Coritiba', 'Paraná - Brasil'], ['corinthians', 'Corinthians', 'São Paulo - Brasil'], ['cruzeiro', 'Cruzeiro', 'Minas Gerais - Brasil'], ['flamengo', 'Flamengo', 'Rio de Janeiro - Brasil'], ['fluminense', 'Fluminense', 'Rio de Janeiro - Brasil'], ['gremio', 'Grêmio', 'Rio Grande do Sul - Brasil'], ['internacional', 'Internacional', 'Rio Grande do Sul - Brasil'], ['mirassol', 'Mirassol', 'São Paulo - Brasil'], ['palmeiras', 'Palmeiras', 'São Paulo - Brasil'], ['bragantino', 'Red Bull Bragantino', 'São Paulo - Brasil'], ['remo', 'Remo', 'Pará - Brasil'], ['santos', 'Santos', 'São Paulo - Brasil'], ['saopaulo', 'São Paulo', 'São Paulo - Brasil'], ['vasco', 'Vasco da Gama', 'Rio de Janeiro - Brasil'], ['vitoria', 'Vitória', 'Bahia - Brasil']];
+const TEAMS_A = [['athletico', 'Athletico Paranaense', 'Paraná - Brasil'], ['atleticomg', 'Atlético Mineiro', 'Minas Gerais - Brasil'], ['bahia', 'Bahia', 'Bahia - Brasil'], ['botafogo', 'Botafogo', 'Rio de Janeiro - Brasil'], ['chapecoense', 'Chapecoense', 'Santa Catarina - Brasil'], ['coritiba', 'Coritiba', 'Paraná - Brasil'], ['corinthians', 'Corinthians', 'São Paulo - Brasil'], ['cruzeiro', 'Cruzeiro', 'Minas Gerais - Brasil'], ['flamengo', 'Flamengo', 'Rio de Janeiro - Brasil'], ['fluminense', 'Fluminense', 'Rio de Janeiro - Brasil'], ['gremio', 'Grêmio', 'Rio Grande do Sul - Brasil'], ['internacional', 'Internacional', 'Rio Grande do Sul - Brasil'], ['mirassol', 'Mirassol', 'São Paulo - Brasil'], ['palmeiras', 'Palmeiras', 'São Paulo - Brasil'], ['bragantino', 'Red Bull Bragantino', 'São Paulo - Brasil'], ['remo', 'Remo', 'Pará - Brasil'], ['santos', 'Santos', 'São Paulo - Brasil'], ['saopaulo', 'São Paulo', 'São Paulo - Brasil'], ['vasco', 'Vasco da Gama', 'Rio de Janeiro - Brasil'], ['vitoria', 'Vitória', 'Bahia - Brasil']];
+/* Séries B e C do Brasileirão 2026 (20 clubes cada) */
+const TEAMS_B = [['ceara', 'Ceará', 'Ceará - Brasil'], ['fortaleza', 'Fortaleza', 'Ceará - Brasil'], ['juventude', 'Juventude', 'Rio Grande do Sul - Brasil'], ['sport', 'Sport', 'Pernambuco - Brasil'], ['criciuma', 'Criciúma', 'Santa Catarina - Brasil'], ['goias', 'Goiás', 'Goiás - Brasil'], ['novorizontino', 'Novorizontino', 'São Paulo - Brasil'], ['crb', 'CRB', 'Alagoas - Brasil'], ['avai', 'Avaí', 'Santa Catarina - Brasil'], ['cuiaba', 'Cuiabá', 'Mato Grosso - Brasil'], ['atleticogo', 'Atlético Goianiense', 'Goiás - Brasil'], ['operariopr', 'Operário-PR', 'Paraná - Brasil'], ['vilanova', 'Vila Nova', 'Goiás - Brasil'], ['americamg', 'América Mineiro', 'Minas Gerais - Brasil'], ['athleticmg', 'Athletic', 'Minas Gerais - Brasil'], ['botafogosp', 'Botafogo-SP', 'São Paulo - Brasil'], ['pontepreta', 'Ponte Preta', 'São Paulo - Brasil'], ['londrina', 'Londrina', 'Paraná - Brasil'], ['nautico', 'Náutico', 'Pernambuco - Brasil'], ['saobernardo', 'São Bernardo', 'São Paulo - Brasil']];
+const TEAMS_C = [['amazonas', 'Amazonas', 'Amazonas - Brasil'], ['anapolis', 'Anápolis', 'Goiás - Brasil'], ['barra', 'Barra', 'Santa Catarina - Brasil'], ['botafogopb', 'Botafogo-PB', 'Paraíba - Brasil'], ['brusque', 'Brusque', 'Santa Catarina - Brasil'], ['caxias', 'Caxias', 'Rio Grande do Sul - Brasil'], ['confianca', 'Confiança', 'Sergipe - Brasil'], ['ferroviaria', 'Ferroviária', 'São Paulo - Brasil'], ['figueirense', 'Figueirense', 'Santa Catarina - Brasil'], ['floresta', 'Floresta', 'Ceará - Brasil'], ['guarani', 'Guarani', 'São Paulo - Brasil'], ['interlimeira', 'Inter de Limeira', 'São Paulo - Brasil'], ['itabaiana', 'Itabaiana', 'Sergipe - Brasil'], ['ituano', 'Ituano', 'São Paulo - Brasil'], ['maranhao', 'Maranhão', 'Maranhão - Brasil'], ['maringa', 'Maringá', 'Paraná - Brasil'], ['paysandu', 'Paysandu', 'Pará - Brasil'], ['santacruz', 'Santa Cruz', 'Pernambuco - Brasil'], ['voltaredonda', 'Volta Redonda', 'Rio de Janeiro - Brasil'], ['ypiranga', 'Ypiranga', 'Rio Grande do Sul - Brasil']];
+const SERIES = { A: TEAMS_A, B: TEAMS_B, C: TEAMS_C };
+const TEAMS = [...TEAMS_A, ...TEAMS_B, ...TEAMS_C];
+const serieDoTime = id => (TEAMS_B.some(t => t[0] === id) ? 'B' : TEAMS_C.some(t => t[0] === id) ? 'C' : 'A');
 const team = id => { const t = TEAMS.find(x => x[0] === id) || TEAMS[3]; return { id: t[0], nome: t[1], uf: t[2] }; };
-const crest = (id, s = 48) => `<img src="assets/t-${id}.png" alt="" width="${s}" height="${s}" style="border-radius:50%;flex:none;background:#f3f3f3">`;
+/* só a Série A tem escudo em PNG; B e C usam um círculo com as iniciais do clube */
+const CRESTS = new Set(TEAMS_A.map(t => t[0]));
+const crest = (id, s = 48) => CRESTS.has(id)
+  ? `<img src="assets/t-${id}.png" alt="" width="${s}" height="${s}" style="border-radius:50%;flex:none;background:#f3f3f3">`
+  : `<span aria-hidden="true" style="width:${s}px;height:${s}px;border-radius:50%;flex:none;background:var(--primary-lighter);color:var(--primary);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:${Math.round(s * 0.3)}px">${esc(sigla((TEAMS.find(t => t[0] === id) || ['', '?'])[1]))}</span>`;
+/* duas letras: iniciais de duas palavras (Vila Nova → VN) ou as duas primeiras (Avaí → AV) */
+const sigla = (nome) => { const p = String(nome).normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^\p{L}\s]/gu, ' ').trim().split(/\s+/).filter(x => x.length > 1);
+  return (p.length > 1 ? p[0][0] + p[1][0] : (p[0] || '?').slice(0, 2)).toUpperCase(); };
 const teamRow = (id, extra = '') => { const t = team(id); return `${crest(id)}<div class="f1" style="text-align:left"><p class="b16 semi c-darker">${t.nome}</p><p class="b14 c-base">${t.uf}</p></div>${extra}`; };
 
 function poupState() { return S.poup ??= { total: 0 }; }
@@ -2222,7 +2236,10 @@ function vfBody() {
 function placarBody() {
   const o = poupState().placar;
   if (!o) return notCfg('placar');
-  const t = team(o.time); const adv = team(o.time === 'fluminense' ? 'flamengo' : 'fluminense');
+  const t = team(o.time);
+  /* adversário sai da mesma série do time escolhido, senão o confronto fica impossível */
+  const mesma = SERIES[serieDoTime(o.time)].filter(x => x[0] !== o.time);
+  const adv = team(mesma[o.time.length % mesma.length][0]);
   const H = o.hist || [];
   return `<div class="col g2"><p class="cap semi c-base">Time escolhido</p><div class="row g3" style="background:var(--bg-lighter);border-radius:var(--r-xl);padding:12px 16px">${teamRow(o.time)}</div></div>
     <div class="col g2"><p class="cap semi c-base">Próximo jogo</p><div class="row g2" style="background:var(--primary-lighter);border-radius:var(--r-xl);padding:12px 16px"><span class="b14 bold c-darker">${t.nome.split(' ')[0]}</span>${ic('x', 14)}<span class="b14 bold c-darker f1">${adv.nome.split(' ')[0]}</span><span class="b14 bold c-darker">${ddmm(proxDomingo())}</span><span class="row g1 b14 c-dark">${ic('circle', 10, 'c-primary')} 18:30</span></div></div>
@@ -2270,7 +2287,7 @@ screen('poupar', {
     go: () => SCREENS.poupIntro.acts.go(),
     tabHome: () => reset('home', {}, 'back'),
     compra: (b) => { const h = poupState().troco.hist[+b.dataset.k]; openSheet(`<div class="col g1 center" style="align-items:center"><p class="b14 c-base">Poupança gerada</p><p class="h1 c-success">${fmtBRL(h.pou)}</p><p class="cap c-base">${h.d}</p></div><div class="col">${[['Estabelecimento', h.loja], ['Compra original', fmtBRL(h.compra)], ['Arredondamento', fmtBRL(h.arr)], ['Multiplicador aplicado', h.mult ? `<span class="badge success">${h.mult}X</span>` : 'Sem multiplicador'], ['Cartão utilizado', '****1234 · ' + BANKS[(S.origem || { bank: 'nubank' }).bank].nome]].map(([a, v]) => `<div class="li jb"><span class="b14 c-base">${a}</span><span class="b14 semi c-darker" style="text-align:right">${v}</span></div>`).join('')}</div>`); },
-    objNew: () => objWizard(),
+    objNew: () => { if (!anyPoup()) { exigePoupanca(); return; } objWizard(); },
     objOpen: () => objSheet(),
   },
 });
@@ -2347,7 +2364,20 @@ screen('objEdit', {
     return `${statusBar()}${appHeader('Objetivo')}<div class="col px5">${[['Nome', o.nome, 1], ['Valor do objetivo', fmtBRL(o.valor), 2], ['Data de conclusão', prazoLongo(o.prazo), 3]].map(([t, v, s]) => `<button type="button" class="li" data-act="ed" data-s="${s}"><span class="lt col"><span class="b16 semi c-darker">${t}</span><span class="b14 c-base">${esc(v)}</span></span>${ic('chevron-right', 20, 'c-base')}</button>`).join('')}</div>${homeInd()}`; },
   acts: { ed: (b) => { const o = S.objetivo; S.tmpObj = { nome: o.nome, valorTxt: fmtBRL(o.valor), prazo: o.prazo }; objWizard(+b.dataset.s, true); } },
 });
-screen('objetivo', { render: () => '', mount: () => { if (!S.flags.poupIntroSeen) S.flags.poupIntroSeen = true; stack = []; reset('poupar', { tab: 'total', openObj: !S.objetivo }, 'none'); if (S.objetivo) later(objSheet, 350); } });
+/* O objetivo só existe se houver poupança para alimentá-lo: sem nenhuma ativa,
+   mandamos o usuário escolher uma primeiro (item 1). */
+function exigePoupanca() {
+  if (anyPoup()) return false;
+  if (!S.flags.poupIntroSeen) S.flags.poupIntroSeen = true;
+  stack = []; reset('poupar', { tab: 'total' }, 'none');
+  later(() => openSheet(`<span class="ico-c" style="color:var(--ia)">${ic('goal', 22)}</span>
+    <p class="h3 c-darker">Primeiro, ative uma poupança</p>
+    <p class="b14 c-dark">O objetivo é alimentado pelo que você guarda. Escolha uma poupança automática e, assim que ela estiver ativa, criamos seu objetivo juntos.</p>`,
+    { foot: btn('Escolher uma poupança', { act: 'explorePoup' }) + btn('Agora não', { v: 'o', act: 'closeov' }) }), 320);
+  return true;
+}
+Object.assign(GLOBAL_ACTS, { explorePoup: () => { closeOverlays(true); go('poupEscolher'); } });
+screen('objetivo', { render: () => '', mount: () => { if (exigePoupanca()) return; if (!S.flags.poupIntroSeen) S.flags.poupIntroSeen = true; stack = []; reset('poupar', { tab: 'total', openObj: !S.objetivo }, 'none'); if (S.objetivo) later(objSheet, 350); } });
 
 /* ---------- Valor fixo ---------- */
 screen('vfFreq', {
@@ -2415,9 +2445,10 @@ screen('pbIntro', {
 screen('pbTime', {
   cls: 'grad',
   render: (p) => { const q = (p.q || '').trim().toLowerCase(); const serie = p.serie || 'A'; const sel = p.edit ? (S.tmpPb.time || poupState().placar.time) : '';
-    const L = TEAMS.filter(t => !q || t[1].toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').includes(q.normalize('NFD').replace(/[̀-ͯ]/g, '')));
-    const list = serie !== 'A' && !q ? `<div class="empty"><span class="ico-c">${ic('info', 20)}</span><p class="b14 c-dark">Nesta versão de teste, a lista da Série ${serie} não está disponível. Escolha um time da Série A.</p></div>`
-      : L.length ? `<div class="col">${L.map(([id]) => `<button type="button" class="li" data-act="tpick" data-t="${id}">${teamRow(id, id === sel ? '<span class="badge success">Escolhido</span>' : ic('chevron-right', 20, 'c-base'))}</button>`).join('')}</div>`
+    const sem = x => x.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+    /* com busca, procura nas três séries; sem busca, mostra a série escolhida */
+    const L = q ? TEAMS.filter(t => sem(t[1]).includes(sem(q))) : SERIES[serie];
+    const list = L.length ? `<div class="col">${L.map(([id]) => `<button type="button" class="li" data-act="tpick" data-t="${id}">${teamRow(id, id === sel ? '<span class="badge success">Escolhido</span>' : ic('chevron-right', 20, 'c-base'))}</button>`).join('')}</div>`
       : `<div class="empty"><span class="ico-c" style="background:var(--bg-lighter);color:var(--ty-base)">${ic('search-x', 20)}</span><p class="b14 semi c-darker">Time não encontrado</p><p class="b14 c-dark">O Me Paguei utiliza como base os clubes do atual Campeonato Brasileiro das Séries A, B e C. O ${esc(p.q)} não corresponde a nenhuma dessas equipes. Busque um outro time.</p></div>`;
     return ofScreen({ title: 'Escolha o time', sub: 'Acompanhe um dos 60 clubes disponíveis e crie sua dinâmica para poupar.', dots: p.edit ? 0 : 1,
       body: `${field({ id: 'tq', ph: 'Buscar time...', icon: 'search', value: p.q || '' })}<div class="col g2"><p class="b14 semi c-dark">Brasileirão</p><div class="row g2">${['A', 'B', 'C'].map(s => `<button type="button" class="chip f1 jc" data-act="serie" data-s="${s}" style="${s === serie ? 'background:var(--primary);border-color:var(--primary);color:#fff' : 'border-color:#a9d3f5;color:var(--primary)'}">Série ${s}</button>`).join('')}</div></div>${list}` }); },
@@ -3611,7 +3642,7 @@ screen('bhHome', {
         <span class="col f1" style="gap:8px"><span style="font-size:14px;line-height:22px;font-weight:600;color:var(--bh-ink)">Ficou com dúvida?</span><span style="font-size:12px;line-height:18px;color:var(--bh-muted);white-space:nowrap">Fale com nossa equipe no whatsapp</span></span><span style="color:var(--bh-muted);display:flex">${ic('chevron-right', 16)}</span></button></div>
     </div></div>${bhNav('bhHome')}`,
   acts: {
-    mp: () => { if (MP_ATIVO()) { reset('home'); } else go('bhMP'); },
+    mp: () => { if (MP_ATIVO()) { reset('splash', { next: 'home' }, 'fade'); } else go('bhMP'); },
     apos: () => { if (SCREENS.apos1) go('apos1'); else GLOBAL_ACTS.bhSoon({ dataset: { n: 'Aposentadoria' } }); },
     vida: () => SCREENS.bhVida ? go('bhVida') : GLOBAL_ACTS.bhSoon({ dataset: { n: 'Plano Vida+' } }),
     trilhas: () => SCREENS.bhTrilhas ? go('bhTrilhas') : GLOBAL_ACTS.bhSoon({ dataset: { n: 'Trilhas' } }),

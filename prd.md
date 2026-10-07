@@ -220,3 +220,13 @@ para pular direto a qualquer ponto do fluxo. Ao criar uma tela nova, **adicione 
 4. `python3 build.py` → renderizar com `full.py` → **comparar lado a lado com o Figma**.
 5. Checar que não há erro de JS (`ERR []`) e publicar (ver `design.md` §2).
 6. Avisar o cliente sobre qualquer improviso.
+
+## Regras acrescentadas (07/10)
+- **Objetivo exige poupança ativa.** Tentar abrir o Objetivo sem nenhuma poupança
+  (`anyPoup()` falso) leva à aba Poupanças com uma folha explicando o porquê e um atalho
+  para escolher uma. Vale para o card da home e para o card dentro de Poupanças.
+- **Placar do Bem: 60 clubes.** `TEAMS_A/B/C` + `SERIES` com as Séries A, B e C do
+  Brasileirão 2026. Só a Série A tem escudo em PNG; B e C caem num círculo com a sigla
+  de duas letras (`sigla()`). O adversário do "Próximo jogo" sai da mesma série.
+- **Splash reaproveitada.** `screen('splash')` aceita `{next}`; voltar do Bluehub para o
+  Me Paguei passa pela splash em vez de cair direto na home.

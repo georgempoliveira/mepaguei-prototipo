@@ -4,7 +4,8 @@ screen('splash', {
   cls: 'splash',
   render: () => `<div style="position:absolute;inset:0;background:var(--primary)"></div>${statusBar(true)}
     <div class="col jc" style="flex:1;align-items:center;position:relative"><img src="assets/logo-white.png" alt="Me Paguei" width="102" height="72" style="animation:pop .6s .2s cubic-bezier(.2,.8,.2,1) both"></div>${homeInd(true)}`,
-  mount: () => later(() => reset('onboarding', {}, 'fade'), 1700),
+  /* `next` permite reusar a splash ao voltar do Bluehub para o Me Paguei (item 3) */
+  mount: (el, p) => later(() => reset((p && p.next) || 'onboarding', {}, 'fade'), 1700),
 });
 
 const OB = [

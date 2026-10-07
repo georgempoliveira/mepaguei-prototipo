@@ -245,7 +245,7 @@ screen('bhHome', {
         <span class="col f1" style="gap:8px"><span style="font-size:14px;line-height:22px;font-weight:600;color:var(--bh-ink)">Ficou com dúvida?</span><span style="font-size:12px;line-height:18px;color:var(--bh-muted);white-space:nowrap">Fale com nossa equipe no whatsapp</span></span><span style="color:var(--bh-muted);display:flex">${ic('chevron-right', 16)}</span></button></div>
     </div></div>${bhNav('bhHome')}`,
   acts: {
-    mp: () => { if (MP_ATIVO()) { reset('home'); } else go('bhMP'); },
+    mp: () => { if (MP_ATIVO()) { reset('splash', { next: 'home' }, 'fade'); } else go('bhMP'); },
     apos: () => { if (SCREENS.apos1) go('apos1'); else GLOBAL_ACTS.bhSoon({ dataset: { n: 'Aposentadoria' } }); },
     vida: () => SCREENS.bhVida ? go('bhVida') : GLOBAL_ACTS.bhSoon({ dataset: { n: 'Plano Vida+' } }),
     trilhas: () => SCREENS.bhTrilhas ? go('bhTrilhas') : GLOBAL_ACTS.bhSoon({ dataset: { n: 'Trilhas' } }),
