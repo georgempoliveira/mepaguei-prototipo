@@ -240,13 +240,46 @@ screen('perf2', {
   }),
   valid: () => S.user.civil && S.user.profissao.trim() && S.user.renda,
 });
+/* Busca de CEP no ViaCEP (público, com CORS). Se a rede falhar, cai no endereço de exemplo
+   para o teste nunca travar. `cepSeq` descarta resposta atrasada de um CEP já reescrito. */
+let cepSeq = 0;
+const ENDERECO_EXEMPLO = { rua: 'Rua Bione', bairro: 'Bairro do Recife', cidade: 'Recife', uf: 'PE' };
+async function buscaCep(valor) {
+  const d = String(valor).replace(/\D/g, '');
+  if (d.length !== 8) return;
+  const seq = ++cepSeq;
+  S.flags.cepSt = 'load'; refresh();
+  let data = null, semRede = false;
+  try {
+    const ctrl = new AbortController();
+    const t = setTimeout(() => ctrl.abort(), 5000);
+    const r = await fetch(`https://viacep.com.br/ws/${d}/json/`, { signal: ctrl.signal });
+    clearTimeout(t);
+    data = await r.json();
+  } catch (e) { semRede = true; }
+  if (seq !== cepSeq) return;                       // o usuário já mudou o CEP
+  if (!semRede && data && !data.erro) {
+    Object.assign(S.user, { rua: data.logradouro || '', bairro: data.bairro || '', cidade: data.localidade || '', uf: data.uf || '' });
+    S.flags.cepSt = 'ok';
+  } else if (!semRede && data && data.erro) {
+    Object.assign(S.user, { rua: '', bairro: '', cidade: '', uf: '' });
+    S.flags.cepSt = 'err';
+  } else {
+    Object.assign(S.user, ENDERECO_EXEMPLO);        // sem internet: segue com o exemplo
+    S.flags.cepSt = 'ok';
+  }
+  refresh();
+  later(() => $(S.flags.cepSt === 'ok' ? '#num' : '#rua', cur)?.focus(), 60);
+}
 screen('perf3', {
   cls: 'grad',
   render: () => {
-    const ok = S.user.cep.length === 9;
+    const st = S.flags.cepSt || '';
+    const ok = st === 'ok' || st === 'err';
     return gradScreen({
       title: 'Endereço', sub: 'Informe seu endereço residencial para fins de validação cadastral.', step: 'Etapa 3 de 4',
-      body: `${field({ id: 'cep', label: 'CEP', ph: '12345-078', bind: 'user.cep', mask: 'cep', icon: 'search' })}
+      body: `${field({ id: 'cep', label: 'CEP', ph: '12345-078', bind: 'user.cep', mask: 'cep', icon: 'search', helper: st === 'load' ? 'Buscando endereço...' : '' })}
+      ${st === 'err' ? '<p class="fld-h err" style="margin-top:-8px">CEP não encontrado. Confira o número ou preencha o endereço abaixo.</p>' : ''}
       <div class="row g3 ais">${field({ id: 'rua', label: 'Rua / Logradouro', ph: 'Rua Bione', bind: 'user.rua', dis: !ok, cls: 'f1' })}<div style="width:96px">${field({ id: 'num', label: 'Número', ph: '123', bind: 'user.numero', dis: !ok, mode: 'numeric' })}</div></div>
       ${field({ id: 'compl', label: 'Complemento', opt: true, ph: 'Apto. 234, Bloco A', bind: 'user.compl', dis: !ok })}
       ${field({ id: 'bairro', label: 'Bairro', ph: 'Bairro do Recife', bind: 'user.bairro', dis: !ok })}
@@ -256,11 +289,10 @@ screen('perf3', {
   },
   onInput: (i) => {
     if (i.id !== 'cep') return;
-    const was = !$('#rua', cur).disabled;
-    if (i.value.length === 9 && !was) { Object.assign(S.user, { rua: S.user.rua || 'Rua Bione', bairro: S.user.bairro || 'Bairro do Recife', cidade: S.user.cidade || 'Recife', uf: S.user.uf || 'PE' }); refresh(); later(() => $('#num', cur)?.focus(), 50); }
-    else if (i.value.length < 9 && was) refresh();
+    if (i.value.length === 9) { if (S.flags.cepSt !== 'load') buscaCep(i.value); }
+    else if (S.flags.cepSt) { S.flags.cepSt = ''; cepSeq++; Object.assign(S.user, { rua: '', bairro: '', cidade: '', uf: '' }); refresh(); }
   },
-  valid: () => S.user.cep.length === 9 && S.user.rua && S.user.numero && S.user.bairro && S.user.cidade && S.user.uf,
+  valid: () => S.flags.cepSt !== 'load' && S.user.cep.length === 9 && S.user.rua && S.user.numero && S.user.bairro && S.user.cidade && S.user.uf,
 });
 screen('perf4', {
   cls: 'grad',

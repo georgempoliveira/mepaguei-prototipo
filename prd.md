@@ -147,6 +147,9 @@ faturas, saldo seguro) — use sempre que precisar de uma tela com dados.
    `objWizard(1,false)` **zera** `S.tmpObj`.
 5. **A apresentação da Clareza e os onboardings só aparecem uma vez** por sessão.
 6. **Excluir conta (BlueHub)** abre alerta e, ao confirmar, zera o estado e volta para o início.
+7. **CEP busca o endereço de verdade** (ViaCEP). Estados: `S.flags.cepSt` = `load` (buscando) ·
+   `ok` (preencheu) · `err` (não encontrado — campos liberados para digitar à mão). O contador
+   `cepSeq` descarta resposta atrasada de um CEP já reescrito.
 
 ---
 
@@ -190,6 +193,7 @@ para pular direto a qualquer ponto do fluxo. Ao criar uma tela nova, **adicione 
 | Ícones do onboarding slide 2 | Escolhidos por aproximação: `wallet, coins, repeat, gift, piggy-bank` |
 | Espaçamento da `clarezaIntro` | ~18px mais apertado que o Figma (frame tem 848px; a tela tem 812) |
 | Vídeos (Vida+, trilhas) | Placeholders "Vídeo em breve" / toast "abre fora do protótipo" |
+| Busca de CEP (`perf3`) | **Real**, via ViaCEP no navegador do participante. Sem internet, cai no endereço de exemplo (Rua Bione/Recife) para não travar o teste. É a única chamada de rede do protótipo |
 
 ---
 
