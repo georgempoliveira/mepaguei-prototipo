@@ -403,3 +403,11 @@ body.cmp .hi{display:block!important}
 .step-dots{display:flex;gap:4px;align-items:center}
 .step-dots i{display:block;width:5px;height:5px;border-radius:3px;background:rgba(255,255,255,.45)}
 .step-dots i.on{width:16px;background:#fff}
+
+/* insight da MIA deslizável (item 22) */
+.mia-sl{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;gap:16px;touch-action:pan-x}
+.mia-sl::-webkit-scrollbar{display:none}
+.mia-sl>div{min-width:100%;scroll-snap-align:start}
+.mia-dots{display:flex;gap:4px;justify-content:flex-end;align-items:center}
+.mia-dots i{display:block;width:5px;height:5px;border-radius:3px;background:#d9c2f7}
+.mia-dots i.on{width:14px;background:var(--ia)}

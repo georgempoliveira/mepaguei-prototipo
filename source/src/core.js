@@ -133,6 +133,14 @@ function pintaFundo(el) {
   document.body.style.background = c;          // o body cobre a área interna; o html, a sobra
   const m = $('meta[name="theme-color"]'); if (m) m.setAttribute('content', c);
 }
+/* insight da MIA com vários slides: os pontinhos seguem o deslize (item 22) */
+document.addEventListener('scroll', (e) => {
+  const el = e.target;
+  if (!el || !el.classList || !el.classList.contains('mia-sl')) return;
+  const i = Math.round(el.scrollLeft / Math.max(1, el.clientWidth));
+  const dots = el.parentElement.querySelectorAll('.mia-dots i');
+  dots.forEach((d, k) => d.classList.toggle('on', k === i));
+}, true);
 function render(dir) {
   const top = stack[stack.length - 1]; if (!top) return;
   const def = SCREENS[top.id]; if (!def) { console.warn('tela inexistente', top.id); return; }

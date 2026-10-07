@@ -25,7 +25,7 @@ function navbar(active) {
 }
 GLOBAL_ACTS.tab = (b) => { let t = b.dataset.tab;
   /* Clareza ainda sem nenhum estudo: entra pela tela de apresentação (17790:141394) */
-  if (t === 'clareza' && !S.flags.clarezaIntro && !S.ss && !S.saldoSeguro) t = 'clarezaIntro'; const top = stack[stack.length - 1]; if (top && top.id === t && stack.length === 1) { const sc = cur.querySelector('.scroll'); if (sc) sc.scrollTo({ top: 0, behavior: 'smooth' }); return; } reset(t, {}, 'none'); };
+  if (t === 'clareza' && typeof primeiraVezClareza === 'function' && primeiraVezClareza()) t = 'clarezaIntro'; const top = stack[stack.length - 1]; if (top && top.id === t && stack.length === 1) { const sc = cur.querySelector('.scroll'); if (sc) sc.scrollTo({ top: 0, behavior: 'smooth' }); return; } reset(t, {}, 'none'); };
 
 /* ---------- Home ---------- */
 const BLUEHUB_IC = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="9" r="5"/><path d="M6 20h12"/></svg>`;
@@ -138,7 +138,9 @@ screen('home', {
     const car = $('#hcar', el); if (car) car.addEventListener('scroll', () => { const i = Math.round(car.scrollLeft / 300); $$('#hdots i', el).forEach((d, k) => d.classList.toggle('on', k === i)); });
   },
   acts: {
-    step: (b) => { const to = b.dataset.to; if (to.startsWith('tab:')) reset(to.slice(4), {}, 'none'); else go(to); },
+    step: (b) => { const to = b.dataset.to;
+      if ((to === 'tab:clareza' || to === 'faturas') && typeof primeiraVezClareza === 'function' && primeiraVezClareza()) { reset('clarezaIntro', {}, 'none'); return; }
+      if (to.startsWith('tab:')) reset(to.slice(4), {}, 'none'); else go(to); },
     hideVals: () => { S.flags.hide = !S.flags.hide; rerender(); },
     banks: () => openSheet(`<p class="b14 c-dark">Total de instituições: ${S.contas.length}</p><div class="col">${S.contas.map(id => `<div class="li">${bankIc(id)}<span class="lt b16 semi c-darker">${BANKS[id].nome}</span></div>`).join('')}</div>`, { foot: btn('Ir para central de consentimentos', { act: 'toCentral' }) }),
     toCentral: () => { closeOverlays(true); go('central', { tab: 'def' }); },
