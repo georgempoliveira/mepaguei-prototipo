@@ -209,7 +209,6 @@ screen('obj', {
 });
 
 /* ---------- perfil · etapa 1 de 4 ---------- */
-let fotoURL = '';
 /* profissões mais comuns do mercado brasileiro (item 12) */
 const PROFISSOES = ['Assistente Administrativo', 'Analista de Sistemas', 'Auxiliar de Serviços Gerais', 'Enfermeiro(a)', 'Motorista', 'Professor(a)', 'Vendedor(a)', 'Técnico(a) de Enfermagem', 'Operador(a) de Caixa', 'Autônomo(a)', 'Outra'];
 screen('perf1', {
@@ -217,7 +216,7 @@ screen('perf1', {
   render: () => gradScreen({
     title: 'Informações básicas', sub: 'Informe seus dados iniciais para que possamos dar início à personalização do seu perfil.', step: '1/4',
     body: `<div class="col g2" style="align-items:center">
-      <span style="width:128px;height:128px;border-radius:50%;background:var(--btn-primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:40px;line-height:48px;font-weight:700">${esc(iniciais(S.user.nome))}</span>
+      <span style="width:128px;height:128px;border-radius:50%;overflow:hidden;background:var(--btn-primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:40px;line-height:48px;font-weight:700">${fotoUser() ? `<img src="${fotoUser()}" alt="" style="width:100%;height:100%;object-fit:cover">` : esc(iniciais(S.user.nome))}</span>
       <p class="cap c-base center" style="max-width:240px">Sua foto pode ser alterada no seu perfil do BlueHub.</p>
     </div>
     ${selectField({ id: 'gen', label: 'Gênero', bind: 'user.genero', options: ['Feminino', 'Masculino', 'Não-binário', 'Prefiro não informar'] })}

@@ -19,6 +19,8 @@ function freshState() {
 let S = freshState();
 const iniciais = (n) => { const p = String(n || 'Marcelo Pimentel').trim().split(/\s+/).filter(Boolean); return ((p[0] || '')[0] + (p.length > 1 ? (p[p.length - 1] || '')[0] : '')).toUpperCase(); };
 const firstName = () => (S.user.nome.trim().split(/\s+/)[0] || 'Marcelo');
+/* foto única do usuário: a que ele envia no BlueHub vale também no Me Paguei */
+const fotoUser = () => S.user.bhFoto || '';
 
 /* ---------- formatadores ---------- */
 const fmtBRL = (v, cents = true) => 'R$ ' + Number(v || 0).toLocaleString('pt-BR', { minimumFractionDigits: cents ? 2 : 0, maximumFractionDigits: cents ? 2 : 0 });
@@ -298,7 +300,7 @@ function buildMod() {
 document.addEventListener('click', e => {
   const m = e.target.closest('[data-mod]');
   if (m) { const [g, i] = m.dataset.mod.split('.').map(Number); $('#mod-sheet').hidden = true; closeOverlays(true); FLOWS[g].items[i].fn(); return; }
-  if (e.target.closest('[data-mod-reset]')) { $('#mod-sheet').hidden = true; S = freshState(); fotoURL = ''; closeOverlays(true); reset('bhSplash'); return; }
+  if (e.target.closest('[data-mod-reset]')) { $('#mod-sheet').hidden = true; S = freshState(); closeOverlays(true); reset('bhSplash'); return; }
   if (e.target.closest('[data-mod-close]') || e.target.id === 'mod-sheet') { $('#mod-sheet').hidden = true; }
 }, true);
 /* três toques rápidos na barra de status abrem o painel (útil no celular) */

@@ -31,7 +31,7 @@ GLOBAL_ACTS.tab = (b) => { let t = b.dataset.tab;
 const BLUEHUB_IC = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="9" r="5"/><path d="M6 20h12"/></svg>`;
 function homeHeader() {
   return `<div class="hh">
-    <button type="button" class="av" data-go="perfilInfo" aria-label="Meu perfil">${fotoURL ? `<img src="${fotoURL}" alt="">` : `<img src="assets/avatar-user.webp" alt="">`}</button>
+    <button type="button" class="av" data-go="perfilInfo" aria-label="Meu perfil"><img src="${fotoUser() || 'assets/avatar-user.webp'}" alt=""></button>
     <button type="button" class="f1" data-go="config" style="text-align:left;color:#fff"><p class="b14" style="line-height:18px">Olá,</p><p class="b14 bold" style="line-height:18px">${esc(firstName())}</p></button>
     <button type="button" class="hb" data-act="hideVals" aria-label="${S.flags.hide ? 'Mostrar valores' : 'Ocultar valores'}">${ic(S.flags.hide ? 'eye-off' : 'eye', 18)}</button>
     <button type="button" class="hb" data-go="notif" aria-label="Notificações" style="position:relative">${ic('bell', 18)}${S.notif && S.notif.length ? '<span style="position:absolute;top:4px;right:6px;width:7px;height:7px;border-radius:50%;background:#ff5a5a;border:1.5px solid var(--btn-primary)"></span>' : ''}</button>
@@ -197,7 +197,7 @@ function setRow(icn, t, d, to, danger) {
 }
 screen('config', {
   render: () => `${statusBar()}${appHeader('Configurações')}<div class="scroll px5">
-    <div class="card row g3" style="margin:4px 0 20px"><span style="width:56px;height:56px;border-radius:50%;overflow:hidden;flex:none"><img src="${fotoURL || 'assets/avatar-user.webp'}" alt="" style="width:100%;height:100%;object-fit:cover"></span><div class="f1"><p class="b16 semi c-darker">${esc(S.user.nome || 'Marcelo Pimentel')}</p><p class="b14 c-base" style="overflow-wrap:anywhere">${esc(S.user.email || 'marcelopimentel@email.com')}</p></div></div>
+    <div class="card row g3" style="margin:4px 0 20px"><span style="width:56px;height:56px;border-radius:50%;overflow:hidden;flex:none"><img src="${fotoUser() || 'assets/avatar-user.webp'}" alt="" style="width:100%;height:100%;object-fit:cover"></span><div class="f1"><p class="b16 semi c-darker">${esc(S.user.nome || 'Marcelo Pimentel')}</p><p class="b14 c-base" style="overflow-wrap:anywhere">${esc(S.user.email || 'marcelopimentel@email.com')}</p></div></div>
     <p class="h3 c-darker">Conta</p><div class="col" style="margin-bottom:16px">
       ${setRow('user', 'Informações Pessoais', 'Nome, telefone, documentos', 'data-go="perfilInfo"')}
       ${setRow('landmark', 'Consentimento de contas', 'Contas e Open Finance', 'data-act="central"')}
@@ -225,7 +225,7 @@ function infoBlock(icn, title, rows, editTo) {
 screen('perfilInfo', {
   render: () => { const u = S.user;
     return `${statusBar()}${appHeader('Informações Pessoais')}<div class="scroll px5 col g4" style="display:flex;padding-bottom:20px">
-    <div class="col g2" style="align-items:center"><span style="width:112px;height:112px;border-radius:50%;overflow:hidden"><img src="${fotoURL || 'assets/avatar-user.webp'}" alt="" style="width:100%;height:100%;object-fit:cover"></span><p class="cap c-base center">Adicione uma foto para deixar o app<br>com a sua cara. (opcional)</p></div>
+    <div class="col g2" style="align-items:center"><span style="width:112px;height:112px;border-radius:50%;overflow:hidden"><img src="${fotoUser() || 'assets/avatar-user.webp'}" alt="" style="width:100%;height:100%;object-fit:cover"></span><p class="cap c-base center">Adicione uma foto para deixar o app<br>com a sua cara. (opcional)</p></div>
     ${infoBlock('user', 'Dados pessoais', [['Gênero:', u.genero || 'Masculino'], ['Data de nascimento:', u.nasc || '12/06/1986'], ['Estado civil:', u.civil || 'Casado']], 'perf1')}
     ${infoBlock('briefcase', 'Profissional', [['Profissão:', u.profissao || 'Gerente de Projetos'], ['Renda média mensal:', u.renda || 'R$ 10.000,00']], 'perf2')}
     ${infoBlock('map-pin', 'Endereço', [['CEP:', u.cep || '12345-078'], ['Rua/Logradouro:', u.rua || 'Rua Bione'], ['Número', u.numero || '123'], ['Complemento (opcional)', u.compl || 'Apto. 234, Bloco A'], ['Bairro', u.bairro || 'Bairro do Recife'], ['Cidade:', u.cidade || 'Recife'], ['Estado:', u.uf || 'PE']], 'perf3')}
