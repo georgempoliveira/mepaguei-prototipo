@@ -201,6 +201,7 @@ function render(dir) {
   }
   cur = el;
   pintaFundo(el);
+  logTela(top.id);
   salvaConta();
   clearTimers();
   closeOverlays(true);
@@ -332,10 +333,94 @@ document.addEventListener('input', e => {
 document.addEventListener('change', e => { const i = e.target; if (i.tagName === 'SELECT') { if (i.dataset.bind) setPath(i.dataset.bind, i.value); i.classList.toggle('ph', !i.value); const top = stack[stack.length - 1]; const def = top && SCREENS[top.id]; def && def.onInput && def.onInput(i, cur, top.p); refreshValid(); } });
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeTopOverlay(); });
 
+/* ---------- registro da sessão (substitui ferramentas externas tipo Clarity) ----------
+   Grava O QUE foi tocado, não o que foi digitado: de campos guarda só o rótulo.
+   Vive em sessionStorage como o resto: some quando a aba fecha. */
+const KLOG = 'mp.log';
+let LOG = [], T0 = Date.now(), telaT0 = Date.now(), telaAtual = '';
+const rotulo = (el) => {
+  const t = (el.getAttribute('aria-label') || el.textContent || '').replace(/\s+/g, ' ').trim();
+  return t.slice(0, 48) || '(sem rótulo)';
+};
+function logEv(tipo, alvo, extra) {
+  LOG.push({ t: Date.now() - T0, tipo, tela: telaAtual, alvo: alvo || '', extra: extra || '' });
+  if (LOG.length > 1500) LOG.shift();
+  sess(ss => ss.setItem(KLOG, JSON.stringify(LOG)));
+  pintaLog();
+}
+function logTela(id) {
+  if (telaAtual) logEv('saiu', telaAtual, Math.round((Date.now() - telaT0) / 100) / 10 + 's');
+  telaAtual = id; telaT0 = Date.now();
+  logEv('tela', id);
+}
+(() => { const raw = sess(ss => ss.getItem(KLOG), null); if (raw) { try { LOG = JSON.parse(raw); T0 = Date.now() - (LOG[LOG.length - 1] || {}).t || Date.now(); } catch (e) {} } })();
+
+/* captura: roda antes dos handlers, inclusive em cliques que não acionam nada */
+document.addEventListener('click', e => {
+  if (e.target.closest('#mod-sheet, #mod, #fs-btn')) return;   /* painel do moderador não conta */
+  const b = e.target.closest('[data-back],[data-go],[data-act],a,button,input,select,label');
+  if (!b) { logEv('clique sem efeito', rotulo(e.target.closest('div,p,span,section') || document.body)); return; }
+  if (b.hasAttribute('data-back')) { logEv('voltar', rotulo(b)); return; }
+  if (b.dataset && b.dataset.go) { logEv('clique', rotulo(b), '→ ' + b.dataset.go); return; }
+  if (b.dataset && b.dataset.act) { logEv('clique', rotulo(b), b.dataset.act); return; }
+  if (b.tagName === 'INPUT' || b.tagName === 'SELECT' || b.tagName === 'LABEL') return;  /* tratado no change */
+  logEv('clique', rotulo(b));
+}, true);
+/* campos: registra que foi preenchido, nunca o conteúdo */
+document.addEventListener('change', e => {
+  const i = e.target; if (!i.id && !i.dataset.bind) return;
+  const cx = i.closest('.fc, .field, label');
+  const lb = cx && cx.querySelector('label, .lb');
+  const nome = ((lb && lb.textContent) || i.id || i.dataset.bind || '').replace(/\s+/g, ' ').trim();
+  logEv('preencheu', nome.slice(0, 48), i.value ? 'com valor' : 'vazio');
+}, true);
+
+function resumoLog() {
+  const cl = LOG.filter(l => l.tipo === 'clique').length;
+  const mortos = LOG.filter(l => l.tipo === 'clique sem efeito').length;
+  const voltas = LOG.filter(l => l.tipo === 'voltar').length;
+  const telas = LOG.filter(l => l.tipo === 'tela');
+  const tempos = {};
+  LOG.filter(l => l.tipo === 'saiu').forEach(l => { tempos[l.alvo] = (tempos[l.alvo] || 0) + parseFloat(l.extra); });
+  const top = Object.entries(tempos).sort((a, b) => b[1] - a[1])[0];
+  return { dur: Math.round((LOG.length ? LOG[LOG.length - 1].t : 0) / 1000), telas: telas.length,
+    unicas: new Set(telas.map(l => l.alvo)).size, cl, mortos, voltas,
+    top: top ? `${top[0]} (${Math.round(top[1])}s)` : '—' };
+}
+function logCSV() {
+  const esq = v => `"${String(v).replace(/"/g, '""')}"`;
+  return 'tempo_s;tipo;tela;alvo;detalhe\n' +
+    LOG.map(l => [(l.t / 1000).toFixed(1), l.tipo, l.tela, l.alvo, l.extra].map(esq).join(';')).join('\n');
+}
+function baixaLog() {
+  const b = new Blob(['﻿' + logCSV()], { type: 'text/csv;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(b);
+  a.download = 'sessao-' + new Date().toISOString().slice(0, 16).replace(/[:T]/g, '-') + '.csv';
+  a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+}
+function pintaLog() {
+  const r = resumoLog();
+  const resumo = [['Duração', r.dur + 's'], ['Telas visitadas', `${r.telas} (${r.unicas} diferentes)`],
+    ['Cliques', r.cl], ['Cliques sem efeito', r.mortos], ['Voltas', r.voltas], ['Mais tempo em', r.top]];
+  const linhas = LOG.slice(-40).reverse().map(l =>
+    `<li><b>${(l.t / 1000).toFixed(1)}s</b> <i>${esc(l.tipo)}</i> ${esc(l.alvo)}${l.extra ? ` <u>${esc(l.extra)}</u>` : ''}</li>`).join('');
+  const html = `<div class="log-sum">${resumo.map(([k, v]) => `<span><b>${v}</b>${k}</span>`).join('')}</div>
+    <div class="log-acts"><button type="button" data-log-csv>Baixar CSV</button><button type="button" data-log-copy>Copiar</button><button type="button" data-log-clr>Limpar</button></div>
+    <ol class="log-list">${linhas || '<li>Nada registrado ainda.</li>'}</ol>`;
+  $$('.log-box').forEach(el => { el.innerHTML = html; });
+}
+document.addEventListener('click', e => {
+  if (e.target.closest('[data-log-csv]')) { baixaLog(); return; }
+  if (e.target.closest('[data-log-copy]')) { navigator.clipboard.writeText(logCSV()).then(() => toast('Registro copiado'), () => toast('Não consegui copiar', 'danger')); return; }
+  if (e.target.closest('[data-log-clr]')) { LOG = []; T0 = Date.now(); sess(ss => ss.removeItem(KLOG)); pintaLog(); return; }
+}, true);
+
 /* ---------- painel do moderador ---------- */
 function buildMod() {
   const html = FLOWS.map((f, gi) => `<div class="mod-grp"><p>${esc(f.g)}</p>${f.items.map((it, ii) => `<button type="button" data-mod="${gi}.${ii}">${esc(it.label)}</button>`).join('')}</div>`).join('');
   $('#mod-list').innerHTML = html; $('#mod-list-m').innerHTML = html;
+  pintaLog();
 }
 document.addEventListener('click', e => {
   const m = e.target.closest('[data-mod]');
@@ -349,7 +434,7 @@ if (!window.PROTO_PUB) document.addEventListener('pointerdown', e => {
   const r = $('#phone').getBoundingClientRect();
   if (e.clientY - r.top > 48) return;
   const now = Date.now(); tapN = now - tapT < 450 ? tapN + 1 : 1; tapT = now;
-  if (tapN >= 3) { tapN = 0; $('#mod-sheet').hidden = false; }
+  if (tapN >= 3) { tapN = 0; $('#mod-sheet').hidden = false; pintaLog(); }
 });
 
 /* ---------- escala do telefone no desktop ---------- */

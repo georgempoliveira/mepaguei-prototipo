@@ -411,3 +411,16 @@ body.cmp .hi{display:block!important}
 .mia-dots{display:flex;gap:4px;justify-content:flex-end;align-items:center}
 .mia-dots i{display:block;width:5px;height:5px;border-radius:3px;background:#d9c2f7}
 .mia-dots i.on{width:14px;background:var(--ia)}
+
+/* registro da sessão (painel do moderador) */
+.log-sum{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px}
+.log-sum span{display:flex;flex-direction:column;background:rgba(26,49,81,.06);border-radius:8px;padding:6px 8px;font-size:11px;line-height:15px;color:#51607a}
+.log-sum b{font-size:14px;line-height:19px;font-weight:700;color:#1a3151}
+.log-acts{display:flex;gap:6px;margin-bottom:8px}
+.log-acts button{flex:1;font-size:12px;line-height:16px;padding:7px 4px;border-radius:8px;background:rgba(26,49,81,.08);color:#26364d;font-weight:600}
+.log-acts button:hover{background:rgba(26,49,81,.16)}
+.log-list{list-style:none;margin:0;padding:0;max-height:260px;overflow:auto;font-size:12px;line-height:17px;color:#26364d}
+.log-list li{padding:4px 6px;border-bottom:1px solid rgba(26,49,81,.08);display:flex;gap:5px;flex-wrap:wrap}
+.log-list b{font-variant-numeric:tabular-nums;color:#51607a;font-weight:600}
+.log-list i{font-style:normal;font-weight:700;color:#1a3151}
+.log-list u{text-decoration:none;color:#51607a}
