@@ -190,8 +190,33 @@ function openSheet(html, { cls = '', onClose, foot = '', grab = true } = {}) {
   ov.className = 'ov ' + cls;
   ov.innerHTML = `<div class="scrim" data-close></div><div class="bs" role="dialog" aria-modal="true">${grab ? '<div class="grab"></div>' : ''}<div class="bs-in">${html}</div>${foot ? `<div class="bs-foot">${foot}</div>` : ''}</div>`;
   $('#overlay').appendChild(ov); overlays.push({ ov, onClose });
+  arrastaParaFechar(ov);
   refreshValid();
   return ov;
+}
+/* Arrastar o bottom sheet para baixo fecha. O arrasto pega na alça, nas bordas e no rodapé;
+   dentro do conteúdo o toque continua rolando normalmente (.bs-in tem touch-action pan-y). */
+function arrastaParaFechar(ov) {
+  const bs = ov.querySelector('.bs'); if (!bs) return;
+  const dentro = ov.querySelector('.bs-in');
+  let y0 = 0, dy = 0, arr = false;
+  bs.addEventListener('pointerdown', e => {
+    if (dentro && dentro.contains(e.target) && dentro.scrollTop > 0) return;
+    arr = true; y0 = e.clientY; dy = 0; bs.style.transition = 'none';
+    try { bs.setPointerCapture(e.pointerId); } catch (err) {}
+  });
+  bs.addEventListener('pointermove', e => {
+    if (!arr) return;
+    dy = Math.max(0, e.clientY - y0);
+    bs.style.transform = dy ? `translateY(${dy}px)` : '';
+  });
+  const fim = () => {
+    if (!arr) return; arr = false;
+    bs.style.transition = 'transform .25s cubic-bezier(.2,.8,.2,1)';
+    if (dy > 80 || dy > bs.offsetHeight * 0.25) { bs.style.transform = 'translateY(100%)'; later(() => closeTopOverlay(), 200); }
+    else bs.style.transform = '';
+  };
+  bs.addEventListener('pointerup', fim); bs.addEventListener('pointercancel', fim);
 }
 function openDialog(html, { onClose } = {}) {
   const ov = document.createElement('div');

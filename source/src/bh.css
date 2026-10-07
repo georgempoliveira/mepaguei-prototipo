@@ -109,3 +109,6 @@
 .bh .bh-pw .pw-bars{margin-right:-9px}
 .bhw-hi{position:absolute!important;left:0;right:0;bottom:1px}
 .bhw-hi::after{background:#414040}
+
+/* a navbar do BlueHub é sobreposta: reserva espaço para o conteúdo rolar até o fim */
+.scr:has(.bhh-nav) .scroll{padding-bottom:104px}

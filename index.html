@@ -282,9 +282,9 @@ textarea.ta:focus{border-color:var(--primary)}
 /* overlays: bottom sheet, dialog, toast */
 .ov{position:absolute;inset:0;pointer-events:auto;display:flex;flex-direction:column;justify-content:flex-end}
 .ov .scrim{position:absolute;inset:0;background:rgba(18,18,18,.5);animation:fadeIn .2s ease both}
-.bs{position:relative;background:#fff;border-radius:24px 24px 0 0;max-height:92%;display:flex;flex-direction:column;animation:sheetUp .3s cubic-bezier(.2,.8,.2,1) both}
+.bs{touch-action:none;position:relative;background:#fff;border-radius:24px 24px 0 0;max-height:92%;display:flex;flex-direction:column;animation:sheetUp .3s cubic-bezier(.2,.8,.2,1) both}
 .bs .grab{width:40px;height:4px;border-radius:2px;background:var(--border-light);margin:10px auto 2px;flex:none}
-.bs-in{overflow-y:auto;scrollbar-width:none;padding:12px 20px 20px;display:flex;flex-direction:column;gap:16px}
+.bs-in{touch-action:pan-y;overflow-y:auto;scrollbar-width:none;padding:12px 20px 20px;display:flex;flex-direction:column;gap:16px}
 .bs-in::-webkit-scrollbar{display:none}
 .bs-foot{padding:4px 20px 34px;display:flex;flex-direction:column;gap:10px}
 .ov.closing .bs{animation:sheetDown .22s ease both}
@@ -528,6 +528,9 @@ body.cmp .hi{display:block!important}
 .bhw-hi{position:absolute!important;left:0;right:0;bottom:1px}
 .bhw-hi::after{background:#414040}
 
+/* a navbar do BlueHub é sobreposta: reserva espaço para o conteúdo rolar até o fim */
+.scr:has(.bhh-nav) .scroll{padding-bottom:104px}
+
 </style>
 <div id="stage">
   <aside id="mod" aria-label="Painel do moderador">
@@ -754,8 +757,33 @@ function openSheet(html, { cls = '', onClose, foot = '', grab = true } = {}) {
   ov.className = 'ov ' + cls;
   ov.innerHTML = `<div class="scrim" data-close></div><div class="bs" role="dialog" aria-modal="true">${grab ? '<div class="grab"></div>' : ''}<div class="bs-in">${html}</div>${foot ? `<div class="bs-foot">${foot}</div>` : ''}</div>`;
   $('#overlay').appendChild(ov); overlays.push({ ov, onClose });
+  arrastaParaFechar(ov);
   refreshValid();
   return ov;
+}
+/* Arrastar o bottom sheet para baixo fecha. O arrasto pega na alça, nas bordas e no rodapé;
+   dentro do conteúdo o toque continua rolando normalmente (.bs-in tem touch-action pan-y). */
+function arrastaParaFechar(ov) {
+  const bs = ov.querySelector('.bs'); if (!bs) return;
+  const dentro = ov.querySelector('.bs-in');
+  let y0 = 0, dy = 0, arr = false;
+  bs.addEventListener('pointerdown', e => {
+    if (dentro && dentro.contains(e.target) && dentro.scrollTop > 0) return;
+    arr = true; y0 = e.clientY; dy = 0; bs.style.transition = 'none';
+    try { bs.setPointerCapture(e.pointerId); } catch (err) {}
+  });
+  bs.addEventListener('pointermove', e => {
+    if (!arr) return;
+    dy = Math.max(0, e.clientY - y0);
+    bs.style.transform = dy ? `translateY(${dy}px)` : '';
+  });
+  const fim = () => {
+    if (!arr) return; arr = false;
+    bs.style.transition = 'transform .25s cubic-bezier(.2,.8,.2,1)';
+    if (dy > 80 || dy > bs.offsetHeight * 0.25) { bs.style.transform = 'translateY(100%)'; later(() => closeTopOverlay(), 200); }
+    else bs.style.transform = '';
+  };
+  bs.addEventListener('pointerup', fim); bs.addEventListener('pointercancel', fim);
 }
 function openDialog(html, { onClose } = {}) {
   const ov = document.createElement('div');
