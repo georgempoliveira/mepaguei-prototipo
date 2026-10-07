@@ -222,7 +222,9 @@ Para desabilitar o botão até a escolha: dê `cls:'js-x'` e `$$('.js-x',ov).for
    `theme-color` com a **cor da própria tela** a cada render, no celular. Assim qualquer sobra
    fica invisível. No desktop o palco segue cinza. Se criar uma tela com fundo próprio, garanta
    que a cor esteja no `background-color` do `.scr` (gradiente cai no branco da folha).
-9. **Sempre confira `ERR []`** no `full.py` — erro de JS deixa a tela em branco.
+9. **`closeov` é ação GLOBAL** (fecha o overlay do topo). Antes era declarada tela a tela e
+   faltava em várias, deixando "Cancelar" de alguns sheets sem efeito.
+10. **Sempre confira `ERR []`** no `full.py` — erro de JS deixa a tela em branco.
 
 ---
 

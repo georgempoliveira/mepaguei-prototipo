@@ -153,7 +153,14 @@ faturas, saldo seguro) — use sempre que precisar de uma tela com dados.
 9. **Todo insight da MIA tem "Entendi"** e recolhe no avatar — use o helper `miaBlock(flag,…)`,
    nunca `miaBox` sem `act`.
 10. **Botão flutuante de tela cheia é arrastável** (só no build pub, em telas ≤600px).
-11. **CEP busca o endereço de verdade** (ViaCEP). Estados: `S.flags.cepSt` = `load` (buscando) ·
+11. **Bottom sheets fecham arrastando para baixo.** O arraste só começa após 6px e **nunca**
+    captura o ponteiro antes disso — capturar no toque rouba o clique dos botões do rodapé.
+12. **Fluxo de personalizar perfil não tem mais "pessoas próximas"** — elas vivem na Agenda
+    (Controle → Agenda → Adicionar pessoas próximas).
+13. **Primeiro acesso à Clareza** (faturas OU saldo seguro, por qualquer porta) passa pela
+    apresentação `clarezaIntro`.
+14. **Entradas do Saldo Seguro começam zeradas**: a renda do cadastro não entra sozinha.
+15. **CEP busca o endereço de verdade** (ViaCEP). Estados: `S.flags.cepSt` = `load` (buscando) ·
    `ok` (preencheu) · `err` (não encontrado — campos liberados para digitar à mão). O contador
    `cepSeq` descarta resposta atrasada de um CEP já reescrito.
 

@@ -589,7 +589,7 @@ function freshState() {
   return {
     user: { nome: '', cpf: '', email: '', termos: false, senha: '', senha2: '', genero: '', nasc: '', foto: false,
       civil: '', profissao: '', renda: '', cep: '', rua: '', numero: '', compl: '', bairro: '', cidade: '', uf: '',
-      cel: '', objetivo: 'Poupar no piloto automático', pessoas: [] },
+      cel: '', objetivo: 'Poupar sem depender de disciplina', pessoas: [] },
     perfilCompleto: false,
     contas: [],          // instituições conectadas via Open Finance
     origem: null, destino: null,
@@ -1098,14 +1098,14 @@ screen('cadOk', {
 });
 
 /* ---------- objetivo ---------- */
-const OBJETIVOS = ['Poupar no piloto automático', 'Antecipar gastos e surpresas', 'Controlar para onde o dinheiro vai', 'Sair da inércia financeira', 'Organizar e quitar dívidas'];
+const OBJETIVOS = ['Poupar sem depender de disciplina', 'Saber quanto posso gastar', 'Antecipar gastos e evitar surpresas', 'Conquistar um objetivo financeiro', 'Sair das dívidas e recuperar o controle'];
 screen('obj', {
   render: () => `${statusBar()}<div class="ah"><button type="button" class="bkb" data-back aria-label="Voltar">${ic('chevron-left', 24)}</button></div>
-  <div class="col g4 px5" style="flex:1">
+  <div class="col g4 px5" style="flex:1;padding-top:8px">
     <img src="assets/logo-color.png" alt="Me Paguei" width="66" height="40">
-    <p class="h1 c-darker">O que você espera que o Me Paguei ajude você?</p>
-    <p class="b16 c-dark">Selecione o seu maior desafio financeiro hoje para que juntos você consiga alcançar seus objetivos</p>
-    <div class="col" style="margin-top:8px" role="radiogroup">${OBJETIVOS.map(o => radio('user.objetivo', o, o, S.user.objetivo === o)).join('')}</div>
+    <p class="h1 c-darker" style="text-wrap:wrap">O que você quer melhorar na sua vida financeira?</p>
+    <p class="b16 c-dark">Escolha seu maior desafio hoje. A partir dele, vamos encontrar caminhos para alcançar seus objetivos</p>
+    <div class="col g2" style="margin-top:16px" role="radiogroup">${OBJETIVOS.map(o => radio('user.objetivo', o, o, S.user.objetivo === o)).join('')}</div>
     <div class="mt-auto" style="padding:16px 0 20px">${btn('Avançar', { go: 'perf1' })}</div>
   </div>${homeInd()}`,
 });
@@ -1882,7 +1882,7 @@ screen('central', {
       <p class="h2" style="position:absolute;left:56px;right:56px;text-align:center;color:#fff">Consentimento de contas</p><span style="width:24px"></span></div>
     <div class="chips" style="position:relative;z-index:2;padding:16px 20px 12px">${[['def', 'Definições'], ['pri', 'Principal'], ['cof', 'Cofrinho'], ['inst', 'Instituições']].map(([k, l]) => `<button type="button" class="chip glass ${k === tab ? 'on' : ''}" data-act="ctab" data-k="${k}">${l}</button>`).join('')}</div>
     <div class="scroll" style="position:relative;z-index:2;display:flex;flex-direction:column">
-      <div class="col g5" style="flex:1 0 auto;background:#fff;border-radius:32px 32px 0 0;padding:28px 20px 20px">${body}</div></div>${foot ? `<div class="sheet-foot" style="background:#fff;padding-top:8px">${foot}</div>` : ''}${homeInd()}`;
+      <div class="col g5" style="flex:1 0 auto;background:#fff;border-radius:32px 32px 0 0;padding:28px 24px 20px">${body}</div></div>${foot ? `<div class="sheet-foot" style="background:#fff;padding-top:8px">${foot}</div>` : ''}${homeInd()}`;
   },
   mount: (el, p) => { if (p.tab === 'pri' && !p.init) { p.init = 1; S.tmpOrig = S.origem ? { ...S.origem } : null; S.flags.origOpen = S.origem ? S.origem.bank : S.contas[0]; S.flags.sseg = S.saldoSeg ? fmtBRL(S.saldoSeg) : ''; rerender(); } },
   valid: (p) => p.tab !== 'pri' || !!S.tmpOrig,

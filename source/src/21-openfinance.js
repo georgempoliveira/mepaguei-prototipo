@@ -210,7 +210,7 @@ screen('central', {
       <p class="h2" style="position:absolute;left:56px;right:56px;text-align:center;color:#fff">Consentimento de contas</p><span style="width:24px"></span></div>
     <div class="chips" style="position:relative;z-index:2;padding:16px 20px 12px">${[['def', 'Definições'], ['pri', 'Principal'], ['cof', 'Cofrinho'], ['inst', 'Instituições']].map(([k, l]) => `<button type="button" class="chip glass ${k === tab ? 'on' : ''}" data-act="ctab" data-k="${k}">${l}</button>`).join('')}</div>
     <div class="scroll" style="position:relative;z-index:2;display:flex;flex-direction:column">
-      <div class="col g5" style="flex:1 0 auto;background:#fff;border-radius:32px 32px 0 0;padding:28px 20px 20px">${body}</div></div>${foot ? `<div class="sheet-foot" style="background:#fff;padding-top:8px">${foot}</div>` : ''}${homeInd()}`;
+      <div class="col g5" style="flex:1 0 auto;background:#fff;border-radius:32px 32px 0 0;padding:28px 24px 20px">${body}</div></div>${foot ? `<div class="sheet-foot" style="background:#fff;padding-top:8px">${foot}</div>` : ''}${homeInd()}`;
   },
   mount: (el, p) => { if (p.tab === 'pri' && !p.init) { p.init = 1; S.tmpOrig = S.origem ? { ...S.origem } : null; S.flags.origOpen = S.origem ? S.origem.bank : S.contas[0]; S.flags.sseg = S.saldoSeg ? fmtBRL(S.saldoSeg) : ''; rerender(); } },
   valid: (p) => p.tab !== 'pri' || !!S.tmpOrig,

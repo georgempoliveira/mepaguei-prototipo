@@ -196,14 +196,14 @@ screen('cadOk', {
 });
 
 /* ---------- objetivo ---------- */
-const OBJETIVOS = ['Poupar no piloto automático', 'Antecipar gastos e surpresas', 'Controlar para onde o dinheiro vai', 'Sair da inércia financeira', 'Organizar e quitar dívidas'];
+const OBJETIVOS = ['Poupar sem depender de disciplina', 'Saber quanto posso gastar', 'Antecipar gastos e evitar surpresas', 'Conquistar um objetivo financeiro', 'Sair das dívidas e recuperar o controle'];
 screen('obj', {
   render: () => `${statusBar()}<div class="ah"><button type="button" class="bkb" data-back aria-label="Voltar">${ic('chevron-left', 24)}</button></div>
-  <div class="col g4 px5" style="flex:1">
+  <div class="col g4 px5" style="flex:1;padding-top:8px">
     <img src="assets/logo-color.png" alt="Me Paguei" width="66" height="40">
-    <p class="h1 c-darker">O que você espera que o Me Paguei ajude você?</p>
-    <p class="b16 c-dark">Selecione o seu maior desafio financeiro hoje para que juntos você consiga alcançar seus objetivos</p>
-    <div class="col" style="margin-top:8px" role="radiogroup">${OBJETIVOS.map(o => radio('user.objetivo', o, o, S.user.objetivo === o)).join('')}</div>
+    <p class="h1 c-darker" style="text-wrap:wrap">O que você quer melhorar na sua vida financeira?</p>
+    <p class="b16 c-dark">Escolha seu maior desafio hoje. A partir dele, vamos encontrar caminhos para alcançar seus objetivos</p>
+    <div class="col g2" style="margin-top:16px" role="radiogroup">${OBJETIVOS.map(o => radio('user.objetivo', o, o, S.user.objetivo === o)).join('')}</div>
     <div class="mt-auto" style="padding:16px 0 20px">${btn('Avançar', { go: 'perf1' })}</div>
   </div>${homeInd()}`,
 });
