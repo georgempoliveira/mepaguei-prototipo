@@ -316,13 +316,15 @@ screen('pessoas', {
   cls: 'grad',
   render: () => {
     const L = S.user.pessoas;
-    const body = L.length ? `${L.length > 1 ? `<p class="cap semi c-base">Familiares cadastrados (${L.length})</p>` : ''}<div class="col g3">${L.map((m, k) => memberItem(m, k)).join('')}</div>`
+    const body = L.length ? `<p class="cap semi c-base">Familiares cadastrados (${L.length})</p><div class="col g3">${L.map((m, k) => memberItem(m, k)).join('')}</div>`
       : `<div class="empty" style="margin:auto 0"><span class="ico-c" style="width:56px;height:56px;background:var(--bg-white);color:var(--ty-base)">${ic('user-plus', 26)}</span><p class="b14 semi c-dark">Nenhuma pessoa cadastrada</p><p class="cap c-base" style="max-width:260px">Adicione o primeiro cadastro para antecipar despesas importantes automaticamente e se planejar sem aperto!</p></div>`;
-    const foot = L.length ? btn('Avançar', { act: 'done' }) + btn('Adicionar', { v: 'o', icon: 'plus', act: 'add' }) : btn('Adicionar membro', { icon: 'plus', act: 'add' }) + btn('Pular', { v: 'o', act: 'done' });
-    return gradScreen({ title: 'Cadastrar pessoas próximas', sub: 'Cadastre pessoas que fazem parte da sua rotina financeira para antecipar despesas.', step: 'Etapa 4 de 4', body, foot });
+    /* rodapé do Figma: "Adicionar" em botão cheio e "Finalizar" como link */
+    const foot = btn('Adicionar', { icon: 'plus', act: 'add' }) +
+      `<button type="button" class="b16 semi c-primary center" data-act="done" style="padding:10px">Finalizar</button>`;
+    return gradScreen({ title: 'Cadastro de pessoas próximas', sub: 'Adicione aniversários de familiares e amigos próximos dentro da sua agenda.', step: 'Agenda', mark: false, body, foot });
   },
   acts: {
-    add: () => { S.tmpM = { nome: '', nasc: '', par: '' }; go('pessoaForm', { k: -1 }); },
+    add: () => { S.tmpM = { nome: '', nasc: '', par: '' }; go('pessoaForm', { k: -1, agenda: P().agenda }); },
     done: () => go('proc', { msg: 'Salvando dados...', next: 'perfilOk' }),
     mmenu: (b) => {
       const k = +b.dataset.k;
@@ -337,20 +339,26 @@ screen('pessoas', {
 screen('pessoaForm', {
   cls: 'grad',
   render: (p) => gradScreen({
-    title: 'Cadastro de pessoas próximas', sub: 'Adicione aniversários de familiares e amigos próximos dentro da sua agenda.', step: 'Agenda',
-    body: `${S.flags.miaPess ? miaMini('miaPess') : miaBox('Quem é importante para você também faz parte da sua vida financeira', ['Aniversários são fáceis de esquecer no planejamento, mas acontecem o ano inteiro — e são previsíveis.\n\nCadastre as pessoas que fazem parte da sua vida para que eu possa levar essas datas em conta', 'Assim, quando a data entrar no período da sua projeção, eu já considero o gasto e você não é pego de surpresa'], 'miaPess')}
+    title: 'Cadastro de pessoas próximas', sub: 'Adicione aniversários de familiares e amigos próximos dentro da sua agenda.', step: 'Agenda', mark: false,
+    /* na edição o Figma (15388:36014) não traz o insight da MIA */
+    body: `${p.k >= 0 ? '' : S.flags.miaPess ? miaMini('miaPess') : miaBox('Quem é importante para você também faz parte da sua vida financeira', ['Aniversários são fáceis de esquecer no planejamento, mas acontecem o ano inteiro — e são previsíveis.\n\nCadastre as pessoas que fazem parte da sua vida para que eu possa levar essas datas em conta', 'Assim, quando a data entrar no período da sua projeção, eu já considero o gasto e você não é pego de surpresa'], 'miaPess')}
       ${field({ id: 'mn', label: 'Nome', ph: 'ex: Marcelo Pimentel', bind: 'tmpM.nome' })}
-      ${field({ id: 'md', label: 'Dia e mês de aniversário', ph: 'Selecionar', bind: 'tmpM.nasc', mask: 'data', icon: 'calendar-days' })}
+      ${field({ id: 'md', label: 'Dia e mês de aniversário', ph: 'Selecionar', bind: 'tmpM.nasc', mask: 'diames', icon: 'calendar-days' })}
       ${field({ id: 'mp', label: 'Grau de parentesco', ph: 'ex: Mãe', bind: 'tmpM.par' })}
       <p class="cap c-base">Considere, no mínimo, pessoas como:</p>
       <div class="row g2" style="flex-wrap:wrap">${PARENTESCO.map(x => `<button type="button" class="chip" data-act="psug" data-v="${esc(x)}" style="height:30px;font-size:12px;color:var(--ia);border-color:${S.tmpM && S.tmpM.par === x ? 'var(--ia)' : '#d9c2f7'};background:${S.tmpM && S.tmpM.par === x ? 'var(--ia-bg)' : '#fff'}">${ic('cake', 14)} ${esc(x)}</button>`).join('')}</div>`,
     foot: btn('Salvar', { next: true, act: 'save' }) + (p.k >= 0 ? btn('Cancelar edição', { v: 'o', act: 'cancel' }) : ''),
   }),
-  valid: () => S.tmpM && S.tmpM.nome.trim() && S.tmpM.nasc.length === 10 && S.tmpM.par,
+  valid: () => S.tmpM && S.tmpM.nome.trim() && S.tmpM.nasc.length === 5 && S.tmpM.par,
   acts: {
     psug: (b) => { S.tmpM.par = b.dataset.v; refresh(); },
     miaPess: () => { S.flags.miaPess = !S.flags.miaPess; rerender(); },
-    save: () => { const k = P().k; if (k >= 0) S.user.pessoas[k] = { ...S.tmpM }; else S.user.pessoas.push({ ...S.tmpM }); back(); toast(k >= 0 ? 'Dados atualizados' : 'Pessoa adicionada'); },
+    save: () => { const p = P(); const k = p.k;
+      if (k >= 0) S.user.pessoas[k] = { ...S.tmpM }; else S.user.pessoas.push({ ...S.tmpM });
+      /* vindo da Agenda, o Figma leva para a lista de cadastrados (15388:36065) */
+      if (p.agenda && stack[stack.length - 2] && stack[stack.length - 2].id !== 'pessoas') replace('pessoas', { agenda: true }, 'fade');
+      else back();
+      toast(k >= 0 ? 'Dados atualizados' : 'Pessoa adicionada'); },
     cancel: () => back(),
   },
 });

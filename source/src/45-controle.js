@@ -208,10 +208,10 @@ function agendaBody(p) {
   if (!S.user.pessoas.length && !S.flags.agendaSeen) return `<div class="col g4" style="align-items:center;text-align:center;background:var(--bg-lighter);border-radius:var(--r-3xl);padding:24px 20px">
       <span class="ico-c" style="width:48px;height:48px">${ic('user-plus', 22)}</span>
       <div class="col g2"><p class="b16 semi c-darker">Cadastrar pessoas próximas</p><p class="b14 c-dark">Adicione familiares e amigos para lembrar datas importantes e se antecipar aos gastos com presentes e comemorações</p></div>
-      ${btn('Adicionar pessoas próximas', { act: 'agPessoas', icon: 'user-plus' })}</div>
+      ${btn('Cadastrar aniversários', { act: 'agPessoas', icon: 'plus' })}</div>
     <p class="b16 semi c-darker">Por que adicionar pessoas à sua agenda?</p>
     ${[['cake', 'Lembrete de aniversários', 'Como não fazem parte das contas mensais, aniversários são fáceis de esquecer. Cadastre as datas para antecipar presentes, festas e comemorações no seu planejamento'], ['rocket', 'Conexão com Saldo Seguro', 'Ao cadastrar pessoas próximas, eu também considero essas datas quando estiverem no período da sua projeção de Saldo Seguro'], ['calendar-clock', 'Antecipação de despesas', 'Prepare seu orçamento com antecedência para festas, celebrações e compromissos ao longo do ano.'], ['gift', 'Controle de orçamentos festivos', 'Defina limites saudáveis para lembrancinhas e comemorações sem comprometer seus objetivos financeiros.']].map(([i, t, d]) => `<div class="card row g3 ais" style="border-color:var(--border-lighter)"><span class="ico-c sm">${ic(i, 16)}</span><div class="col g1"><p class="b14 semi c-darker">${t}</p><p class="b14 c-dark">${d}</p></div></div>`).join('')}
-    <div class="col g3" style="padding-top:4px">${btn('Cadastrar aniversários', { act: 'agPessoas' })}<button type="button" class="b14 semi c-primary center" data-act="agSkip" style="padding:6px">Pular</button></div>`;
+    <button type="button" class="b14 semi c-primary center" data-act="agSkip" style="padding:10px">Pular</button>`;
   const base = hoje(); const mo = p.mo || 0; const M = new Date(base.getFullYear(), base.getMonth() + mo, 1);
   const first = M.getDay(), days = new Date(M.getFullYear(), M.getMonth() + 1, 0).getDate();
   const cells = []; for (let i = 0; i < first; i++) cells.push(''); for (let d = 1; d <= days; d++) cells.push(d);
@@ -268,12 +268,12 @@ GLOBAL_ACTS.evASave = () => { const t = S.tmpEvA; const ev = { nome: t.nome.trim
 (function () {
   const d = SCREENS.pessoas; const r0 = d.render; const done0 = d.acts.done;
   d.render = (p, t) => { let h = r0(p, t); if (p.agenda) h = h.replace(/<span class="step">[^<]*<\/span>/, '<span class="step"></span>').replace('>Pular<', '>Agora não<'); return h; };
-  d.acts.done = () => { if (P().agenda) { S.flags.agendaSeen = true; if (S.user.pessoas.length) go('agOk'); else reset('controle', { tab: 'agenda' }, 'back'); return; } done0(); };
+  d.acts.done = () => { if (P().agenda) { S.flags.agendaSeen = true; if (S.user.pessoas.length) reset('agOk', {}, 'fade'); else reset('controle', { tab: 'agenda' }, 'back'); return; } done0(); };
 })();
 screen('agOk', {
   cls: 'grad',
   render: () => `${CURVE}${statusBar(true)}<div style="position:relative;z-index:2;flex:1;min-height:0"><img src="assets/logo-white.png" alt="Me Paguei" width="68" height="48" style="position:absolute;left:20px;top:8px"><img src="assets/mia-celebra.webp" alt="" style="position:absolute;right:20px;bottom:0;height:min(300px,100%);width:auto"><span class="chip glass" style="position:absolute;left:20px;bottom:30px;height:30px;font-weight:400;font-size:12px;background:rgba(18,18,18,.35)">${ic('users', 16)} Pessoas cadastradas</span></div>
-  <div class="sheet" style="background:#fff;flex:none"><div class="sheet-in" style="gap:12px;flex:none"><p class="h1 c-darker">Agenda configurada com sucesso!</p><p class="b16 c-dark">Pode parecer simples, mas datas especiais costumam ficar fora das contas que fazemos de cabeça para o mês seguinte, e o gasto acontece de qualquer jeito. Agora eu acompanho essas datas com você, aviso com antecedência e ajudo a incluí-las no seu planejamento ;)</p></div><div class="sheet-foot" style="background:#fff">${btn('Ver minha agenda', { act: 'go' })}</div></div>${homeInd()}`,
+  <div class="sheet" style="background:#fff;flex:none"><div class="sheet-in" style="gap:12px;flex:none"><p class="h1 c-darker">Agenda configurada com sucesso!</p><p class="b16 c-dark">Pode parecer simples, mas <b class="semi c-darker">datas especiais costumam ficar fora das contas que fazemos de cabeça</b> para o mês seguinte — <i>mas o gasto acontece de qualquer jeito.</i></p><p class="b16 c-dark"><b class="semi c-darker">Agora eu acompanho essas datas com você</b>, aviso com antecedência e ajudo a incluí-las no seu planejamento ;)</p></div><div class="sheet-foot" style="background:#fff">${btn('Ver minha agenda', { act: 'go' })}</div></div>${homeInd()}`,
   acts: { go: () => reset('controle', { tab: 'agenda' }, 'fade') },
 });
 

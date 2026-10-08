@@ -225,8 +225,16 @@ para pular direto a qualquer ponto do fluxo. Ao criar uma tela nova, **adicione 
 - **Objetivo exige poupança ativa.** Tentar abrir o Objetivo sem nenhuma poupança
   (`anyPoup()` falso) leva à aba Poupanças com uma folha explicando o porquê e um atalho
   para escolher uma. Vale para o card da home e para o card dentro de Poupanças.
-- **Placar do Bem: 60 clubes.** `TEAMS_A/B/C` + `SERIES` com as Séries A, B e C do
-  Brasileirão 2026. Só a Série A tem escudo em PNG; B e C caem num círculo com a sigla
-  de duas letras (`sigla()`). O adversário do "Próximo jogo" sai da mesma série.
+- **Placar do Bem: Séries A, B e C.** `TEAMS_A/B/C` + `SERIES`. B e C seguem o Figma
+  (20376:41809 e 20376:53643) e trazem só os clubes de Pernambuco: Náutico, Sport Recife
+  e Santa Cruz. Os três escudos foram recortados do Figma a 48px e ampliados para 96px —
+  trocar por exportação 2x quando houver. `sigla()` continua como rede de segurança para
+  um clube sem escudo. O adversário do "Próximo jogo" sai da mesma série.
+- **Pessoas próximas (06 · Agenda).** Sequência do Figma: Agenda vazia (19641:3821) →
+  formulário (15388:35970) → **lista "Familiares cadastrados (N)"** (15388:36065) →
+  edição sem insight da MIA (15388:36014) → sucesso (15388:36214). A lista era a tela que
+  faltava: salvar voltava direto para a Agenda. Data do aniversário usa a máscara
+  `diames` (dd/mm), não a data completa. `gradScreen({mark:false})` centraliza o rótulo
+  do cabeçalho, como nas telas de Agenda.
 - **Splash reaproveitada.** `screen('splash')` aceita `{next}`; voltar do Bluehub para o
   Me Paguei passa pela splash em vez de cair direto na home.

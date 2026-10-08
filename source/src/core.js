@@ -77,6 +77,7 @@ const MASKS = {
   cep: v => { v = v.replace(/\D/g, '').slice(0, 8); return v.replace(/(\d{5})(\d)/, '$1-$2'); },
   brl: v => { const d = v.replace(/\D/g, '').slice(0, 11); if (!d) return ''; return fmtBRL(parseInt(d, 10) / 100); },
   brl0: v => { const d = v.replace(/\D/g, '').slice(0, 9); if (!d) return ''; return 'R$ ' + parseInt(d, 10).toLocaleString('pt-BR'); },
+  diames: v => { v = v.replace(/\D/g, '').slice(0, 4); return v.replace(/(\d{2})(\d)/, '$1/$2'); },
   int: v => v.replace(/\D/g, '').slice(0, 3),
   dig: v => v.replace(/\D/g, '').slice(0, 6),
 };
@@ -102,7 +103,9 @@ const ME_MARK = `<img class="mark" src="assets/me-mark.png" alt="Me Paguei" widt
 /* tela com cabeçalho em gradiente + folha clara (padrão de cadastro/login) */
 function gradScreen({ title, sub = '', step = '', back = true, body = '', foot = '', mark = true }) {
   return `${CURVE}${statusBar(true)}
-  <div class="bk">${back ? `<button type="button" data-back aria-label="Voltar">${ic('chevron-left', 24)}</button>` : '<span style="width:24px"></span>'}${mark ? ME_MARK : ''}${/^\d+\/\d+$/.test(step) ? `<span class="step-dots">${Array.from({ length: +step.split('/')[1] }, (_, i) => `<i class="${i === +step.split('/')[0] - 1 ? 'on' : ''}"></i>`).join('')}</span>` : `<span class="step">${esc(step)}</span>`}</div>
+  <div class="bk">${back ? `<button type="button" data-back aria-label="Voltar">${ic('chevron-left', 24)}</button>` : '<span style="width:24px"></span>'}${mark ? ME_MARK : ''}${/^\d+\/\d+$/.test(step) ? `<span class="step-dots">${Array.from({ length: +step.split('/')[1] }, (_, i) => `<i class="${i === +step.split('/')[0] - 1 ? 'on' : ''}"></i>`).join('')}</span>` : mark ? `<span class="step">${esc(step)}</span>`
+    /* sem a marca, o rótulo vai centralizado (padrão das telas de Agenda no Figma) */
+    : `<span class="step" style="flex:1;text-align:center;font-weight:600">${esc(step)}</span><span style="width:24px"></span>`}</div>
   <div class="ttl"><p class="h2">${title}</p>${sub ? `<p class="b14">${sub}</p>` : ''}</div>
   <div class="sheet"><div class="sheet-in">${body}</div>${foot ? `<div class="sheet-foot">${foot}</div>` : ''}</div>
   ${homeInd()}`;

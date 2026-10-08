@@ -336,7 +336,7 @@ screen('sobre', {
 /* modo edição das telas de perfil (vindo de Informações Pessoais) */
 ['perf1', 'perf2', 'perf3', 'perf4', 'pessoas'].forEach(id => {
   const d = SCREENS[id]; const r0 = d.render;
-  d.render = (p, t) => { let h = r0(p, t); if (p.edit) { h = h.replace(/<span class="step">[^<]*<\/span>/, '<span class="step"></span>').replace(/data-go="perf\d"|data-act="next"|data-act="done"/, 'data-act="saveEdit"').replace(/>Continuar<|>Avançar<|>Pular</, '>Salvar alterações<'); } return h; };
+  d.render = (p, t) => { let h = r0(p, t); if (p.edit) { h = h.replace(/<span class="step">[^<]*<\/span>/, '<span class="step"></span>').replace(/data-go="perf\d"|data-act="next"|data-act="done"/, 'data-act="saveEdit"').replace(/>Continuar<|>Avançar<|>Pular<|>Finalizar</, '>Salvar alterações<'); } return h; };
   d.acts = Object.assign({}, d.acts, { saveEdit: () => { back(); toast('Alterações salvas'); } });
 });
 

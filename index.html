@@ -674,6 +674,7 @@ const MASKS = {
   cep: v => { v = v.replace(/\D/g, '').slice(0, 8); return v.replace(/(\d{5})(\d)/, '$1-$2'); },
   brl: v => { const d = v.replace(/\D/g, '').slice(0, 11); if (!d) return ''; return fmtBRL(parseInt(d, 10) / 100); },
   brl0: v => { const d = v.replace(/\D/g, '').slice(0, 9); if (!d) return ''; return 'R$ ' + parseInt(d, 10).toLocaleString('pt-BR'); },
+  diames: v => { v = v.replace(/\D/g, '').slice(0, 4); return v.replace(/(\d{2})(\d)/, '$1/$2'); },
   int: v => v.replace(/\D/g, '').slice(0, 3),
   dig: v => v.replace(/\D/g, '').slice(0, 6),
 };
@@ -699,7 +700,9 @@ const ME_MARK = `<img class="mark" src="assets/me-mark.png" alt="Me Paguei" widt
 /* tela com cabeçalho em gradiente + folha clara (padrão de cadastro/login) */
 function gradScreen({ title, sub = '', step = '', back = true, body = '', foot = '', mark = true }) {
   return `${CURVE}${statusBar(true)}
-  <div class="bk">${back ? `<button type="button" data-back aria-label="Voltar">${ic('chevron-left', 24)}</button>` : '<span style="width:24px"></span>'}${mark ? ME_MARK : ''}${/^\d+\/\d+$/.test(step) ? `<span class="step-dots">${Array.from({ length: +step.split('/')[1] }, (_, i) => `<i class="${i === +step.split('/')[0] - 1 ? 'on' : ''}"></i>`).join('')}</span>` : `<span class="step">${esc(step)}</span>`}</div>
+  <div class="bk">${back ? `<button type="button" data-back aria-label="Voltar">${ic('chevron-left', 24)}</button>` : '<span style="width:24px"></span>'}${mark ? ME_MARK : ''}${/^\d+\/\d+$/.test(step) ? `<span class="step-dots">${Array.from({ length: +step.split('/')[1] }, (_, i) => `<i class="${i === +step.split('/')[0] - 1 ? 'on' : ''}"></i>`).join('')}</span>` : mark ? `<span class="step">${esc(step)}</span>`
+    /* sem a marca, o rótulo vai centralizado (padrão das telas de Agenda no Figma) */
+    : `<span class="step" style="flex:1;text-align:center;font-weight:600">${esc(step)}</span><span style="width:24px"></span>`}</div>
   <div class="ttl"><p class="h2">${title}</p>${sub ? `<p class="b14">${sub}</p>` : ''}</div>
   <div class="sheet"><div class="sheet-in">${body}</div>${foot ? `<div class="sheet-foot">${foot}</div>` : ''}</div>
   ${homeInd()}`;
@@ -1364,13 +1367,15 @@ screen('pessoas', {
   cls: 'grad',
   render: () => {
     const L = S.user.pessoas;
-    const body = L.length ? `${L.length > 1 ? `<p class="cap semi c-base">Familiares cadastrados (${L.length})</p>` : ''}<div class="col g3">${L.map((m, k) => memberItem(m, k)).join('')}</div>`
+    const body = L.length ? `<p class="cap semi c-base">Familiares cadastrados (${L.length})</p><div class="col g3">${L.map((m, k) => memberItem(m, k)).join('')}</div>`
       : `<div class="empty" style="margin:auto 0"><span class="ico-c" style="width:56px;height:56px;background:var(--bg-white);color:var(--ty-base)">${ic('user-plus', 26)}</span><p class="b14 semi c-dark">Nenhuma pessoa cadastrada</p><p class="cap c-base" style="max-width:260px">Adicione o primeiro cadastro para antecipar despesas importantes automaticamente e se planejar sem aperto!</p></div>`;
-    const foot = L.length ? btn('Avançar', { act: 'done' }) + btn('Adicionar', { v: 'o', icon: 'plus', act: 'add' }) : btn('Adicionar membro', { icon: 'plus', act: 'add' }) + btn('Pular', { v: 'o', act: 'done' });
-    return gradScreen({ title: 'Cadastrar pessoas próximas', sub: 'Cadastre pessoas que fazem parte da sua rotina financeira para antecipar despesas.', step: 'Etapa 4 de 4', body, foot });
+    /* rodapé do Figma: "Adicionar" em botão cheio e "Finalizar" como link */
+    const foot = btn('Adicionar', { icon: 'plus', act: 'add' }) +
+      `<button type="button" class="b16 semi c-primary center" data-act="done" style="padding:10px">Finalizar</button>`;
+    return gradScreen({ title: 'Cadastro de pessoas próximas', sub: 'Adicione aniversários de familiares e amigos próximos dentro da sua agenda.', step: 'Agenda', mark: false, body, foot });
   },
   acts: {
-    add: () => { S.tmpM = { nome: '', nasc: '', par: '' }; go('pessoaForm', { k: -1 }); },
+    add: () => { S.tmpM = { nome: '', nasc: '', par: '' }; go('pessoaForm', { k: -1, agenda: P().agenda }); },
     done: () => go('proc', { msg: 'Salvando dados...', next: 'perfilOk' }),
     mmenu: (b) => {
       const k = +b.dataset.k;
@@ -1385,20 +1390,26 @@ screen('pessoas', {
 screen('pessoaForm', {
   cls: 'grad',
   render: (p) => gradScreen({
-    title: 'Cadastro de pessoas próximas', sub: 'Adicione aniversários de familiares e amigos próximos dentro da sua agenda.', step: 'Agenda',
-    body: `${S.flags.miaPess ? miaMini('miaPess') : miaBox('Quem é importante para você também faz parte da sua vida financeira', ['Aniversários são fáceis de esquecer no planejamento, mas acontecem o ano inteiro — e são previsíveis.\n\nCadastre as pessoas que fazem parte da sua vida para que eu possa levar essas datas em conta', 'Assim, quando a data entrar no período da sua projeção, eu já considero o gasto e você não é pego de surpresa'], 'miaPess')}
+    title: 'Cadastro de pessoas próximas', sub: 'Adicione aniversários de familiares e amigos próximos dentro da sua agenda.', step: 'Agenda', mark: false,
+    /* na edição o Figma (15388:36014) não traz o insight da MIA */
+    body: `${p.k >= 0 ? '' : S.flags.miaPess ? miaMini('miaPess') : miaBox('Quem é importante para você também faz parte da sua vida financeira', ['Aniversários são fáceis de esquecer no planejamento, mas acontecem o ano inteiro — e são previsíveis.\n\nCadastre as pessoas que fazem parte da sua vida para que eu possa levar essas datas em conta', 'Assim, quando a data entrar no período da sua projeção, eu já considero o gasto e você não é pego de surpresa'], 'miaPess')}
       ${field({ id: 'mn', label: 'Nome', ph: 'ex: Marcelo Pimentel', bind: 'tmpM.nome' })}
-      ${field({ id: 'md', label: 'Dia e mês de aniversário', ph: 'Selecionar', bind: 'tmpM.nasc', mask: 'data', icon: 'calendar-days' })}
+      ${field({ id: 'md', label: 'Dia e mês de aniversário', ph: 'Selecionar', bind: 'tmpM.nasc', mask: 'diames', icon: 'calendar-days' })}
       ${field({ id: 'mp', label: 'Grau de parentesco', ph: 'ex: Mãe', bind: 'tmpM.par' })}
       <p class="cap c-base">Considere, no mínimo, pessoas como:</p>
       <div class="row g2" style="flex-wrap:wrap">${PARENTESCO.map(x => `<button type="button" class="chip" data-act="psug" data-v="${esc(x)}" style="height:30px;font-size:12px;color:var(--ia);border-color:${S.tmpM && S.tmpM.par === x ? 'var(--ia)' : '#d9c2f7'};background:${S.tmpM && S.tmpM.par === x ? 'var(--ia-bg)' : '#fff'}">${ic('cake', 14)} ${esc(x)}</button>`).join('')}</div>`,
     foot: btn('Salvar', { next: true, act: 'save' }) + (p.k >= 0 ? btn('Cancelar edição', { v: 'o', act: 'cancel' }) : ''),
   }),
-  valid: () => S.tmpM && S.tmpM.nome.trim() && S.tmpM.nasc.length === 10 && S.tmpM.par,
+  valid: () => S.tmpM && S.tmpM.nome.trim() && S.tmpM.nasc.length === 5 && S.tmpM.par,
   acts: {
     psug: (b) => { S.tmpM.par = b.dataset.v; refresh(); },
     miaPess: () => { S.flags.miaPess = !S.flags.miaPess; rerender(); },
-    save: () => { const k = P().k; if (k >= 0) S.user.pessoas[k] = { ...S.tmpM }; else S.user.pessoas.push({ ...S.tmpM }); back(); toast(k >= 0 ? 'Dados atualizados' : 'Pessoa adicionada'); },
+    save: () => { const p = P(); const k = p.k;
+      if (k >= 0) S.user.pessoas[k] = { ...S.tmpM }; else S.user.pessoas.push({ ...S.tmpM });
+      /* vindo da Agenda, o Figma leva para a lista de cadastrados (15388:36065) */
+      if (p.agenda && stack[stack.length - 2] && stack[stack.length - 2].id !== 'pessoas') replace('pessoas', { agenda: true }, 'fade');
+      else back();
+      toast(k >= 0 ? 'Dados atualizados' : 'Pessoa adicionada'); },
     cancel: () => back(),
   },
 });
@@ -1796,7 +1807,7 @@ screen('sobre', {
 /* modo edição das telas de perfil (vindo de Informações Pessoais) */
 ['perf1', 'perf2', 'perf3', 'perf4', 'pessoas'].forEach(id => {
   const d = SCREENS[id]; const r0 = d.render;
-  d.render = (p, t) => { let h = r0(p, t); if (p.edit) { h = h.replace(/<span class="step">[^<]*<\/span>/, '<span class="step"></span>').replace(/data-go="perf\d"|data-act="next"|data-act="done"/, 'data-act="saveEdit"').replace(/>Continuar<|>Avançar<|>Pular</, '>Salvar alterações<'); } return h; };
+  d.render = (p, t) => { let h = r0(p, t); if (p.edit) { h = h.replace(/<span class="step">[^<]*<\/span>/, '<span class="step"></span>').replace(/data-go="perf\d"|data-act="next"|data-act="done"/, 'data-act="saveEdit"').replace(/>Continuar<|>Avançar<|>Pular<|>Finalizar</, '>Salvar alterações<'); } return h; };
   d.acts = Object.assign({}, d.acts, { saveEdit: () => { back(); toast('Alterações salvas'); } });
 });
 
@@ -2072,15 +2083,15 @@ const freqTxt = f => ({ sem: 'Semanalmente, todo domingo', quinz: 'Quinzenalment
 const valorLabel = f => ({ sem: 'Valor todo domingo', quinz: 'Valor a cada 2 domingos', mesIni: 'Valor todo primeiro domingo do mês', mesFim: 'Valor todo último domingo do mês' }[f] || 'Valor do depósito');
 
 const TEAMS_A = [['athletico', 'Athletico Paranaense', 'Paraná - Brasil'], ['atleticomg', 'Atlético Mineiro', 'Minas Gerais - Brasil'], ['bahia', 'Bahia', 'Bahia - Brasil'], ['botafogo', 'Botafogo', 'Rio de Janeiro - Brasil'], ['chapecoense', 'Chapecoense', 'Santa Catarina - Brasil'], ['coritiba', 'Coritiba', 'Paraná - Brasil'], ['corinthians', 'Corinthians', 'São Paulo - Brasil'], ['cruzeiro', 'Cruzeiro', 'Minas Gerais - Brasil'], ['flamengo', 'Flamengo', 'Rio de Janeiro - Brasil'], ['fluminense', 'Fluminense', 'Rio de Janeiro - Brasil'], ['gremio', 'Grêmio', 'Rio Grande do Sul - Brasil'], ['internacional', 'Internacional', 'Rio Grande do Sul - Brasil'], ['mirassol', 'Mirassol', 'São Paulo - Brasil'], ['palmeiras', 'Palmeiras', 'São Paulo - Brasil'], ['bragantino', 'Red Bull Bragantino', 'São Paulo - Brasil'], ['remo', 'Remo', 'Pará - Brasil'], ['santos', 'Santos', 'São Paulo - Brasil'], ['saopaulo', 'São Paulo', 'São Paulo - Brasil'], ['vasco', 'Vasco da Gama', 'Rio de Janeiro - Brasil'], ['vitoria', 'Vitória', 'Bahia - Brasil']];
-/* Séries B e C do Brasileirão 2026 (20 clubes cada) */
-const TEAMS_B = [['ceara', 'Ceará', 'Ceará - Brasil'], ['fortaleza', 'Fortaleza', 'Ceará - Brasil'], ['juventude', 'Juventude', 'Rio Grande do Sul - Brasil'], ['sport', 'Sport', 'Pernambuco - Brasil'], ['criciuma', 'Criciúma', 'Santa Catarina - Brasil'], ['goias', 'Goiás', 'Goiás - Brasil'], ['novorizontino', 'Novorizontino', 'São Paulo - Brasil'], ['crb', 'CRB', 'Alagoas - Brasil'], ['avai', 'Avaí', 'Santa Catarina - Brasil'], ['cuiaba', 'Cuiabá', 'Mato Grosso - Brasil'], ['atleticogo', 'Atlético Goianiense', 'Goiás - Brasil'], ['operariopr', 'Operário-PR', 'Paraná - Brasil'], ['vilanova', 'Vila Nova', 'Goiás - Brasil'], ['americamg', 'América Mineiro', 'Minas Gerais - Brasil'], ['athleticmg', 'Athletic', 'Minas Gerais - Brasil'], ['botafogosp', 'Botafogo-SP', 'São Paulo - Brasil'], ['pontepreta', 'Ponte Preta', 'São Paulo - Brasil'], ['londrina', 'Londrina', 'Paraná - Brasil'], ['nautico', 'Náutico', 'Pernambuco - Brasil'], ['saobernardo', 'São Bernardo', 'São Paulo - Brasil']];
-const TEAMS_C = [['amazonas', 'Amazonas', 'Amazonas - Brasil'], ['anapolis', 'Anápolis', 'Goiás - Brasil'], ['barra', 'Barra', 'Santa Catarina - Brasil'], ['botafogopb', 'Botafogo-PB', 'Paraíba - Brasil'], ['brusque', 'Brusque', 'Santa Catarina - Brasil'], ['caxias', 'Caxias', 'Rio Grande do Sul - Brasil'], ['confianca', 'Confiança', 'Sergipe - Brasil'], ['ferroviaria', 'Ferroviária', 'São Paulo - Brasil'], ['figueirense', 'Figueirense', 'Santa Catarina - Brasil'], ['floresta', 'Floresta', 'Ceará - Brasil'], ['guarani', 'Guarani', 'São Paulo - Brasil'], ['interlimeira', 'Inter de Limeira', 'São Paulo - Brasil'], ['itabaiana', 'Itabaiana', 'Sergipe - Brasil'], ['ituano', 'Ituano', 'São Paulo - Brasil'], ['maranhao', 'Maranhão', 'Maranhão - Brasil'], ['maringa', 'Maringá', 'Paraná - Brasil'], ['paysandu', 'Paysandu', 'Pará - Brasil'], ['santacruz', 'Santa Cruz', 'Pernambuco - Brasil'], ['voltaredonda', 'Volta Redonda', 'Rio de Janeiro - Brasil'], ['ypiranga', 'Ypiranga', 'Rio Grande do Sul - Brasil']];
+/* Séries B e C conforme o Figma (20376:41809 e 20376:53643): só os clubes de Pernambuco */
+const TEAMS_B = [['nautico', 'Náutico', 'Pernambuco - Brasil'], ['sport', 'Sport Recife', 'Pernambuco - Brasil']];
+const TEAMS_C = [['santacruz', 'Santa Cruz', 'Pernambuco - Brasil']];
 const SERIES = { A: TEAMS_A, B: TEAMS_B, C: TEAMS_C };
 const TEAMS = [...TEAMS_A, ...TEAMS_B, ...TEAMS_C];
 const serieDoTime = id => (TEAMS_B.some(t => t[0] === id) ? 'B' : TEAMS_C.some(t => t[0] === id) ? 'C' : 'A');
 const team = id => { const t = TEAMS.find(x => x[0] === id) || TEAMS[3]; return { id: t[0], nome: t[1], uf: t[2] }; };
 /* só a Série A tem escudo em PNG; B e C usam um círculo com as iniciais do clube */
-const CRESTS = new Set(TEAMS_A.map(t => t[0]));
+const CRESTS = new Set(TEAMS.map(t => t[0]));
 const crest = (id, s = 48) => CRESTS.has(id)
   ? `<img src="assets/t-${id}.png" alt="" width="${s}" height="${s}" style="border-radius:50%;flex:none;background:#f3f3f3">`
   : `<span aria-hidden="true" style="width:${s}px;height:${s}px;border-radius:50%;flex:none;background:var(--primary-lighter);color:var(--primary);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:${Math.round(s * 0.3)}px">${esc(sigla((TEAMS.find(t => t[0] === id) || ['', '?'])[1]))}</span>`;
@@ -3303,10 +3314,10 @@ function agendaBody(p) {
   if (!S.user.pessoas.length && !S.flags.agendaSeen) return `<div class="col g4" style="align-items:center;text-align:center;background:var(--bg-lighter);border-radius:var(--r-3xl);padding:24px 20px">
       <span class="ico-c" style="width:48px;height:48px">${ic('user-plus', 22)}</span>
       <div class="col g2"><p class="b16 semi c-darker">Cadastrar pessoas próximas</p><p class="b14 c-dark">Adicione familiares e amigos para lembrar datas importantes e se antecipar aos gastos com presentes e comemorações</p></div>
-      ${btn('Adicionar pessoas próximas', { act: 'agPessoas', icon: 'user-plus' })}</div>
+      ${btn('Cadastrar aniversários', { act: 'agPessoas', icon: 'plus' })}</div>
     <p class="b16 semi c-darker">Por que adicionar pessoas à sua agenda?</p>
     ${[['cake', 'Lembrete de aniversários', 'Como não fazem parte das contas mensais, aniversários são fáceis de esquecer. Cadastre as datas para antecipar presentes, festas e comemorações no seu planejamento'], ['rocket', 'Conexão com Saldo Seguro', 'Ao cadastrar pessoas próximas, eu também considero essas datas quando estiverem no período da sua projeção de Saldo Seguro'], ['calendar-clock', 'Antecipação de despesas', 'Prepare seu orçamento com antecedência para festas, celebrações e compromissos ao longo do ano.'], ['gift', 'Controle de orçamentos festivos', 'Defina limites saudáveis para lembrancinhas e comemorações sem comprometer seus objetivos financeiros.']].map(([i, t, d]) => `<div class="card row g3 ais" style="border-color:var(--border-lighter)"><span class="ico-c sm">${ic(i, 16)}</span><div class="col g1"><p class="b14 semi c-darker">${t}</p><p class="b14 c-dark">${d}</p></div></div>`).join('')}
-    <div class="col g3" style="padding-top:4px">${btn('Cadastrar aniversários', { act: 'agPessoas' })}<button type="button" class="b14 semi c-primary center" data-act="agSkip" style="padding:6px">Pular</button></div>`;
+    <button type="button" class="b14 semi c-primary center" data-act="agSkip" style="padding:10px">Pular</button>`;
   const base = hoje(); const mo = p.mo || 0; const M = new Date(base.getFullYear(), base.getMonth() + mo, 1);
   const first = M.getDay(), days = new Date(M.getFullYear(), M.getMonth() + 1, 0).getDate();
   const cells = []; for (let i = 0; i < first; i++) cells.push(''); for (let d = 1; d <= days; d++) cells.push(d);
@@ -3363,12 +3374,12 @@ GLOBAL_ACTS.evASave = () => { const t = S.tmpEvA; const ev = { nome: t.nome.trim
 (function () {
   const d = SCREENS.pessoas; const r0 = d.render; const done0 = d.acts.done;
   d.render = (p, t) => { let h = r0(p, t); if (p.agenda) h = h.replace(/<span class="step">[^<]*<\/span>/, '<span class="step"></span>').replace('>Pular<', '>Agora não<'); return h; };
-  d.acts.done = () => { if (P().agenda) { S.flags.agendaSeen = true; if (S.user.pessoas.length) go('agOk'); else reset('controle', { tab: 'agenda' }, 'back'); return; } done0(); };
+  d.acts.done = () => { if (P().agenda) { S.flags.agendaSeen = true; if (S.user.pessoas.length) reset('agOk', {}, 'fade'); else reset('controle', { tab: 'agenda' }, 'back'); return; } done0(); };
 })();
 screen('agOk', {
   cls: 'grad',
   render: () => `${CURVE}${statusBar(true)}<div style="position:relative;z-index:2;flex:1;min-height:0"><img src="assets/logo-white.png" alt="Me Paguei" width="68" height="48" style="position:absolute;left:20px;top:8px"><img src="assets/mia-celebra.webp" alt="" style="position:absolute;right:20px;bottom:0;height:min(300px,100%);width:auto"><span class="chip glass" style="position:absolute;left:20px;bottom:30px;height:30px;font-weight:400;font-size:12px;background:rgba(18,18,18,.35)">${ic('users', 16)} Pessoas cadastradas</span></div>
-  <div class="sheet" style="background:#fff;flex:none"><div class="sheet-in" style="gap:12px;flex:none"><p class="h1 c-darker">Agenda configurada com sucesso!</p><p class="b16 c-dark">Pode parecer simples, mas datas especiais costumam ficar fora das contas que fazemos de cabeça para o mês seguinte, e o gasto acontece de qualquer jeito. Agora eu acompanho essas datas com você, aviso com antecedência e ajudo a incluí-las no seu planejamento ;)</p></div><div class="sheet-foot" style="background:#fff">${btn('Ver minha agenda', { act: 'go' })}</div></div>${homeInd()}`,
+  <div class="sheet" style="background:#fff;flex:none"><div class="sheet-in" style="gap:12px;flex:none"><p class="h1 c-darker">Agenda configurada com sucesso!</p><p class="b16 c-dark">Pode parecer simples, mas <b class="semi c-darker">datas especiais costumam ficar fora das contas que fazemos de cabeça</b> para o mês seguinte — <i>mas o gasto acontece de qualquer jeito.</i></p><p class="b16 c-dark"><b class="semi c-darker">Agora eu acompanho essas datas com você</b>, aviso com antecedência e ajudo a incluí-las no seu planejamento ;)</p></div><div class="sheet-foot" style="background:#fff">${btn('Ver minha agenda', { act: 'go' })}</div></div>${homeInd()}`,
   acts: { go: () => reset('controle', { tab: 'agenda' }, 'fade') },
 });
 
