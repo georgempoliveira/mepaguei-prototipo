@@ -99,7 +99,9 @@ img{display:block}
 .sb .t{position:absolute;left:21px;top:12px;width:54px;height:21px;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:15px;letter-spacing:-.2px}
 .sb .ico{position:absolute;right:14px;top:16px;display:flex;gap:4px;align-items:center}
 .sb.light{color:#fff}
-.hi{height:34px;flex:none;position:relative;background:inherit}
+/* Home indicator removido de todas as telas: quem desenha a barra de gestos é o
+   próprio sistema. Mantido no DOM só para o modo de comparação com o Figma (body.cmp). */
+.hi{display:none}
 .hi::after{content:"";position:absolute;left:50%;bottom:8px;width:134px;height:5px;margin-left:-67px;border-radius:10px;background:var(--bg-darker)}
 .hi.light::after{background:#fff}
 
@@ -397,7 +399,7 @@ textarea.ta:focus{border-color:var(--primary)}
 body.sem-painel #mod{display:none}
 /* modo comparação (auditoria) */
 body.cmp .sb{height:44px!important;visibility:visible!important}
-body.cmp .hi{display:block!important}
+body.cmp .hi{display:block!important;height:34px;flex:none;position:relative;background:inherit}
 
 /* botão de tela cheia flutuante (FAB) — versão de teste, mobile */
 #fs-btn{position:fixed;z-index:200;touch-action:none;cursor:grab;right:16px;bottom:calc(env(safe-area-inset-bottom,0px) + 92px);width:44px;height:44px;border-radius:9999px;display:flex;align-items:center;justify-content:center;background:rgba(3,12,35,.62);color:#fff;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);box-shadow:0 4px 14px rgba(0,0,0,.32)}

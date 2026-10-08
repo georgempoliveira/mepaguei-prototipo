@@ -30,7 +30,8 @@
 .bhh-nav button.on{color:var(--bh-blue)}
 .bhh-nav button.on .pill{background:var(--bh-blue);color:#fff;padding:3px 8px}
 .bhh-nav svg{width:24px;height:24px}
-.bhh-hi{position:absolute;left:0;right:0;bottom:0;height:25px;z-index:7;pointer-events:none}
+.bhh-hi{display:none;position:absolute;left:0;right:0;bottom:0;height:25px;z-index:7;pointer-events:none}
+body.cmp .bhh-hi{display:block}
 .bhh-hi i{position:absolute;left:50%;bottom:8px;width:134px;height:5px;margin-left:-67.5px;border-radius:10px;background:#181719}
 
 /* ---------- BlueHub · telas escuras (cadastro / login) ---------- */
