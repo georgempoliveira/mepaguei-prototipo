@@ -259,7 +259,7 @@ function eventoSheet(i) {
   const e = i != null ? S.eventos[i] : null;
   S.tmpEvA = e ? { ...e } : { nome: '', data: '' };
   sheetForm(`<p class="h4 c-darker">${e ? 'Editar evento' : 'Novo evento'}</p><p class="b14 c-dark">Viagens, aniversário de casamento, formaturas: datas que não se repetem todo mês, mas que dá para prever.</p>
-    ${field({ id: 'an', label: 'Nome do evento', ph: 'ex: Viagem em família', bind: 'tmpEvA.nome' })}${field({ id: 'ad', label: 'Dia e mês', ph: 'dd/mm', bind: 'tmpEvA.data', mask: 'data' })}`,
+    ${field({ id: 'an', label: 'Nome do evento', ph: 'ex: Viagem em família', bind: 'tmpEvA.nome' })}${field({ id: 'ad', label: 'Dia e mês', ph: 'ex: dd/mm', bind: 'tmpEvA.data', mask: 'data' })}`,
     btn('Salvar', { act: 'evASave', cls: 'js-next' }) + btn('Cancelar', { v: 'o', act: 'dlgClose' }), () => S.tmpEvA.nome.trim() && /^\d{2}\/\d{2}/.test(S.tmpEvA.data));
   S.flags.evAi = i;
 }

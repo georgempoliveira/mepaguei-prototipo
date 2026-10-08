@@ -201,8 +201,8 @@ function simSheet() {
   S.tmpSim = { tipo: 'Despesa', nome: '', valorTxt: '', data: '' };
   sheetForm(`<p class="h4 c-darker">Simular um novo lançamento</p><p class="b14 c-dark">Veja como uma receita ou um gasto muda seu saldo, sem alterar o estudo atual.</p>
     <div class="seg" role="tablist">${['Despesa', 'Receita'].map(t => `<button type="button" class="${t === 'Despesa' ? 'on' : ''}" data-act="simTipo" data-t="${t}">${t === 'Despesa' ? 'Gasto' : 'Receita'}</button>`).join('')}</div>
-    ${field({ id: 'sn', label: 'Nome', ph: 'Ex.: Viagem, bônus, conserto do carro', bind: 'tmpSim.nome' })}
-    ${field({ id: 'sv', label: 'Valor (R$)', ph: 'R$ 0,00', bind: 'tmpSim.valorTxt', mask: 'brl' })}
+    ${field({ id: 'sn', label: 'Nome', ph: 'ex: Viagem, bônus, conserto do carro', bind: 'tmpSim.nome' })}
+    ${field({ id: 'sv', label: 'Valor (R$)', ph: 'ex: R$ 0,00', bind: 'tmpSim.valorTxt', mask: 'brl' })}
     ${field({ id: 'sd', label: 'Data', ph: `Ex: ${ddmmyyyy(addDays(hoje(), 10))}`, bind: 'tmpSim.data', mask: 'data', helper: `Entre ${ddmmyyyy(ssState().inicio)} e ${ddmmyyyy(ssFim())}.` })}`,
     btn('Simular', { act: 'simGo', cls: 'js-next' }) + btn('Cancelar', { v: 'o', act: 'dlgClose' }),
     () => { const t = S.tmpSim; const d = parseData(t.data); return t.nome.trim() && parseBRL(t.valorTxt) > 0 && d && d >= addDays(ssState().inicio, 0) && d <= ssFim(); });
@@ -295,7 +295,7 @@ screen('ssContas', {
   valid: () => ssInicial() !== 0 || ssState().manual != null,
   acts: {
     tgl: (b) => { const s = ssState(); s.contasSel[b.dataset.b] = !s.contasSel[b.dataset.b]; rerender(); },
-    edit: () => { S.flags.ssMan = fmtBRL(ssInicial()); sheetForm(`<p class="h4 c-darker">Saldo inicial da projeção</p><p class="b14 c-dark">Tem dinheiro fora das contas conectadas? Informe o valor que devemos considerar como ponto de partida.</p>${field({ id: 'man', label: 'Valor (R$)', ph: 'R$ 0,00', bind: 'flags.ssMan', mask: 'brl' })}`, btn('Salvar', { act: 'manOk', cls: 'js-next' }) + btn('Cancelar', { v: 'o', act: 'dlgClose' }), () => !!S.flags.ssMan); },
+    edit: () => { S.flags.ssMan = fmtBRL(ssInicial()); sheetForm(`<p class="h4 c-darker">Saldo inicial da projeção</p><p class="b14 c-dark">Tem dinheiro fora das contas conectadas? Informe o valor que devemos considerar como ponto de partida.</p>${field({ id: 'man', label: 'Valor (R$)', ph: 'ex: R$ 0,00', bind: 'flags.ssMan', mask: 'brl' })}`, btn('Salvar', { act: 'manOk', cls: 'js-next' }) + btn('Cancelar', { v: 'o', act: 'dlgClose' }), () => !!S.flags.ssMan); },
     manOk: () => { ssState().manual = parseBRL(S.flags.ssMan); closeOverlays(true); rerender(); },
     unman: () => { ssState().manual = null; rerender(); },
     next: () => go('ssEntr'),
@@ -314,11 +314,11 @@ function entradaSheet(e, onSave) {
     const ov = sheetForm(`<p class="h4 c-darker">${e ? 'Editar entrada' : 'Adicionar entrada'}</p>
       <div class="col g1"><p class="b16 semi c-darker">Repete todos os meses?</p><p class="b14 c-base">Saber sobre essa entrada nos ajuda a projetar seu saldo futuro com mais precisão.</p></div>
       ${['sim', 'nao'].map(k => `<button type="button" class="radc ${t.rec === (k === 'sim') ? 'on' : ''}" data-act="erec" data-k="${k}"><span class="rad ${t.rec === (k === 'sim') ? 'on' : ''}"><span class="o"></span><span class="lb">${k === 'sim' ? 'Sim, ela se repete todo mês' : 'Não, é um valor único'}</span></span><span class="d">${k === 'sim' ? 'Como salário, aluguel ou mesada.' : 'Um recebimento pontual e único.'}</span></button>`).join('')}
-      ${field({ id: 'en', label: 'Nome', ph: 'Ex.: Salário, Freela, Aluguel', bind: 'tmpE.nome' })}
+      ${field({ id: 'en', label: 'Nome', ph: 'ex: Salário, Freela, Aluguel', bind: 'tmpE.nome' })}
       ${t.rec === true ? `<div class="fld"><label class="fld-l" for="et">Tipo de data</label><div class="inp"><select id="et" class="${t.tipo ? '' : 'ph'}"><option value="" ${t.tipo ? '' : 'selected'} disabled>Selecionar</option><option value="fixo" ${t.tipo === 'fixo' ? 'selected' : ''}>Dia fixo no mês</option><option value="util" ${t.tipo === 'util' ? 'selected' : ''}>Dia útil no mês</option></select><span class="ib">${ic('chevron-down', 18)}</span></div><p class="fld-h">Assim sabemos quando esperar esse valor todos os meses.</p></div>
         ${t.tipo ? `<div class="fld"><label class="fld-l" for="ed">${t.tipo === 'util' ? 'Dia útil do mês' : 'Dia do mês'}</label><div class="row g2 b16 c-dark">${t.tipo === 'util' ? 'Todo' : 'Todo dia'}<div class="inp" style="width:72px"><input id="ed" data-bind="tmpE.diaTxt" data-mask="int" inputmode="numeric" value="${esc(t.diaTxt)}" placeholder="5" style="text-align:center"></div>${t.tipo === 'util' ? 'dia útil do mês' : 'do mês'}</div><p class="fld-h">${t.tipo === 'util' ? 'Escolha entre o 1º e o 20º dia útil do mês.' : 'Escolha um dia de 1 a 31.'}</p></div>` : ''}`
         : t.rec === false ? field({ id: 'edt', label: 'Data prevista de recebimento', ph: `Ex: ${ddmmyyyy(addDays(hoje(), 7))}`, bind: 'tmpE.data', mask: 'data' }) : ''}
-      ${field({ id: 'ev', label: 'Valor estimado (R$)', ph: 'R$ 0,00', bind: 'tmpE.valorTxt', mask: 'brl' })}`,
+      ${field({ id: 'ev', label: 'Valor estimado (R$)', ph: 'ex: R$ 0,00', bind: 'tmpE.valorTxt', mask: 'brl' })}`,
       btn(e ? 'Salvar alterações' : 'Salvar', { act: 'eSave', cls: 'js-next' }) + btn('Voltar', { v: 'o', act: 'dlgClose' }),
       () => { const t = S.tmpE; const dia = +t.diaTxt; if (!t.nome.trim() || parseBRL(t.valorTxt) <= 0 || t.rec == null) return false; if (t.rec) return t.tipo && dia >= 1 && dia <= (t.tipo === 'util' ? 20 : 31); return !!parseData(t.data); });
     ov.querySelector('#et')?.addEventListener('change', ev => { S.tmpE.tipo = ev.target.value; draw(); });
@@ -391,7 +391,7 @@ screen('ssRec', {
       foot: intro ? btn('Configurar gastos recorrentes', { act: 'start' }) + btn('Cancelar', { v: 'o', act: 'ssCancel' }) : ssFoot('Total de gastos recorrentes', fatT + gT, 'Soma dos gastos selecionados') }); },
   acts: {
     start: () => { ssState().miaG = true; rerender(); },
-    estimar: (b) => { const id = b.dataset.b; S.flags.fatV = ssState().faturas[id].valor ? fmtBRL(ssState().faturas[id].valor) : ''; S.flags.fatB = id; sheetForm(`<p class="h4 c-darker">Estimar fatura ${BANKS[id].curto}</p><p class="b14 c-dark">A fatura ainda está aberta. Quanto você imagina que ela vai fechar, considerando o que ainda pretende gastar até o fechamento?</p>${field({ id: 'fv', label: 'Valor estimado (R$)', ph: 'R$ 0,00', bind: 'flags.fatV', mask: 'brl' })}`, btn('Salvar', { act: 'fatOk', cls: 'js-next' }) + btn('Cancelar', { v: 'o', act: 'dlgClose' }), () => parseBRL(S.flags.fatV) > 0); },
+    estimar: (b) => { const id = b.dataset.b; S.flags.fatV = ssState().faturas[id].valor ? fmtBRL(ssState().faturas[id].valor) : ''; S.flags.fatB = id; sheetForm(`<p class="h4 c-darker">Estimar fatura ${BANKS[id].curto}</p><p class="b14 c-dark">A fatura ainda está aberta. Quanto você imagina que ela vai fechar, considerando o que ainda pretende gastar até o fechamento?</p>${field({ id: 'fv', label: 'Valor estimado (R$)', ph: 'ex: R$ 0,00', bind: 'flags.fatV', mask: 'brl' })}`, btn('Salvar', { act: 'fatOk', cls: 'js-next' }) + btn('Cancelar', { v: 'o', act: 'dlgClose' }), () => parseBRL(S.flags.fatV) > 0); },
     fatOk: () => { ssState().faturas[S.flags.fatB].valor = parseBRL(S.flags.fatV); closeOverlays(true); rerender(); },
     add: () => gastoSheet(null, g => { ssState().gastos.push(g); rerender(); toast('Despesa adicionada'); }),
     found: () => { const p = stack[stack.length - 1].p; p.found = !p.found; rerender(); },

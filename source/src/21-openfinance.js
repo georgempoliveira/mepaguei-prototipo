@@ -114,7 +114,7 @@ const featList = `<div class="col g2"><p class="b16 semi c-darker">Funcionalidad
   <div class="col">${[['piggy-bank', 'Valor fixo', 'Valor fixo guardado continuamente.', 'var(--primary-lighter)', 'var(--primary)'], ['trophy', 'Placar do Bem', 'Seu time ganha, seu dinheiro cresce.', 'var(--warning-bg)', 'var(--warning)'], ['coins', 'Troco inteligente', 'O troco das suas compras vira poupança.', 'var(--success-bg)', 'var(--success)']].map(([i, t, d, bg, fg]) => `<div class="li ais"><span class="ico-c sm" style="background:${bg};color:${fg}">${ic(i, 16)}</span><div class="lt col g1"><p class="b14 semi c-darker">${t}</p><p class="b14 c-dark">${d}</p></div></div>`).join('')}</div></div>`;
 function saldoSegBlock() {
   return `<div class="card col g3"><div class="row g3 ais"><span class="ico-c sm">${ic('file-lock', 16)}</span><div class="col g1"><p class="b16 semi c-darker">Saldo de Segurança <span class="reg c-base">(opcional)</span></p><p class="cap c-dark">Defina o valor mínimo que deseja manter na sua conta. Se o seu saldo estiver abaixo, a transferência não será realizada.</p></div></div>
-    ${field({ id: 'sseg', ph: 'R$ 100,00', bind: 'flags.sseg', mask: 'brl' })}
+    ${field({ id: 'sseg', ph: 'ex: R$ 100,00', bind: 'flags.sseg', mask: 'brl' })}
     <p class="cap c-dark" style="background:var(--primary-lighter);border-radius:var(--r-lg);padding:10px 12px">Mesmo sem um valor definido, nosso sistema nunca será responsável por seu saldo bancário ficar negativo.</p></div>`;
 }
 function miaInsight(title, text) {
@@ -218,7 +218,7 @@ screen('central', {
     ctab: (b) => { const p = stack[stack.length - 1].p; p.tab = b.dataset.k; p.init = 0; rerender(); },
     add: () => go('of2'),
     swap: () => { if (S.contas.length) { const o = S.origem, d = S.destino; S.origem = { bank: d.bank, conta: 0 }; S.destino = { bank: o.bank, pix: d.pix }; rerender(); toast('Contas invertidas'); } },
-    editSeg: () => { S.flags.sseg2 = S.saldoSeg ? fmtBRL(S.saldoSeg) : ''; openSheet(`<p class="h4 c-darker">Saldo de segurança</p><p class="b14 c-dark">Valor mínimo mantido na conta principal. Se o saldo estiver abaixo disso, não fazemos a transferência do dia.</p>${field({ id: 'sseg2', label: 'Valor', ph: 'R$ 100,00', bind: 'flags.sseg2', mask: 'brl' })}`, { foot: btn('Salvar', { act: 'saveSeg' }) }); },
+    editSeg: () => { S.flags.sseg2 = S.saldoSeg ? fmtBRL(S.saldoSeg) : ''; openSheet(`<p class="h4 c-darker">Saldo de segurança</p><p class="b14 c-dark">Valor mínimo mantido na conta principal. Se o saldo estiver abaixo disso, não fazemos a transferência do dia.</p>${field({ id: 'sseg2', label: 'Valor', ph: 'ex: R$ 100,00', bind: 'flags.sseg2', mask: 'brl' })}`, { foot: btn('Salvar', { act: 'saveSeg' }) }); },
     saveSeg: () => { S.saldoSeg = parseBRL(S.flags.sseg2); closeOverlays(true); rerender(); toast('Saldo de segurança atualizado'); },
     editDest: () => go('ofDest', { fromCentral: true }),
     savePri: () => { S.origem = { ...S.tmpOrig }; S.saldoSeg = parseBRL(S.flags.sseg) || S.saldoSeg; const p = stack[stack.length - 1].p; p.tab = 'def'; rerender(); toast('Conta Principal atualizada'); },

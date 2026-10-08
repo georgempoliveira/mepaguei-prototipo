@@ -1146,9 +1146,9 @@ screen('cad1', {
   render: () => gradScreen({
     title: 'Cadastro', sub: 'Para começar, precisamos de alguns dados básicos', step: 'Etapa 1 de 3',
     body: `<div class="col g6">
-      ${field({ id: 'nome', label: 'Nome completo', ph: 'Maria da Silva', bind: 'user.nome' })}
-      ${field({ id: 'cpf', label: 'CPF', ph: '123.456.789-00', bind: 'user.cpf', mask: 'cpf', helper: 'Usamos seu CPF para garantir a segurança da sua conta.' })}
-      ${field({ id: 'email', label: 'E-mail', ph: 'seuemail@email.com', bind: 'user.email', type: 'email', mode: 'email' })}
+      ${field({ id: 'nome', label: 'Nome completo', ph: 'ex: Maria da Silva', bind: 'user.nome' })}
+      ${field({ id: 'cpf', label: 'CPF', ph: 'ex: 123.456.789-00', bind: 'user.cpf', mask: 'cpf', helper: 'Usamos seu CPF para garantir a segurança da sua conta.' })}
+      ${field({ id: 'email', label: 'E-mail', ph: 'ex: seuemail@email.com', bind: 'user.email', type: 'email', mode: 'email' })}
     </div>
     <div class="col g4 mt-auto">
       <div class="chk ${S.user.termos ? 'on' : ''}" data-act="check" data-key="user.termos" role="checkbox" aria-checked="${S.user.termos}" tabindex="0" style="cursor:pointer"><span class="box">${ic('check', 12)}</span><span class="b14 c-darker">Li e aceito as <button type="button" class="lnk" data-act="terms" style="display:inline">Políticas de Privacidade</button> e <button type="button" class="lnk" data-act="terms" style="display:inline">Termos de Uso</button></span></div>
@@ -1298,7 +1298,7 @@ screen('perf1', {
       <p class="cap c-base center" style="max-width:240px">Sua foto pode ser alterada no seu perfil do BlueHub.</p>
     </div>
     ${selectField({ id: 'gen', label: 'Gênero', bind: 'user.genero', options: ['Feminino', 'Masculino', 'Não-binário', 'Prefiro não informar'] })}
-    ${field({ id: 'nasc', label: 'Quando você nasceu?', ph: 'dd/mm/aaaa', bind: 'user.nasc', mask: 'data' })}`,
+    ${field({ id: 'nasc', label: 'Quando você nasceu?', ph: 'ex: dd/mm/aaaa', bind: 'user.nasc', mask: 'data' })}`,
     foot: btn('Continuar', { next: true, go: 'perf2' }),
   }),
   valid: () => S.user.genero && S.user.nasc.length === 10,
@@ -1308,8 +1308,8 @@ screen('perf2', {
   render: () => gradScreen({
     title: 'Perfil profissional', sub: 'Estes dados são importantes para compreendermos seu momento atual.', step: '2/4',
     body: `${selectField({ id: 'civil', label: 'Estado Civil', bind: 'user.civil', ph: 'Selecione uma opção', options: ['Solteiro(a)', 'Casado(a)', 'União estável', 'Divorciado(a)', 'Viúvo(a)'], helper: 'Nos ajuda a entender melhor seu momento de vida.' })}
-    ${selectField({ id: 'prof', label: 'Profissão', bind: 'user.profissao', ph: 'Ex: Assistente Administrativo', options: PROFISSOES })}
-    ${field({ id: 'renda', label: 'Qual o valor da sua renda mensal?', ph: 'R$ 10.000,00', bind: 'user.renda', mask: 'brl', helper: 'Essa informação será utilizada para melhor atender seus interesses no Me Paguei' })}`,
+    ${selectField({ id: 'prof', label: 'Profissão', bind: 'user.profissao', ph: 'ex: Assistente Administrativo', options: PROFISSOES })}
+    ${field({ id: 'renda', label: 'Qual o valor da sua renda mensal?', ph: 'ex: R$ 10.000,00', bind: 'user.renda', mask: 'brl', helper: 'Essa informação será utilizada para melhor atender seus interesses no Me Paguei' })}`,
     foot: btn('Continuar', { next: true, go: 'perf3' }),
   }),
   valid: () => S.user.civil && S.user.profissao.trim() && S.user.renda,
@@ -1352,12 +1352,12 @@ screen('perf3', {
     const ok = st === 'ok' || st === 'err';
     return gradScreen({
       title: 'Endereço', sub: 'Informe seu endereço residencial para fins de validação cadastral.', step: '3/4',
-      body: `${field({ id: 'cep', label: 'CEP', ph: '12345-078', bind: 'user.cep', mask: 'cep', icon: 'search', helper: st === 'load' ? 'Buscando endereço...' : '' })}
+      body: `${field({ id: 'cep', label: 'CEP', ph: 'ex: 12345-078', bind: 'user.cep', mask: 'cep', icon: 'search', helper: st === 'load' ? 'Buscando endereço...' : '' })}
       ${st === 'err' ? '<p class="fld-h err" style="margin-top:-8px">CEP não encontrado. Confira o número ou preencha o endereço abaixo.</p>' : ''}
-      <div class="row g3 ais">${field({ id: 'rua', label: 'Rua / Logradouro', ph: 'Rua Bione', bind: 'user.rua', dis: !ok, cls: 'f1' })}<div style="width:96px">${field({ id: 'num', label: 'Número', ph: '123', bind: 'user.numero', dis: !ok, mode: 'numeric' })}</div></div>
-      ${field({ id: 'compl', label: 'Complemento', opt: true, ph: 'Apto. 234, Bloco A', bind: 'user.compl', dis: !ok })}
-      ${field({ id: 'bairro', label: 'Bairro', ph: 'Bairro do Recife', bind: 'user.bairro', dis: !ok })}
-      <div class="row g3 ais">${field({ id: 'cid', label: 'Cidade', ph: 'Recife', bind: 'user.cidade', dis: !ok, cls: 'f1' })}<div style="width:110px">${field({ id: 'uf', label: 'Estado (UF)', ph: 'PE', bind: 'user.uf', dis: !ok })}</div></div>`,
+      <div class="row g3 ais">${field({ id: 'rua', label: 'Rua / Logradouro', ph: 'ex: Rua Bione', bind: 'user.rua', dis: !ok, cls: 'f1' })}<div style="width:96px">${field({ id: 'num', label: 'Número', ph: 'ex: 123', bind: 'user.numero', dis: !ok, mode: 'numeric' })}</div></div>
+      ${field({ id: 'compl', label: 'Complemento', opt: true, ph: 'ex: Apto. 234, Bloco A', bind: 'user.compl', dis: !ok })}
+      ${field({ id: 'bairro', label: 'Bairro', ph: 'ex: Bairro do Recife', bind: 'user.bairro', dis: !ok })}
+      <div class="row g3 ais">${field({ id: 'cid', label: 'Cidade', ph: 'ex: Recife', bind: 'user.cidade', dis: !ok, cls: 'f1' })}<div style="width:110px">${field({ id: 'uf', label: 'Estado (UF)', ph: 'ex: PE', bind: 'user.uf', dis: !ok })}</div></div>`,
       foot: btn('Continuar', { next: true, go: 'perf4' }),
     });
   },
@@ -1372,7 +1372,7 @@ screen('perf4', {
   cls: 'grad',
   render: () => gradScreen({
     title: 'Informações de contato', sub: 'Insira seu número de telefone para validação de segurança e recebimento de comunicações.', step: '4/4',
-    body: field({ id: 'cel', label: 'Celular', ph: '(99) 99999-9999', bind: 'user.cel', mask: 'cel', type: 'tel' }),
+    body: field({ id: 'cel', label: 'Celular', ph: 'ex: (99) 99999-9999', bind: 'user.cel', mask: 'cel', type: 'tel' }),
     foot: btn('Continuar', { next: true, act: 'next' }),
   }),
   valid: () => S.user.cel.length >= 14,
@@ -1463,7 +1463,7 @@ screen('login', {
   cls: 'grad',
   render: () => gradScreen({
     title: 'Login', sub: 'Informe seu CPF e senha para acessar seu dinheiro e continuar no piloto automático.',
-    body: `${field({ id: 'lcpf', label: 'CPF', ph: '123.456.789-00', bind: 'flags.lcpf', mask: 'cpf' })}
+    body: `${field({ id: 'lcpf', label: 'CPF', ph: 'ex: 123.456.789-00', bind: 'flags.lcpf', mask: 'cpf' })}
       ${pwField({ id: 'lpw', label: 'Senha', ph: '************', bind: 'flags.lpw' })}`,
     foot: `${btn('Entrar', { next: true, act: 'enter' })}
       <p class="b16 center c-darker">Não possui uma conta? <button type="button" class="lnk2" data-go="cad1">Cadastre-se</button></p>
@@ -1475,7 +1475,7 @@ screen('login', {
 screen('loginOk', { render: () => '', mount: () => { if (!S.user.nome) Object.assign(S.user, { nome: 'Marcelo Pimentel', email: 'marcelo.pimentel@gmail.com' }); S.perfilCompleto = true; reset('home'); } });
 screen('rec1', {
   cls: 'grad',
-  render: () => gradScreen({ title: 'Recuperar senha', sub: 'Para sua segurança, informe seu CPF e confirme sua identidade para continuar.', body: field({ id: 'rcpf', label: 'CPF', ph: '123.456.789-00', bind: 'flags.rcpf', mask: 'cpf' }), foot: btn('Enviar código', { next: true, act: 'next' }) }),
+  render: () => gradScreen({ title: 'Recuperar senha', sub: 'Para sua segurança, informe seu CPF e confirme sua identidade para continuar.', body: field({ id: 'rcpf', label: 'CPF', ph: 'ex: 123.456.789-00', bind: 'flags.rcpf', mask: 'cpf' }), foot: btn('Enviar código', { next: true, act: 'next' }) }),
   valid: () => (S.flags.rcpf || '').length === 14,
   acts: { next: () => go('token', { kind: 'email', next: 'rec3' }) },
 });
@@ -1996,7 +1996,7 @@ const featList = `<div class="col g2"><p class="b16 semi c-darker">Funcionalidad
   <div class="col">${[['piggy-bank', 'Valor fixo', 'Valor fixo guardado continuamente.', 'var(--primary-lighter)', 'var(--primary)'], ['trophy', 'Placar do Bem', 'Seu time ganha, seu dinheiro cresce.', 'var(--warning-bg)', 'var(--warning)'], ['coins', 'Troco inteligente', 'O troco das suas compras vira poupança.', 'var(--success-bg)', 'var(--success)']].map(([i, t, d, bg, fg]) => `<div class="li ais"><span class="ico-c sm" style="background:${bg};color:${fg}">${ic(i, 16)}</span><div class="lt col g1"><p class="b14 semi c-darker">${t}</p><p class="b14 c-dark">${d}</p></div></div>`).join('')}</div></div>`;
 function saldoSegBlock() {
   return `<div class="card col g3"><div class="row g3 ais"><span class="ico-c sm">${ic('file-lock', 16)}</span><div class="col g1"><p class="b16 semi c-darker">Saldo de Segurança <span class="reg c-base">(opcional)</span></p><p class="cap c-dark">Defina o valor mínimo que deseja manter na sua conta. Se o seu saldo estiver abaixo, a transferência não será realizada.</p></div></div>
-    ${field({ id: 'sseg', ph: 'R$ 100,00', bind: 'flags.sseg', mask: 'brl' })}
+    ${field({ id: 'sseg', ph: 'ex: R$ 100,00', bind: 'flags.sseg', mask: 'brl' })}
     <p class="cap c-dark" style="background:var(--primary-lighter);border-radius:var(--r-lg);padding:10px 12px">Mesmo sem um valor definido, nosso sistema nunca será responsável por seu saldo bancário ficar negativo.</p></div>`;
 }
 function miaInsight(title, text) {
@@ -2100,7 +2100,7 @@ screen('central', {
     ctab: (b) => { const p = stack[stack.length - 1].p; p.tab = b.dataset.k; p.init = 0; rerender(); },
     add: () => go('of2'),
     swap: () => { if (S.contas.length) { const o = S.origem, d = S.destino; S.origem = { bank: d.bank, conta: 0 }; S.destino = { bank: o.bank, pix: d.pix }; rerender(); toast('Contas invertidas'); } },
-    editSeg: () => { S.flags.sseg2 = S.saldoSeg ? fmtBRL(S.saldoSeg) : ''; openSheet(`<p class="h4 c-darker">Saldo de segurança</p><p class="b14 c-dark">Valor mínimo mantido na conta principal. Se o saldo estiver abaixo disso, não fazemos a transferência do dia.</p>${field({ id: 'sseg2', label: 'Valor', ph: 'R$ 100,00', bind: 'flags.sseg2', mask: 'brl' })}`, { foot: btn('Salvar', { act: 'saveSeg' }) }); },
+    editSeg: () => { S.flags.sseg2 = S.saldoSeg ? fmtBRL(S.saldoSeg) : ''; openSheet(`<p class="h4 c-darker">Saldo de segurança</p><p class="b14 c-dark">Valor mínimo mantido na conta principal. Se o saldo estiver abaixo disso, não fazemos a transferência do dia.</p>${field({ id: 'sseg2', label: 'Valor', ph: 'ex: R$ 100,00', bind: 'flags.sseg2', mask: 'brl' })}`, { foot: btn('Salvar', { act: 'saveSeg' }) }); },
     saveSeg: () => { S.saldoSeg = parseBRL(S.flags.sseg2); closeOverlays(true); rerender(); toast('Saldo de segurança atualizado'); },
     editDest: () => go('ofDest', { fromCentral: true }),
     savePri: () => { S.origem = { ...S.tmpOrig }; S.saldoSeg = parseBRL(S.flags.sseg) || S.saldoSeg; const p = stack[stack.length - 1].p; p.tab = 'def'; rerender(); toast('Conta Principal atualizada'); },
@@ -2362,8 +2362,8 @@ function objStep(step, edit) {
   let html = '';
   if (step === 1) html = `${field({ id: 'onome', label: 'Escreva em poucas palavras o seu objetivo', ph: 'Nome do objetivo', bind: 'tmpObj.nome' })}<p class="cap semi c-base">Sugestões</p>
     <div class="row g2" style="flex-wrap:wrap">${OBJ_SUG.map(([i, s]) => `<button type="button" class="chip" data-act="osug" data-v="${s}" style="height:30px;font-size:12px;color:var(--ia);border-color:${o.nome === s ? 'var(--ia)' : '#d9c2f7'};background:${o.nome === s ? 'var(--ia-bg)' : '#fff'}">${ic(i, 14)} ${s}</button>`).join('')}</div>`;
-  if (step === 2) html = `${field({ id: 'ovalor', label: 'Qual valor deseja atingir?', ph: 'R$ 0,00', bind: 'tmpObj.valorTxt', mask: 'brl' })}${miaInsight('Defina um valor possível', 'Lembre-se de definir um valor que respeite sua realidade atual para manter seu planejamento seguro e sem frustrações.')}`;
-  if (step === 3) html = `${field({ id: 'odata', label: 'Data final do objetivo', ph: 'dd/mm/aaaa', bind: 'tmpObj.prazo', mask: 'data', icon: 'calendar-days', helper: 'Escolha quando quer atingir seu objetivo.' })}<p class="fld-h err" id="oerr" hidden>Escolha uma data a partir de amanhã.</p>`;
+  if (step === 2) html = `${field({ id: 'ovalor', label: 'Qual valor deseja atingir?', ph: 'ex: R$ 0,00', bind: 'tmpObj.valorTxt', mask: 'brl' })}${miaInsight('Defina um valor possível', 'Lembre-se de definir um valor que respeite sua realidade atual para manter seu planejamento seguro e sem frustrações.')}`;
+  if (step === 3) html = `${field({ id: 'odata', label: 'Data final do objetivo', ph: 'ex: dd/mm/aaaa', bind: 'tmpObj.prazo', mask: 'data', icon: 'calendar-days', helper: 'Escolha quando quer atingir seu objetivo.' })}<p class="fld-h err" id="oerr" hidden>Escolha uma data a partir de amanhã.</p>`;
   const foot = edit ? btn('Salvar', { cls: 'lg js-next', act: 'objSave' }) + btn('Cancelar', { v: 'o', cls: 'lg', act: 'objCancel' }) : `${dots}${btn(step === 3 ? 'Salvar' : 'Próximo', { cls: 'lg js-next', act: 'objNext', attrs: `data-s="${step}"` })}`;
   return { html: `<div class="col g4" style="min-height:330px">${html}</div>`, foot };
 }
@@ -2459,7 +2459,7 @@ screen('vfFreq', {
 });
 screen('vfValor', {
   cls: 'grad',
-  render: (p) => ofScreen({ title: p.edit ? 'Editar valor' : 'Definir valor', body: `${field({ id: 'vfv', label: valorLabel(S.tmpVf.freq), ph: 'R$ 0,00', bind: 'tmpVf.valorTxt', mask: 'brl' })}
+  render: (p) => ofScreen({ title: p.edit ? 'Editar valor' : 'Definir valor', body: `${field({ id: 'vfv', label: valorLabel(S.tmpVf.freq), ph: 'ex: R$ 0,00', bind: 'tmpVf.valorTxt', mask: 'brl' })}
     <div class="row g2" style="flex-wrap:wrap">${[50, 100, 200, 500].map(v => `<button type="button" class="chip" data-act="vq" data-v="${v}">${fmtBRL(v, false)}</button>`).join('')}</div>
     ${S.contas.length ? miaInsight('Sugestão da MIA', `Analisei sua margem livre dos últimos meses: guardar até ${fmtBRL(S.tmpVf.freq === 'sem' ? 75 : S.tmpVf.freq === 'quinz' ? 150 : 300, false)} por depósito não deve apertar seu mês.`) : ''}`,
     foot: btn(p.edit ? 'Salvar' : 'Próximo', { next: true, act: 'next' }) }),
@@ -2525,7 +2525,7 @@ screen('pbValor', {
   render: (p) => { const t = team(S.tmpPb.time);
     return ofScreen({ title: p.edit ? 'Editar valor por vitória' : 'Definir valor por vitória', dots: p.edit ? 0 : 2,
       body: `<div class="card row g3">${teamRow(t.id, '<span class="badge success">Escolhido</span>')}</div><p class="b14 c-dark">O valor escolhido só é transferido para a sua poupança quando o ${t.nome} vencer.</p>
-      ${field({ id: 'pbv', label: 'Valor por vitória', ph: 'R$ 0,00', bind: 'tmpPb.valorTxt', mask: 'brl' })}
+      ${field({ id: 'pbv', label: 'Valor por vitória', ph: 'ex: R$ 0,00', bind: 'tmpPb.valorTxt', mask: 'brl' })}
       <div class="row g2" style="flex-wrap:wrap">${[5, 10, 20, 50].map(v => `<button type="button" class="chip" data-act="vq" data-v="${v}">${fmtBRL(v, false)}</button>`).join('')}</div>
       <div class="card flat col g1"><p class="row g2 b14 semi c-darker">${ic('info', 16, 'c-primary')} Como funciona?</p><p class="b14 c-dark">A transferência será feita entre as contas principal e cofrinho cadastradas por você. Se o seu time não vencer, nenhuma movimentação é feita.</p></div>`,
       foot: btn(p.edit ? 'Salvar' : 'Próximo', { next: true, act: 'next' }) + (p.edit ? '' : btn('Cancelar', { v: 'o', act: 'cancel' })) }); },
@@ -2567,7 +2567,7 @@ screen('trModo', {
     return ofScreen({ title: 'Troco inteligente', sub: 'Escolha a regra que usaremos para calcular o valor poupado em cada compra.', dots: p.edit ? 0 : 1,
       body: `<div class="radc ${m === 'arred' ? 'on' : ''}" data-act="msel" data-m="arred" role="radio" aria-checked="${m === 'arred'}" style="cursor:pointer"><span class="rad ${m === 'arred' ? 'on' : ''}"><span class="o"></span><span class="lb">Arredondar centavos</span></span><span class="d">Arredonda o valor para o próximo número inteiro e guarda a diferença.<br><b class="c-dark">Exemplo:</b> "Uma compra de R$ 4,50 vira R$ 5,00. Você poupa R$ 0,50."</span></div>
       <div class="radc ${m === 'fixo' ? 'on' : ''}" data-act="msel" data-m="fixo" role="radio" aria-checked="${m === 'fixo'}" style="cursor:pointer"><span class="rad ${m === 'fixo' ? 'on' : ''}"><span class="o"></span><span class="lb">Guardar valor fixo</span></span><span class="d">Escolha um valor exato para guardar em cada compra feita.</span>
-        ${m === 'fixo' ? `<div class="col g2" style="padding-left:30px;margin-top:6px">${field({ id: 'trf', ph: 'R$ 0,00', bind: 'tmpTr.fixoTxt', mask: 'brl' })}<div class="row g2">${[1, 2, 5].map(v => `<button type="button" class="chip f1 jc" data-act="fq" data-v="${v}" style="height:30px;font-size:12px;${parseBRL(S.tmpTr.fixoTxt) === v ? 'border-color:var(--primary-darker);color:var(--primary-darker)' : 'color:var(--primary);border-color:#a9d3f5'}">${fmtBRL(v)}</button>`).join('')}</div></div>` : ''}</div>`,
+        ${m === 'fixo' ? `<div class="col g2" style="padding-left:30px;margin-top:6px">${field({ id: 'trf', ph: 'ex: R$ 0,00', bind: 'tmpTr.fixoTxt', mask: 'brl' })}<div class="row g2">${[1, 2, 5].map(v => `<button type="button" class="chip f1 jc" data-act="fq" data-v="${v}" style="height:30px;font-size:12px;${parseBRL(S.tmpTr.fixoTxt) === v ? 'border-color:var(--primary-darker);color:var(--primary-darker)' : 'color:var(--primary);border-color:#a9d3f5'}">${fmtBRL(v)}</button>`).join('')}</div></div>` : ''}</div>`,
       foot: btn(p.edit ? 'Salvar' : 'Próximo', { next: true, act: 'next' }) }); },
   mount: (el, p) => { if (p.edit && !p.init) { p.init = 1; const o = poupState().troco; S.tmpTr = { modo: o.modo, fixoTxt: o.fixo ? fmtBRL(o.fixo) : '', mult: o.mult }; rerender(); } },
   valid: () => S.tmpTr.modo === 'arred' || (S.tmpTr.modo === 'fixo' && parseBRL(S.tmpTr.fixoTxt) > 0),
@@ -2816,8 +2816,8 @@ function simSheet() {
   S.tmpSim = { tipo: 'Despesa', nome: '', valorTxt: '', data: '' };
   sheetForm(`<p class="h4 c-darker">Simular um novo lançamento</p><p class="b14 c-dark">Veja como uma receita ou um gasto muda seu saldo, sem alterar o estudo atual.</p>
     <div class="seg" role="tablist">${['Despesa', 'Receita'].map(t => `<button type="button" class="${t === 'Despesa' ? 'on' : ''}" data-act="simTipo" data-t="${t}">${t === 'Despesa' ? 'Gasto' : 'Receita'}</button>`).join('')}</div>
-    ${field({ id: 'sn', label: 'Nome', ph: 'Ex.: Viagem, bônus, conserto do carro', bind: 'tmpSim.nome' })}
-    ${field({ id: 'sv', label: 'Valor (R$)', ph: 'R$ 0,00', bind: 'tmpSim.valorTxt', mask: 'brl' })}
+    ${field({ id: 'sn', label: 'Nome', ph: 'ex: Viagem, bônus, conserto do carro', bind: 'tmpSim.nome' })}
+    ${field({ id: 'sv', label: 'Valor (R$)', ph: 'ex: R$ 0,00', bind: 'tmpSim.valorTxt', mask: 'brl' })}
     ${field({ id: 'sd', label: 'Data', ph: `Ex: ${ddmmyyyy(addDays(hoje(), 10))}`, bind: 'tmpSim.data', mask: 'data', helper: `Entre ${ddmmyyyy(ssState().inicio)} e ${ddmmyyyy(ssFim())}.` })}`,
     btn('Simular', { act: 'simGo', cls: 'js-next' }) + btn('Cancelar', { v: 'o', act: 'dlgClose' }),
     () => { const t = S.tmpSim; const d = parseData(t.data); return t.nome.trim() && parseBRL(t.valorTxt) > 0 && d && d >= addDays(ssState().inicio, 0) && d <= ssFim(); });
@@ -2910,7 +2910,7 @@ screen('ssContas', {
   valid: () => ssInicial() !== 0 || ssState().manual != null,
   acts: {
     tgl: (b) => { const s = ssState(); s.contasSel[b.dataset.b] = !s.contasSel[b.dataset.b]; rerender(); },
-    edit: () => { S.flags.ssMan = fmtBRL(ssInicial()); sheetForm(`<p class="h4 c-darker">Saldo inicial da projeção</p><p class="b14 c-dark">Tem dinheiro fora das contas conectadas? Informe o valor que devemos considerar como ponto de partida.</p>${field({ id: 'man', label: 'Valor (R$)', ph: 'R$ 0,00', bind: 'flags.ssMan', mask: 'brl' })}`, btn('Salvar', { act: 'manOk', cls: 'js-next' }) + btn('Cancelar', { v: 'o', act: 'dlgClose' }), () => !!S.flags.ssMan); },
+    edit: () => { S.flags.ssMan = fmtBRL(ssInicial()); sheetForm(`<p class="h4 c-darker">Saldo inicial da projeção</p><p class="b14 c-dark">Tem dinheiro fora das contas conectadas? Informe o valor que devemos considerar como ponto de partida.</p>${field({ id: 'man', label: 'Valor (R$)', ph: 'ex: R$ 0,00', bind: 'flags.ssMan', mask: 'brl' })}`, btn('Salvar', { act: 'manOk', cls: 'js-next' }) + btn('Cancelar', { v: 'o', act: 'dlgClose' }), () => !!S.flags.ssMan); },
     manOk: () => { ssState().manual = parseBRL(S.flags.ssMan); closeOverlays(true); rerender(); },
     unman: () => { ssState().manual = null; rerender(); },
     next: () => go('ssEntr'),
@@ -2929,11 +2929,11 @@ function entradaSheet(e, onSave) {
     const ov = sheetForm(`<p class="h4 c-darker">${e ? 'Editar entrada' : 'Adicionar entrada'}</p>
       <div class="col g1"><p class="b16 semi c-darker">Repete todos os meses?</p><p class="b14 c-base">Saber sobre essa entrada nos ajuda a projetar seu saldo futuro com mais precisão.</p></div>
       ${['sim', 'nao'].map(k => `<button type="button" class="radc ${t.rec === (k === 'sim') ? 'on' : ''}" data-act="erec" data-k="${k}"><span class="rad ${t.rec === (k === 'sim') ? 'on' : ''}"><span class="o"></span><span class="lb">${k === 'sim' ? 'Sim, ela se repete todo mês' : 'Não, é um valor único'}</span></span><span class="d">${k === 'sim' ? 'Como salário, aluguel ou mesada.' : 'Um recebimento pontual e único.'}</span></button>`).join('')}
-      ${field({ id: 'en', label: 'Nome', ph: 'Ex.: Salário, Freela, Aluguel', bind: 'tmpE.nome' })}
+      ${field({ id: 'en', label: 'Nome', ph: 'ex: Salário, Freela, Aluguel', bind: 'tmpE.nome' })}
       ${t.rec === true ? `<div class="fld"><label class="fld-l" for="et">Tipo de data</label><div class="inp"><select id="et" class="${t.tipo ? '' : 'ph'}"><option value="" ${t.tipo ? '' : 'selected'} disabled>Selecionar</option><option value="fixo" ${t.tipo === 'fixo' ? 'selected' : ''}>Dia fixo no mês</option><option value="util" ${t.tipo === 'util' ? 'selected' : ''}>Dia útil no mês</option></select><span class="ib">${ic('chevron-down', 18)}</span></div><p class="fld-h">Assim sabemos quando esperar esse valor todos os meses.</p></div>
         ${t.tipo ? `<div class="fld"><label class="fld-l" for="ed">${t.tipo === 'util' ? 'Dia útil do mês' : 'Dia do mês'}</label><div class="row g2 b16 c-dark">${t.tipo === 'util' ? 'Todo' : 'Todo dia'}<div class="inp" style="width:72px"><input id="ed" data-bind="tmpE.diaTxt" data-mask="int" inputmode="numeric" value="${esc(t.diaTxt)}" placeholder="5" style="text-align:center"></div>${t.tipo === 'util' ? 'dia útil do mês' : 'do mês'}</div><p class="fld-h">${t.tipo === 'util' ? 'Escolha entre o 1º e o 20º dia útil do mês.' : 'Escolha um dia de 1 a 31.'}</p></div>` : ''}`
         : t.rec === false ? field({ id: 'edt', label: 'Data prevista de recebimento', ph: `Ex: ${ddmmyyyy(addDays(hoje(), 7))}`, bind: 'tmpE.data', mask: 'data' }) : ''}
-      ${field({ id: 'ev', label: 'Valor estimado (R$)', ph: 'R$ 0,00', bind: 'tmpE.valorTxt', mask: 'brl' })}`,
+      ${field({ id: 'ev', label: 'Valor estimado (R$)', ph: 'ex: R$ 0,00', bind: 'tmpE.valorTxt', mask: 'brl' })}`,
       btn(e ? 'Salvar alterações' : 'Salvar', { act: 'eSave', cls: 'js-next' }) + btn('Voltar', { v: 'o', act: 'dlgClose' }),
       () => { const t = S.tmpE; const dia = +t.diaTxt; if (!t.nome.trim() || parseBRL(t.valorTxt) <= 0 || t.rec == null) return false; if (t.rec) return t.tipo && dia >= 1 && dia <= (t.tipo === 'util' ? 20 : 31); return !!parseData(t.data); });
     ov.querySelector('#et')?.addEventListener('change', ev => { S.tmpE.tipo = ev.target.value; draw(); });
@@ -3006,7 +3006,7 @@ screen('ssRec', {
       foot: intro ? btn('Configurar gastos recorrentes', { act: 'start' }) + btn('Cancelar', { v: 'o', act: 'ssCancel' }) : ssFoot('Total de gastos recorrentes', fatT + gT, 'Soma dos gastos selecionados') }); },
   acts: {
     start: () => { ssState().miaG = true; rerender(); },
-    estimar: (b) => { const id = b.dataset.b; S.flags.fatV = ssState().faturas[id].valor ? fmtBRL(ssState().faturas[id].valor) : ''; S.flags.fatB = id; sheetForm(`<p class="h4 c-darker">Estimar fatura ${BANKS[id].curto}</p><p class="b14 c-dark">A fatura ainda está aberta. Quanto você imagina que ela vai fechar, considerando o que ainda pretende gastar até o fechamento?</p>${field({ id: 'fv', label: 'Valor estimado (R$)', ph: 'R$ 0,00', bind: 'flags.fatV', mask: 'brl' })}`, btn('Salvar', { act: 'fatOk', cls: 'js-next' }) + btn('Cancelar', { v: 'o', act: 'dlgClose' }), () => parseBRL(S.flags.fatV) > 0); },
+    estimar: (b) => { const id = b.dataset.b; S.flags.fatV = ssState().faturas[id].valor ? fmtBRL(ssState().faturas[id].valor) : ''; S.flags.fatB = id; sheetForm(`<p class="h4 c-darker">Estimar fatura ${BANKS[id].curto}</p><p class="b14 c-dark">A fatura ainda está aberta. Quanto você imagina que ela vai fechar, considerando o que ainda pretende gastar até o fechamento?</p>${field({ id: 'fv', label: 'Valor estimado (R$)', ph: 'ex: R$ 0,00', bind: 'flags.fatV', mask: 'brl' })}`, btn('Salvar', { act: 'fatOk', cls: 'js-next' }) + btn('Cancelar', { v: 'o', act: 'dlgClose' }), () => parseBRL(S.flags.fatV) > 0); },
     fatOk: () => { ssState().faturas[S.flags.fatB].valor = parseBRL(S.flags.fatV); closeOverlays(true); rerender(); },
     add: () => gastoSheet(null, g => { ssState().gastos.push(g); rerender(); toast('Despesa adicionada'); }),
     found: () => { const p = stack[stack.length - 1].p; p.found = !p.found; rerender(); },
@@ -3416,7 +3416,7 @@ function eventoSheet(i) {
   const e = i != null ? S.eventos[i] : null;
   S.tmpEvA = e ? { ...e } : { nome: '', data: '' };
   sheetForm(`<p class="h4 c-darker">${e ? 'Editar evento' : 'Novo evento'}</p><p class="b14 c-dark">Viagens, aniversário de casamento, formaturas: datas que não se repetem todo mês, mas que dá para prever.</p>
-    ${field({ id: 'an', label: 'Nome do evento', ph: 'ex: Viagem em família', bind: 'tmpEvA.nome' })}${field({ id: 'ad', label: 'Dia e mês', ph: 'dd/mm', bind: 'tmpEvA.data', mask: 'data' })}`,
+    ${field({ id: 'an', label: 'Nome do evento', ph: 'ex: Viagem em família', bind: 'tmpEvA.nome' })}${field({ id: 'ad', label: 'Dia e mês', ph: 'ex: dd/mm', bind: 'tmpEvA.data', mask: 'data' })}`,
     btn('Salvar', { act: 'evASave', cls: 'js-next' }) + btn('Cancelar', { v: 'o', act: 'dlgClose' }), () => S.tmpEvA.nome.trim() && /^\d{2}\/\d{2}/.test(S.tmpEvA.data));
   S.flags.evAi = i;
 }
@@ -3511,9 +3511,9 @@ screen('bhCad', {
   cls: 'bh',
   render: () => bhScreen({ title: 'Vamos ao seu cadastro', sub: 'Informe os dados abaixo para começarmos.', dots: 1, pt: 12.5, pb: 20.5, pad: '32px 24px 16px',
     body: `<div class="col g6">
-      ${field({ id: 'nome', label: 'Nome completo', ph: 'Maria da Silva', bind: 'user.nome' })}
-      ${field({ id: 'cpf', label: 'CPF', ph: '123.456.789-00', bind: 'user.cpf', mask: 'cpf', helper: 'Usamos para garantir a segurança da sua conta.' })}
-      ${field({ id: 'email', label: 'E-mail', ph: 'seuemail@email.com', bind: 'user.email', type: 'email', mode: 'email' })}</div>
+      ${field({ id: 'nome', label: 'Nome completo', ph: 'ex: Maria da Silva', bind: 'user.nome' })}
+      ${field({ id: 'cpf', label: 'CPF', ph: 'ex: 123.456.789-00', bind: 'user.cpf', mask: 'cpf', helper: 'Usamos para garantir a segurança da sua conta.' })}
+      ${field({ id: 'email', label: 'E-mail', ph: 'ex: seuemail@email.com', bind: 'user.email', type: 'email', mode: 'email' })}</div>
       <div class="col g4" style="margin-top:56px">
       ${bhChk('user.termos', S.user.termos, `<span class="b16 c-darker">Li e aceito as <span class="bh-lnk" role="button" tabindex="0" data-act="terms">Políticas de Privacidade e Termos de Uso</span></span>`)}
       <p class="cap c-base" style="padding-bottom:8px">Você pode ler os documentos clicando no link acima</p></div>`,
@@ -3604,7 +3604,7 @@ screen('bhLogin', {
   cls: 'bh',
   render: () => bhScreen({ title: 'Entrar', sub: 'Informe seu CPF e senha para acessar seus benefícios.', top: 60, pt: 12, pb: 19, sheet: '#fbfbfb',
     body: `<div class="col g6">
-      ${field({ id: 'lcpf', label: 'CPF', ph: '123.456.789-00', bind: 'flags.lcpf', mask: 'cpf' })}
+      ${field({ id: 'lcpf', label: 'CPF', ph: 'ex: 123.456.789-00', bind: 'flags.lcpf', mask: 'cpf' })}
       ${pwField({ id: 'lpw', label: 'Senha', ph: '************', bind: 'flags.lpw' })}</div>`,
     foot: `${bhBtn('Entrar', { v: 'dk16', next: true, act: 'entrar' })}
       <div class="col g4" style="align-items:center"><p class="b16" style="color:#121212">Não possui uma conta? <button type="button" class="bh-lnk2" data-act="cad">Cadastre-se</button></p><button type="button" class="bh-lnk2 b16" data-act="esqueci">Esqueci a senha</button></div>` }),
@@ -3623,7 +3623,7 @@ screen('bhLogin', {
 screen('bhEsq', {
   cls: 'bh',
   render: () => bhScreen({ title: 'Recuperar senha', sub: 'Para sua segurança, informe seu CPF e confirme sua identidade para continuar.', top: 60, pt: 12, pb: 19,
-    body: field({ id: 'ecpf', label: 'CPF', ph: '123.456.789-00', bind: 'flags.lcpf', mask: 'cpf' }),
+    body: field({ id: 'ecpf', label: 'CPF', ph: 'ex: 123.456.789-00', bind: 'flags.lcpf', mask: 'cpf' }),
     foot: bhBtn('Enviar código', { next: true, act: 'next' }) }),
   valid: () => (S.flags.lcpf || '').length === 14,
   acts: { next: () => go('bhEsqCod') },
@@ -3994,8 +3994,8 @@ screen('apos2', {
   cls: 'bh',
   render: () => { const ia = idadeAtual(); return apScreen({ title: 'Meta de aposentadoria', dots: 1, sub: 'Defina quando você pretende se aposentar e a renda mensal necessária para manter seu estilo de vida',
     body: `<p class="b14" style="background:var(--bg-lighter);border-radius:var(--r-xl);padding:10px 14px;color:var(--bh-muted)">Idade atual: <b style="color:var(--bh-ink)">${ia} anos</b></p>
-      ${field({ id: 'ai', label: 'Idade de aposentadoria', ph: 'Ex: 65', bind: 'apos.idadeTxt', mask: 'int' })}<p class="fld-h err" id="aerr" hidden>Escolha uma idade entre ${ia + 1} e 80 anos.</p>
-      ${field({ id: 'ar', label: 'Renda mensal desejada', ph: 'R$ 0,00', bind: 'apos.rendaTxt', mask: 'brl', helper: 'Considere o poder de compra de hoje' })}
+      ${field({ id: 'ai', label: 'Idade de aposentadoria', ph: 'ex: 65', bind: 'apos.idadeTxt', mask: 'int' })}<p class="fld-h err" id="aerr" hidden>Escolha uma idade entre ${ia + 1} e 80 anos.</p>
+      ${field({ id: 'ar', label: 'Renda mensal desejada', ph: 'ex: R$ 0,00', bind: 'apos.rendaTxt', mask: 'brl', helper: 'Considere o poder de compra de hoje' })}
       ${dica('Adiar a aposentadoria em poucos anos costuma reduzir o aporte mensal necessário.')}`,
     foot: btn('Próximo', { cls: 'lg', next: true, go: 'apos3', attrs: 'style="background:var(--bh-blue)"' }) }); },
   mount: () => { apState(); },
@@ -4019,7 +4019,7 @@ screen('apos3', {
 function fonteSheet(k) {
   const f = k != null ? apState().fontes[k] : null; S.tmpF = { nome: f ? f.nome : '', valorTxt: f ? fmtBRL(f.valor) : '' };
   sheetForm(`<p class="h4" style="color:var(--bh-ink)">${f ? 'Editar renda' : 'Outras fontes de renda'}</p><p class="b14" style="color:var(--bh-muted)">${f ? 'Ajuste os parâmetros desta receita para recalcular sua projeção.' : 'Cadastre receitas como INSS, aluguéis ou pensões que você espera receber na aposentadoria'}</p>
-    ${field({ id: 'fo', label: 'Origem', ph: 'Ex: INSS, aluguel, pensão', bind: 'tmpF.nome' })}${field({ id: 'fv', label: 'Valor mensal', ph: 'R$ 0,00', bind: 'tmpF.valorTxt', mask: 'brl', helper: 'em valores de hoje.' })}`,
+    ${field({ id: 'fo', label: 'Origem', ph: 'ex: INSS, aluguel, pensão', bind: 'tmpF.nome' })}${field({ id: 'fv', label: 'Valor mensal', ph: 'ex: R$ 0,00', bind: 'tmpF.valorTxt', mask: 'brl', helper: 'em valores de hoje.' })}`,
     btn(f ? 'Salvar' : 'Adicionar', { act: 'fSave', cls: 'js-next', attrs: 'style="background:var(--bh-blue)"' }) + (f ? btn('Remover esta fonte', { v: 'do', act: 'fDel' }) : btn('Cancelar', { v: 'o', act: 'dlgClose' })),
     () => S.tmpF.nome.trim() && parseBRL(S.tmpF.valorTxt) > 0);
   S.flags.fK = k;
@@ -4031,8 +4031,8 @@ Object.assign(GLOBAL_ACTS, {
 screen('apos4', {
   cls: 'bh',
   render: () => apScreen({ title: 'Patrimônio inicial', dots: 3, sub: 'Informe o que você já acumulou e veja a evolução do seu patrimônio ao longo do tempo',
-    body: `${field({ id: 'ap', label: 'Você já possui investimentos?', ph: 'R$ 0,00', bind: 'apos.patTxt', mask: 'brl', helper: 'Informe os valores aplicados em bancos, corretoras ou outras instituições financeiras. Não inclua casa, carro ou terrenos.' })}
-      ${field({ id: 'aa', label: 'Quanto consegue investir por mês?', ph: 'R$ 0,00', bind: 'apos.aporteTxt', mask: 'brl', helper: 'Usamos esse valor como ponto de partida. Na simulação mostramos se ele é suficiente.' })}
+    body: `${field({ id: 'ap', label: 'Você já possui investimentos?', ph: 'ex: R$ 0,00', bind: 'apos.patTxt', mask: 'brl', helper: 'Informe os valores aplicados em bancos, corretoras ou outras instituições financeiras. Não inclua casa, carro ou terrenos.' })}
+      ${field({ id: 'aa', label: 'Quanto consegue investir por mês?', ph: 'ex: R$ 0,00', bind: 'apos.aporteTxt', mask: 'brl', helper: 'Usamos esse valor como ponto de partida. Na simulação mostramos se ele é suficiente.' })}
       <p class="cap" style="color:var(--bh-muted)">Caso não tenha investimentos, basta seguir para o próximo passo.</p>`,
     foot: btn('Próximo', { cls: 'lg', go: 'apos5', attrs: 'style="background:var(--bh-blue)"' }) }),
 });
@@ -4057,8 +4057,8 @@ function projetoSheet() {
       <div class="seg">${[['saida', 'Saída de capital'], ['entrada', 'Entrada de capital']].map(([k, l]) => `<button type="button" class="${t.tipo === k ? 'on' : ''}" data-act="pTipo" data-k="${k}">${l}</button>`).join('')}</div>
       ${t.tipo === 'saida' ? `<div class="col g2"><p class="fld-l">Categoria</p><div class="row g2" style="flex-wrap:wrap">${['Viagem', 'Veículo', 'Casa', 'Educação', 'Saúde', 'Outro'].map(c => `<button type="button" class="chip" data-act="pCat" data-c="${c}" style="${t.cat === c ? 'background:var(--bh-blue);border-color:var(--bh-blue);color:#fff' : ''}">${c}</button>`).join('')}</div></div>` : ''}
       ${field({ id: 'pn', label: t.tipo === 'saida' ? 'Nome do projeto' : 'De onde vem esse dinheiro', ph: t.tipo === 'saida' ? 'Ex: entrada da casa' : 'Ex: venda de um imóvel', bind: 'tmpP.nome' })}
-      ${field({ id: 'pd', label: t.tipo === 'saida' ? 'Data de execução' : 'Quando você espera receber', ph: 'dd/mm/aaaa', bind: 'tmpP.data', mask: 'data' })}
-      ${field({ id: 'pv', label: 'Valor total', ph: 'R$ 0,00', bind: 'tmpP.valorTxt', mask: 'brl' })}`,
+      ${field({ id: 'pd', label: t.tipo === 'saida' ? 'Data de execução' : 'Quando você espera receber', ph: 'ex: dd/mm/aaaa', bind: 'tmpP.data', mask: 'data' })}
+      ${field({ id: 'pv', label: 'Valor total', ph: 'ex: R$ 0,00', bind: 'tmpP.valorTxt', mask: 'brl' })}`,
       btn('Adicionar', { act: 'pSave', cls: 'js-next', attrs: 'style="background:var(--bh-blue)"' }) + btn('Cancelar', { v: 'o', act: 'dlgClose' }),
       () => { const d = parseData(S.tmpP.data); return S.tmpP.nome.trim() && d && d > hoje() && parseBRL(S.tmpP.valorTxt) > 0 && (S.tmpP.tipo === 'entrada' || S.tmpP.cat); }); };
   S.flags.pDraw = draw; draw();
