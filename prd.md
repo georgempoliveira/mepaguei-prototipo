@@ -260,7 +260,9 @@ para pular direto a qualquer ponto do fluxo. Ao criar uma tela nova, **adicione 
 
 - **Atalho na tela inicial (PWA).** O botão flutuante de tela cheia só aparece no
   navegador: `comoApp()` (display-mode standalone/fullscreen ou `navigator.standalone`)
-  o suprime. A faixa do rodapé era a área de gestos sem preenchimento — `.hi` deixou de
-  ser `display:none` no mobile e passou a ocupar `env(safe-area-inset-bottom)` herdando a
-  cor da tela. A altura agora vem de `--vh` (window.innerHeight, atualizada em resize e
+  o suprime. A faixa do rodapé era a área de gestos sem preenchimento. A primeira tentativa
+  (dar altura ao `.hi`) saiu pior: nas telas do Bluehub `.bh .hi` é transparente e a faixa
+  virou escura. A correção é **quem está por último crescer** — `.sheet`, `.bhd-sheet`,
+  `.nav`, `.scroll` e `.bhd-in` ganham `padding-bottom: env(safe-area-inset-bottom)` no
+  mobile e pintam a própria cor até a borda; `.hi` volta a `display:none`. A altura agora vem de `--vh` (window.innerHeight, atualizada em resize e
   orientationchange), porque no atalho o iOS não resolve 100%/100dvh para a tela inteira.

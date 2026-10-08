@@ -82,10 +82,14 @@ img{display:block}
   #phone{width:100%;height:var(--vh,100%);border-radius:0;box-shadow:none}
   html,body,#stage,#phone{touch-action:manipulation;overscroll-behavior:none}
   .sb{height:max(10px, env(safe-area-inset-top,0px))!important;visibility:hidden}
-  /* o indicador vira o preenchimento da área de gestos: sem ele sobrava uma faixa
-     vazia no rodapé quando o protótipo é aberto como atalho na tela inicial */
-  .hi{height:env(safe-area-inset-bottom,0px)!important}
-  .nav{border-radius:20px 20px 0 0}
+  /* Em vez de um espaçador solto no rodapé (que pegava a cor errada e deixava uma
+     faixa escura no atalho), quem está por último na tela cresce para dentro da área
+     de gestos e pinta a própria cor até a borda. */
+  .hi{display:none!important}
+  .sheet,.bhd-sheet,.bh-sheet{padding-bottom:env(safe-area-inset-bottom,0px)}
+  .nav{height:calc(82px + env(safe-area-inset-bottom,0px));padding-bottom:env(safe-area-inset-bottom,0px)}
+  .scroll,.bhd-in{padding-bottom:env(safe-area-inset-bottom,0px)}
+  .scr{height:100%}
 }
 
 /* ---------- screens ---------- */
