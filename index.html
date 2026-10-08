@@ -3893,7 +3893,7 @@ screen('bhPerfil', {
         <div class="bh-acc" style="background:var(--bh-blue-bg);border-color:var(--bh-blue-bg)"><button type="button" data-act="bhSoon" data-n="Indique a Bluehub" style="min-height:64px"><span class="bh-ic" style="background:var(--bh-blue);color:#fff">${ic('share-2', 18)}</span><span class="f1 b16 semi" style="color:var(--bh-ink)">Indique a Bluehub</span></button></div></div>
       <div class="col" style="gap:40px;padding-top:8px">
         <button type="button" data-act="sair" style="height:44px;border-radius:9999px;background:var(--bh-line);color:var(--bh-ink);font-size:14px;line-height:22px;font-weight:600">Sair da conta</button>
-        <button type="button" data-act="delConta" style="height:44px;border-radius:9999px;background:transparent;color:var(--bh-blue);font-size:14px;line-height:22px;font-weight:600">Excluir conta</button></div>
+        <button type="button" data-act="delConta" style="height:44px;border-radius:9999px;background:transparent;color:var(--bh-blue);font-size:14px;line-height:22px;font-weight:600">Cancelar assinatura</button></div>
     </div></div>${bhNav('bhPerfil')}`; },
   /* dataURL (e não objectURL): assim a foto sobrevive a sair e entrar de novo */
   mount: (el) => { const i = $('#bhfoto', el); if (i) i.addEventListener('change', e => { const f = e.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = () => { S.user.bhFoto = r.result; rerender(); toast('Foto atualizada'); }; r.readAsDataURL(f); }); },
@@ -3902,11 +3902,11 @@ screen('bhPerfil', {
     sair: () => { fechaConta(false); reset('bhWelcome'); },
     vidaMais: () => go('bhVida'),
     delConta: () => openDialog(`<div class="col g4" style="text-align:left">
-      <span class="ico-c sq" style="background:var(--bh-blue-bg);color:var(--bh-blue)">${ic('trash-2', 22)}</span>
-      <p class="h4" style="color:var(--bh-ink)">Excluir sua conta?</p>
-      <p class="b14" style="color:var(--bh-muted)">Ao confirmar, sua conta e todos os seus dados serão excluídos definitivamente. Essa ação não pode ser desfeita e você perderá o acesso aos benefícios do seu plano.</p>
-      <div class="col g3">${btn('Excluir conta', { act: 'delOk', attrs: 'style="background:var(--bh-blue)"' })}${btn('Cancelar', { v: 'o', act: 'closeov', attrs: 'style="color:var(--bh-blue);box-shadow:inset 0 0 0 1px var(--bh-blue)"' })}</div></div>`),
-    delOk: () => { closeOverlays(true); fechaConta(true); reset('bhWelcome', {}, 'fade'); later(() => toast('Conta excluída', 'success', 'circle-check'), 400); },
+      <span class="ico-c sq" style="background:var(--bh-blue-bg);color:var(--bh-blue)">${ic('circle-x', 22)}</span>
+      <p class="h4" style="color:var(--bh-ink)">Cancelar sua assinatura?</p>
+      <p class="b14" style="color:var(--bh-muted)">Ao confirmar, sua assinatura será encerrada e você perderá o acesso aos benefícios do seu plano. Para voltar a usá-los, será preciso assinar novamente.</p>
+      <div class="col g3">${btn('Cancelar assinatura', { act: 'delOk', attrs: 'style="background:var(--bh-blue)"' })}${btn('Manter assinatura', { v: 'o', act: 'closeov', attrs: 'style="color:var(--bh-blue);box-shadow:inset 0 0 0 1px var(--bh-blue)"' })}</div></div>`),
+    delOk: () => { closeOverlays(true); fechaConta(true); reset('bhWelcome', {}, 'fade'); later(() => toast('Assinatura cancelada', 'success', 'circle-check'), 400); },
   },
 });
 screen('bhNotif', {
