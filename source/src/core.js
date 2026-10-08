@@ -156,7 +156,7 @@ function radio(group, value, label, on, desc) {
   if (desc !== undefined) return `<button type="button" class="radc ${on ? 'on' : ''}" data-act="radio" data-group="${group}" data-val="${esc(value)}" role="radio" aria-checked="${!!on}"><span class="rad ${on ? 'on' : ''}"><span class="o"></span><span class="lb">${label}</span></span><span class="d">${desc}</span></button>`;
   return `<button type="button" class="rad ${on ? 'on' : ''}" data-act="radio" data-group="${group}" data-val="${esc(value)}" role="radio" aria-checked="${!!on}"><span class="o"></span><span class="lb">${label}</span></button>`;
 }
-function toggle(key, on) { return `<button type="button" class="sw ${on ? 'on' : ''}" data-act="toggle" data-key="${key}" role="switch" aria-checked="${!!on}"></button>`; }
+function toggle(key, on, rotulo = '') { return `<button type="button" class="sw ${on ? 'on' : ''}" data-act="toggle" data-key="${key}" role="switch" aria-checked="${!!on}" aria-label="${esc(rotulo || 'Ativar')}"></button>`; }
 function miaCard(text, { title = 'Mia', act = '' } = {}) {
   return `<div class="mia"><div class="av"><img src="assets/mia-avatar.webp" alt=""></div><div class="col g1 f1"><p class="cap semi c-ia">${title}</p><p class="b14 c-dark">${text}</p>${act}</div></div>`;
 }

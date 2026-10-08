@@ -188,9 +188,9 @@ screen('notifCfg', {
   render: () => { const c = S.flags.ncfg ??= { push: true, wpp: false, resumo: true, email: true, wppR: true };
     return gradPage({ title: 'Notificações', body: `<div class="col g5" style="display:flex">
     <div class="col g3"><p class="b16 semi c-darker">Canal de notificação</p><p class="b16 c-dark">Como você quer receber avisos:</p>
-      <div class="card row g3"><span class="ico-c sm">${ic('smartphone', 18)}</span><div class="f1"><p class="b14 bold c-darker">Notificações Push</p><p class="b14 c-base">Via app no celular</p></div>${toggle('flags.ncfg.push', c.push)}</div>
-      <div class="card row g3"><span class="ico-c sm" style="background:var(--success-bg);color:var(--success)">${ic('message-circle', 18)}</span><div class="f1"><p class="b14 bold c-darker">WhatsApp</p><p class="b14 c-base">Mensagem no WhatsApp</p></div>${toggle('flags.ncfg.wpp', c.wpp)}</div></div>
-    <div class="card col g3"><div class="row jb"><p class="b16 semi c-darker">Resumo semanal</p>${toggle('flags.ncfg.resumo', c.resumo)}</div>
+      <div class="card row g3"><span class="ico-c sm">${ic('smartphone', 18)}</span><div class="f1"><p class="b14 bold c-darker">Notificações Push</p><p class="b14 c-base">Via app no celular</p></div>${toggle('flags.ncfg.push', c.push, 'Notificações push')}</div>
+      <div class="card row g3"><span class="ico-c sm" style="background:var(--success-bg);color:var(--success)">${ic('message-circle', 18)}</span><div class="f1"><p class="b14 bold c-darker">WhatsApp</p><p class="b14 c-base">Mensagem no WhatsApp</p></div>${toggle('flags.ncfg.wpp', c.wpp, 'Mensagens no WhatsApp')}</div></div>
+    <div class="card col g3"><div class="row jb"><p class="b16 semi c-darker">Resumo semanal</p>${toggle('flags.ncfg.resumo', c.resumo, 'Resumo semanal')}</div>
       <p class="b14 c-base">Um resumo completo de todas as funcionalidades: Bet do Bem, Metas, Radar, Fluxo Futuro e mais, enviado uma vez por semana nos domingos à noite.</p>
       <p class="b14 semi c-darker">Enviar via:</p><div class="row g5">${checkbox('flags.ncfg.email', 'Email', c.email).replace('class="chk', 'style="width:auto" class="chk')}${checkbox('flags.ncfg.wppR', 'Whatsapp', c.wppR).replace('class="chk', 'style="width:auto" class="chk')}</div></div>
     </div>`, foot: btn('Salvar configurações', { cls: 'lg', act: 'save' }) }); },

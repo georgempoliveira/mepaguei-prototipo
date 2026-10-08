@@ -39,7 +39,7 @@ function apCalcLite(idade, renda, aporte) {
 
 /* ---------- moldura escura BlueHub ---------- */
 function apScreen({ title, sub, dots = 0, body, foot, back = true }) {
-  return `${bhRings(320, 30, 240)}${statusBar(true)}
+  return `${BH_DECO}${statusBar(true)}
   <div class="row jb" style="position:relative;z-index:2;padding:8px 20px 0;height:36px"><button type="button" data-back aria-label="Voltar" style="color:#fff;${back ? '' : 'visibility:hidden'}">${ic('chevron-left', 24)}</button><p class="h2" style="color:#fff;flex:1;text-align:center">${title}</p>
     <span class="row g1" style="width:40px;justify-content:flex-end">${dots ? [1, 2, 3, 4].map(k => `<i style="display:block;height:4px;border-radius:2px;width:${k === dots ? 12 : 4}px;background:${k <= dots ? '#fff' : 'rgba(80,140,255,.8)'}"></i>`).join('') : ''}</span></div>
   <p class="b16" style="position:relative;z-index:2;padding:20px 20px 24px;color:#e4e9f5">${sub}</p>

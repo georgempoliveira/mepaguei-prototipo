@@ -263,7 +263,7 @@ screen('bhTrilhas', {
     <div class="col" style="gap:16px;padding:8px 24px 16px">
       <p style="font-size:24px;line-height:32px;font-weight:700;color:var(--bh-ink)">Pra tudo ficar Blue</p>
       <p style="font-size:14px;line-height:22px;color:var(--bh-muted)">Trilhas de conteúdo prático para tratar dos temas que mais impactam sua vida financeira</p></div>
-    ${TRILHAS.map(([t], k) => `<div style="padding:24px 24px 16px"><button type="button" data-act="aula" data-n="${t}" style="display:block;width:100%"><img src="assets/bht-${k}.webp" alt="${t}" style="width:100%;border-radius:16px;display:block"></button></div><div style="height:1px;background:var(--bh-line)"></div>`).join('')}
+    ${TRILHAS.map(([t], k) => `<div style="padding:24px 24px 16px"><button type="button" data-act="aula" data-n="${t}" aria-label="Abrir a trilha ${t}" style="display:block;width:100%"><img src="assets/bht-${k}.webp" alt="${t}" style="width:100%;border-radius:16px;display:block"></button></div><div style="height:1px;background:var(--bh-line)"></div>`).join('')}
     <div style="height:24px"></div>
   </div>${homeInd()}`,
   acts: { aula: (b) => toast(`${b.dataset.n} abre fora do protótipo`, 'success', 'circle-play') },

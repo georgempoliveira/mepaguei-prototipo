@@ -766,7 +766,7 @@ function radio(group, value, label, on, desc) {
   if (desc !== undefined) return `<button type="button" class="radc ${on ? 'on' : ''}" data-act="radio" data-group="${group}" data-val="${esc(value)}" role="radio" aria-checked="${!!on}"><span class="rad ${on ? 'on' : ''}"><span class="o"></span><span class="lb">${label}</span></span><span class="d">${desc}</span></button>`;
   return `<button type="button" class="rad ${on ? 'on' : ''}" data-act="radio" data-group="${group}" data-val="${esc(value)}" role="radio" aria-checked="${!!on}"><span class="o"></span><span class="lb">${label}</span></button>`;
 }
-function toggle(key, on) { return `<button type="button" class="sw ${on ? 'on' : ''}" data-act="toggle" data-key="${key}" role="switch" aria-checked="${!!on}"></button>`; }
+function toggle(key, on, rotulo = '') { return `<button type="button" class="sw ${on ? 'on' : ''}" data-act="toggle" data-key="${key}" role="switch" aria-checked="${!!on}" aria-label="${esc(rotulo || 'Ativar')}"></button>`; }
 function miaCard(text, { title = 'Mia', act = '' } = {}) {
   return `<div class="mia"><div class="av"><img src="assets/mia-avatar.webp" alt=""></div><div class="col g1 f1"><p class="cap semi c-ia">${title}</p><p class="b14 c-dark">${text}</p>${act}</div></div>`;
 }
@@ -1682,9 +1682,9 @@ screen('notifCfg', {
   render: () => { const c = S.flags.ncfg ??= { push: true, wpp: false, resumo: true, email: true, wppR: true };
     return gradPage({ title: 'Notificações', body: `<div class="col g5" style="display:flex">
     <div class="col g3"><p class="b16 semi c-darker">Canal de notificação</p><p class="b16 c-dark">Como você quer receber avisos:</p>
-      <div class="card row g3"><span class="ico-c sm">${ic('smartphone', 18)}</span><div class="f1"><p class="b14 bold c-darker">Notificações Push</p><p class="b14 c-base">Via app no celular</p></div>${toggle('flags.ncfg.push', c.push)}</div>
-      <div class="card row g3"><span class="ico-c sm" style="background:var(--success-bg);color:var(--success)">${ic('message-circle', 18)}</span><div class="f1"><p class="b14 bold c-darker">WhatsApp</p><p class="b14 c-base">Mensagem no WhatsApp</p></div>${toggle('flags.ncfg.wpp', c.wpp)}</div></div>
-    <div class="card col g3"><div class="row jb"><p class="b16 semi c-darker">Resumo semanal</p>${toggle('flags.ncfg.resumo', c.resumo)}</div>
+      <div class="card row g3"><span class="ico-c sm">${ic('smartphone', 18)}</span><div class="f1"><p class="b14 bold c-darker">Notificações Push</p><p class="b14 c-base">Via app no celular</p></div>${toggle('flags.ncfg.push', c.push, 'Notificações push')}</div>
+      <div class="card row g3"><span class="ico-c sm" style="background:var(--success-bg);color:var(--success)">${ic('message-circle', 18)}</span><div class="f1"><p class="b14 bold c-darker">WhatsApp</p><p class="b14 c-base">Mensagem no WhatsApp</p></div>${toggle('flags.ncfg.wpp', c.wpp, 'Mensagens no WhatsApp')}</div></div>
+    <div class="card col g3"><div class="row jb"><p class="b16 semi c-darker">Resumo semanal</p>${toggle('flags.ncfg.resumo', c.resumo, 'Resumo semanal')}</div>
       <p class="b14 c-base">Um resumo completo de todas as funcionalidades: Bet do Bem, Metas, Radar, Fluxo Futuro e mais, enviado uma vez por semana nos domingos à noite.</p>
       <p class="b14 semi c-darker">Enviar via:</p><div class="row g5">${checkbox('flags.ncfg.email', 'Email', c.email).replace('class="chk', 'style="width:auto" class="chk')}${checkbox('flags.ncfg.wppR', 'Whatsapp', c.wppR).replace('class="chk', 'style="width:auto" class="chk')}</div></div>
     </div>`, foot: btn('Salvar configurações', { cls: 'lg', act: 'save' }) }); },
@@ -3719,7 +3719,7 @@ screen('bhTrilhas', {
     <div class="col" style="gap:16px;padding:8px 24px 16px">
       <p style="font-size:24px;line-height:32px;font-weight:700;color:var(--bh-ink)">Pra tudo ficar Blue</p>
       <p style="font-size:14px;line-height:22px;color:var(--bh-muted)">Trilhas de conteúdo prático para tratar dos temas que mais impactam sua vida financeira</p></div>
-    ${TRILHAS.map(([t], k) => `<div style="padding:24px 24px 16px"><button type="button" data-act="aula" data-n="${t}" style="display:block;width:100%"><img src="assets/bht-${k}.webp" alt="${t}" style="width:100%;border-radius:16px;display:block"></button></div><div style="height:1px;background:var(--bh-line)"></div>`).join('')}
+    ${TRILHAS.map(([t], k) => `<div style="padding:24px 24px 16px"><button type="button" data-act="aula" data-n="${t}" aria-label="Abrir a trilha ${t}" style="display:block;width:100%"><img src="assets/bht-${k}.webp" alt="${t}" style="width:100%;border-radius:16px;display:block"></button></div><div style="height:1px;background:var(--bh-line)"></div>`).join('')}
     <div style="height:24px"></div>
   </div>${homeInd()}`,
   acts: { aula: (b) => toast(`${b.dataset.n} abre fora do protótipo`, 'success', 'circle-play') },
@@ -3968,7 +3968,7 @@ function apCalcLite(idade, renda, aporte) {
 
 /* ---------- moldura escura BlueHub ---------- */
 function apScreen({ title, sub, dots = 0, body, foot, back = true }) {
-  return `${bhRings(320, 30, 240)}${statusBar(true)}
+  return `${BH_DECO}${statusBar(true)}
   <div class="row jb" style="position:relative;z-index:2;padding:8px 20px 0;height:36px"><button type="button" data-back aria-label="Voltar" style="color:#fff;${back ? '' : 'visibility:hidden'}">${ic('chevron-left', 24)}</button><p class="h2" style="color:#fff;flex:1;text-align:center">${title}</p>
     <span class="row g1" style="width:40px;justify-content:flex-end">${dots ? [1, 2, 3, 4].map(k => `<i style="display:block;height:4px;border-radius:2px;width:${k === dots ? 12 : 4}px;background:${k <= dots ? '#fff' : 'rgba(80,140,255,.8)'}"></i>`).join('') : ''}</span></div>
   <p class="b16" style="position:relative;z-index:2;padding:20px 20px 24px;color:#e4e9f5">${sub}</p>
