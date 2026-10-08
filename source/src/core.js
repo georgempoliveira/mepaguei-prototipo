@@ -9,7 +9,7 @@ function freshState() {
   return {
     user: { nome: '', cpf: '', email: '', termos: false, senha: '', senha2: '', genero: '', nasc: '', foto: false,
       civil: '', profissao: '', renda: '', cep: '', rua: '', numero: '', compl: '', bairro: '', cidade: '', uf: '',
-      cel: '', objetivo: 'Poupar sem depender de disciplina', pessoas: [] },
+      cel: '', objetivo: 'Poupar no piloto automático', pessoas: [] },
     perfilCompleto: false,
     contas: [],          // instituições conectadas via Open Finance
     origem: null, destino: null,
