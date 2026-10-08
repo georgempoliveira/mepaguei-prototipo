@@ -74,13 +74,18 @@ img{display:block}
    em vez de 100dvh/100vw — no iOS o dvh não acompanha o recolher da barra do navegador e sobrava
    uma faixa do --stage no rodapé. */
 @media (max-width: 600px){
-  html,body{height:100%;overflow:hidden;position:fixed;inset:0;width:100%}
-  #stage{padding:0;display:block;height:100%;gap:0}
-  #phone-wrap{width:100%;height:100%;transform:none!important;margin:0!important}
-  #phone{width:100%;height:100%;border-radius:0;box-shadow:none}
+  /* --vh vem do JS (window.innerHeight): no atalho da tela inicial o iOS não
+     resolve 100%/100dvh para a tela inteira e sobrava faixa no rodapé */
+  html,body{height:var(--vh,100%);overflow:hidden;position:fixed;inset:0;width:100%}
+  #stage{padding:0;display:block;height:var(--vh,100%);gap:0}
+  #phone-wrap{width:100%;height:var(--vh,100%);transform:none!important;margin:0!important}
+  #phone{width:100%;height:var(--vh,100%);border-radius:0;box-shadow:none}
   html,body,#stage,#phone{touch-action:manipulation;overscroll-behavior:none}
   .sb{height:max(10px, env(safe-area-inset-top,0px))!important;visibility:hidden}
-  .hi{display:none!important}
+  /* o indicador vira o preenchimento da área de gestos: sem ele sobrava uma faixa
+     vazia no rodapé quando o protótipo é aberto como atalho na tela inicial */
+  .hi{height:env(safe-area-inset-bottom,0px)!important}
+  .nav{border-radius:20px 20px 0 0}
 }
 
 /* ---------- screens ---------- */
@@ -4127,7 +4132,17 @@ reset('bhSplash', {}, 'none');
 if (location.hash === '#mapa') $('#mod-sheet').hidden = innerWidth > 900;
 
 /* botão de tela cheia — só na versão de teste, no mobile */
-if (window.PROTO_PUB && matchMedia('(max-width:600px)').matches) {
+/* altura real da janela, reavaliada quando o sistema muda as barras */
+function alturaReal() { document.documentElement.style.setProperty('--vh', window.innerHeight + 'px'); }
+alturaReal();
+addEventListener('resize', alturaReal);
+addEventListener('orientationchange', () => setTimeout(alturaReal, 150));
+
+/* instalado como atalho na tela inicial já abre sem as barras do navegador:
+   o botão de tela cheia não tem função e só atrapalharia o participante */
+const comoApp = () => matchMedia('(display-mode: standalone)').matches
+  || matchMedia('(display-mode: fullscreen)').matches || navigator.standalone === true;
+if (window.PROTO_PUB && matchMedia('(max-width:600px)').matches && !comoApp()) {
   const root = document.documentElement;
   const reqFS = root.requestFullscreen || root.webkitRequestFullscreen;
   const exitFS = document.exitFullscreen || document.webkitExitFullscreen;

@@ -257,3 +257,10 @@ para pular direto a qualquer ponto do fluxo. Ao criar uma tela nova, **adicione 
   a hora abaixo do título, e os chips foram para dentro do azul. Sobre: badge de versão à
   direita do logo, foto da empresa (`assets/sobre-ed.webp`, recortada do Figma) e
   "Acesso rápido" em cards.
+
+- **Atalho na tela inicial (PWA).** O botão flutuante de tela cheia só aparece no
+  navegador: `comoApp()` (display-mode standalone/fullscreen ou `navigator.standalone`)
+  o suprime. A faixa do rodapé era a área de gestos sem preenchimento — `.hi` deixou de
+  ser `display:none` no mobile e passou a ocupar `env(safe-area-inset-bottom)` herdando a
+  cor da tela. A altura agora vem de `--vh` (window.innerHeight, atualizada em resize e
+  orientationchange), porque no atalho o iOS não resolve 100%/100dvh para a tela inteira.

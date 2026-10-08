@@ -14,7 +14,17 @@ reset('bhSplash', {}, 'none');
 if (location.hash === '#mapa') $('#mod-sheet').hidden = innerWidth > 900;
 
 /* botão de tela cheia — só na versão de teste, no mobile */
-if (window.PROTO_PUB && matchMedia('(max-width:600px)').matches) {
+/* altura real da janela, reavaliada quando o sistema muda as barras */
+function alturaReal() { document.documentElement.style.setProperty('--vh', window.innerHeight + 'px'); }
+alturaReal();
+addEventListener('resize', alturaReal);
+addEventListener('orientationchange', () => setTimeout(alturaReal, 150));
+
+/* instalado como atalho na tela inicial já abre sem as barras do navegador:
+   o botão de tela cheia não tem função e só atrapalharia o participante */
+const comoApp = () => matchMedia('(display-mode: standalone)').matches
+  || matchMedia('(display-mode: fullscreen)').matches || navigator.standalone === true;
+if (window.PROTO_PUB && matchMedia('(max-width:600px)').matches && !comoApp()) {
   const root = document.documentElement;
   const reqFS = root.requestFullscreen || root.webkitRequestFullscreen;
   const exitFS = document.exitFullscreen || document.webkitExitFullscreen;
