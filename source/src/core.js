@@ -111,6 +111,16 @@ function gradScreen({ title, sub = '', step = '', back = true, body = '', foot =
   ${homeInd()}`;
 }
 
+/* cabeçalho azul sobre o gradiente (padrão de 09.xx - Configurações de Sistema).
+   `head` é o conteúdo que fica no azul, antes da folha branca. */
+function gradPage({ title, acts = '', head = '', body = '', foot = '', pad = true }) {
+  return `${CURVE}${statusBar(true)}
+  <div class="ah light"><button type="button" class="bkb" data-back aria-label="Voltar">${ic('chevron-left', 24)}</button><p class="ttl2" style="color:#fff">${title}</p><div class="acts">${acts}</div></div>
+  ${head}
+  <div class="sheet" style="background:#fff"><div class="sheet-in" style="background:#fff${pad ? '' : ';padding-left:0;padding-right:0'}">${body}</div>${foot ? `<div class="sheet-foot" style="background:#fff">${foot}</div>` : ''}</div>
+  ${homeInd()}`;
+}
+
 /* cabeçalho branco com voltar */
 function appHeader(title, { back = true, acts = '', light = false } = {}) {
   return `<div class="ah ${light ? 'light' : ''}">${back ? `<button type="button" class="bkb" data-back aria-label="Voltar">${ic('chevron-left', 24)}</button>` : ''}<p class="ttl2">${title}</p><div class="acts">${acts}</div></div>`;

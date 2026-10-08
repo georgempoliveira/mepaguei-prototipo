@@ -248,3 +248,12 @@ para pular direto a qualquer ponto do fluxo. Ao criar uma tela nova, **adicione 
   preenche o perfil só onde estiver vazio, para os atalhos do moderador continuarem úteis.
   Os ícones Instagram/LinkedIn/YouTube não existem mais no Lucide: foram recortados do
   Figma para `assets/soc-*.png`.
+
+- **Família 09.xx (08/10).** Notificações (8131:22696), Termos (8419:65786), Ajuda
+  (8686:65246) e Sobre (8897:4501) usavam `appHeader` branco; passaram todas para o
+  helper novo `gradPage({title, acts, head, body, foot})`, que monta o cabeçalho azul
+  sobre o gradiente + folha branca. Ajuda: tópicos rápidos viraram grade 2x2 (antes
+  rolagem horizontal que cortava "Segurança"). Notificações: cada aviso virou card, com
+  a hora abaixo do título, e os chips foram para dentro do azul. Sobre: badge de versão à
+  direita do logo, foto da empresa (`assets/sobre-ed.webp`, recortada do Figma) e
+  "Acesso rápido" em cards.

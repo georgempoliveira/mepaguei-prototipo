@@ -160,17 +160,20 @@ const NOTIF_SEED = () => ([
   { ic: 'coins', t: 'Troco Inteligente', h: '20:13', d: '20/07', x: 'R$ 3,50 de troco adicionados automaticamente na sua poupança', per: 'semana' },
 ]);
 screen('notif', {
+  cls: 'grad',
   render: (p) => {
     const tab = p.tab || 'rec';
     if (!S.notif) S.notif = NOTIF_SEED();
     const L = S.notif.filter(n => tab === 'rec' || tab === 'mes' || (tab === 'hoje' ? n.per === 'hoje' : true));
-    return `${statusBar()}${appHeader('Notificações', { acts: `<button type="button" data-go="notifCfg" aria-label="Configurações de notificação">${ic('settings', 22)}</button>` })}
-    <div class="chips px5" style="padding-bottom:12px">${[['rec', 'Recentes'], ['hoje', 'Hoje'], ['sem', 'Semana'], ['mes', 'Mês']].map(([k, l]) => `<button type="button" class="chip ${k === tab ? 'on' : ''}" data-act="ntab" data-k="${k}">${l}</button>`).join('')}</div>
-    <div class="scroll px5">${L.length ? `<div class="row jb" style="padding:8px 0"><p class="b14 c-base">Total de notificações: ${L.length}</p><button type="button" class="row g1 cap semi c-primary" data-act="nclear">${ic('trash-2', 14)} Limpar tudo</button></div>
-      <div class="col">${L.map((n, k) => `<div class="li ais"><span class="${n.mia ? 'ava-mia' : 'ico-c'}" style="${n.mia ? '' : 'width:36px;height:36px'}">${n.mia ? '<img src="assets/mia-avatar.webp" alt="">' : ic(n.ic, 18)}</span>
-        <div class="lt col g1"><div class="row jb"><p class="b14 bold c-darker">${n.t}</p><p class="cap c-base">${tab === 'sem' || tab === 'mes' ? n.d + ' • ' : ''}${n.h}</p></div><p class="b14 c-dark">${n.x}</p></div>
-        <button type="button" data-act="nmenu" data-k="${S.notif.indexOf(n)}" aria-label="Opções" style="color:var(--ty-base);padding:2px">${ic('ellipsis-vertical', 18)}</button></div>`).join('')}</div>`
-      : `<div class="empty" style="padding-top:80px"><span class="ico-c" style="width:56px;height:56px">${ic('bell', 26)}</span><p class="b16 semi c-dark">Nenhuma notificação por aqui</p><p class="b14 c-base">Quando a Mia tiver novidades sobre suas poupanças e gastos, elas aparecem aqui.</p></div>`}</div>${homeInd()}`;
+    return gradPage({ title: 'Notificações',
+      acts: `<button type="button" data-go="notifCfg" aria-label="Configurações de notificação" style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.22);color:#fff;display:flex;align-items:center;justify-content:center">${ic('settings', 20)}</button>`,
+      head: `<div class="chips" style="padding:4px 20px 24px">${[['rec', 'Recentes'], ['hoje', 'Hoje'], ['sem', 'Semana'], ['mes', 'Mês']].map(([k, l]) => `<button type="button" class="chip glass ${k === tab ? 'on' : ''}" data-act="ntab" data-k="${k}">${l}</button>`).join('')}</div>`,
+      body: L.length ? `<div class="row jb"><p class="b14 c-base">Total de notificações: <b class="semi c-darker">${L.length}</b></p><button type="button" class="row g1 cap semi c-primary" data-act="nclear">${ic('trash-2', 14)} Limpar tudo</button></div>
+      <div class="col g3">${L.map((n) => `<div class="card col g2" style="padding:16px"><div class="row g3 ais"><span class="${n.mia ? 'ava-mia' : 'ico-c'}" style="${n.mia ? 'flex:none' : 'width:36px;height:36px;flex:none'}">${n.mia ? '<img src="assets/mia-avatar.webp" alt="">' : ic(n.ic, 18)}</span>
+        <div class="col f1" style="gap:2px"><p class="b14 bold c-darker">${n.t}</p><p class="cap c-base">${tab === 'sem' || tab === 'mes' ? n.d + ' • ' : ''}${n.h}</p></div>
+        <button type="button" data-act="nmenu" data-k="${S.notif.indexOf(n)}" aria-label="Opções" style="color:var(--ty-base);padding:2px;flex:none">${ic('ellipsis-vertical', 18)}</button></div>
+        <p class="b14 c-dark">${n.x}</p></div>`).join('')}</div>`
+      : `<div class="empty" style="padding-top:60px"><span class="ico-c" style="width:56px;height:56px">${ic('bell', 26)}</span><p class="b16 semi c-dark">Nenhuma notificação por aqui</p><p class="b14 c-base">Quando a Mia tiver novidades sobre suas poupanças e gastos, elas aparecem aqui.</p></div>` });
   },
   acts: {
     ntab: (b) => { stack[stack.length - 1].p.tab = b.dataset.k; rerender(); },
@@ -181,15 +184,16 @@ screen('notif', {
   },
 });
 screen('notifCfg', {
+  cls: 'grad',
   render: () => { const c = S.flags.ncfg ??= { push: true, wpp: false, resumo: true, email: true, wppR: true };
-    return `${statusBar()}${appHeader('Configurações')}<div class="scroll px5 col g5" style="display:flex;padding-top:8px">
+    return gradPage({ title: 'Notificações', body: `<div class="col g5" style="display:flex">
     <div class="col g3"><p class="b16 semi c-darker">Canal de notificação</p><p class="b16 c-dark">Como você quer receber avisos:</p>
       <div class="card row g3"><span class="ico-c sm">${ic('smartphone', 18)}</span><div class="f1"><p class="b14 bold c-darker">Notificações Push</p><p class="b14 c-base">Via app no celular</p></div>${toggle('flags.ncfg.push', c.push)}</div>
       <div class="card row g3"><span class="ico-c sm" style="background:var(--success-bg);color:var(--success)">${ic('message-circle', 18)}</span><div class="f1"><p class="b14 bold c-darker">WhatsApp</p><p class="b14 c-base">Mensagem no WhatsApp</p></div>${toggle('flags.ncfg.wpp', c.wpp)}</div></div>
     <div class="card col g3"><div class="row jb"><p class="b16 semi c-darker">Resumo semanal</p>${toggle('flags.ncfg.resumo', c.resumo)}</div>
       <p class="b14 c-base">Um resumo completo de todas as funcionalidades: Bet do Bem, Metas, Radar, Fluxo Futuro e mais, enviado uma vez por semana nos domingos à noite.</p>
       <p class="b14 semi c-darker">Enviar via:</p><div class="row g5">${checkbox('flags.ncfg.email', 'Email', c.email).replace('class="chk', 'style="width:auto" class="chk')}${checkbox('flags.ncfg.wppR', 'Whatsapp', c.wppR).replace('class="chk', 'style="width:auto" class="chk')}</div></div>
-    <div class="mt-auto" style="padding:8px 0 20px">${btn('Salvar configurações', { cls: 'lg', act: 'save' })}</div></div>${homeInd()}`; },
+    </div>`, foot: btn('Salvar configurações', { cls: 'lg', act: 'save' }) }); },
   acts: { save: () => { back(); toast('Configurações salvas'); } },
 });
 
@@ -250,9 +254,10 @@ screen('perfilInfo', {
   acts: { edit: (b) => { S.flags.editMode = true; go(b.dataset.to, { edit: true }); }, back: () => back() },
 });
 screen('termos', {
-  render: () => `${statusBar()}${appHeader('Termos de Uso e Privacidade')}<div class="scroll px5" style="padding-bottom:20px">
-    <div class="col g3 b14 c-dark" style="white-space:pre-line">${TERMOS.split('\n\n').map(par => { const [h, ...r] = par.split('\n'); return r.length && h.length < 40 ? `<div><p class="b14 bold c-darker">${esc(h)}</p><p>${esc(r.join('\n'))}</p></div>` : `<p>${esc(par)}</p>`; }).join('')}</div>
-    <div style="padding-top:20px">${btn('Voltar', { v: 'o', act: 'back' })}</div></div>${homeInd()}`,
+  cls: 'grad',
+  render: () => gradPage({ title: 'Termos de Uso e Privacidade',
+    body: `<div class="col g3 b14 c-dark" style="white-space:pre-line">${TERMOS.split('\n\n').map(par => { const [h, ...r] = par.split('\n'); return r.length && h.length < 40 ? `<div><p class="b14 bold c-darker">${esc(h)}</p><p>${esc(r.join('\n'))}</p></div>` : `<p>${esc(par)}</p>`; }).join('')}</div>`,
+    foot: btn('Voltar', { v: 'o', act: 'back' }) }),
   acts: { back: () => back() },
 });
 const TERMOS = `Este documento estabelece as regras para o uso do aplicativo Me Paguei. Ao baixar e utilizar nossa plataforma, você concorda com os termos abaixo.
@@ -321,27 +326,30 @@ const FAQ = [
   ['O que é o Saldo Seguro do Fluxo Futuro?'], ['O que é o Acesso Flow?'], ['Como a Mia aprende com os meus gastos?'], ['Posso pausar minha poupança automática?'],
 ];
 screen('ajuda', {
+  cls: 'grad',
   render: (p) => { const open = p.open ?? 0; const q = (p.q || '').toLowerCase();
     const L = FAQ.map((f, k) => [f, k]).filter(([f]) => !q || f[0].toLowerCase().includes(q) || (f[1] || '').toLowerCase().includes(q));
-    return `${statusBar()}${appHeader('Ajuda')}<div class="scroll px5 col g5" style="display:flex;padding-bottom:20px">
+    return gradPage({ title: 'Ajuda', body: `<div class="col g5" style="display:flex">
     ${field({ id: 'faq', ph: 'Pesquisar dúvidas...', icon: 'search', value: p.q || '' })}
-    <div class="col g3"><p class="b16 semi c-darker">Tópicos rápidos</p><div class="row g2" style="overflow-x:auto;scrollbar-width:none">${[['piggy-bank', 'Poupança<br>automática'], ['landmark', 'Contas e<br>Open Finance'], ['sliders-horizontal', 'Monitor'], ['shield-check', 'Segurança']].map(([i, l]) => `<div class="card col g2" style="flex:none;width:96px;padding:12px;align-items:flex-start"><span class="c-primary">${ic(i, 20)}</span><span class="b14 c-dark" style="line-height:18px">${l}</span></div>`).join('')}</div></div>
+    <div class="col g3"><p class="b16 semi c-darker">Tópicos rápidos</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">${[['piggy-bank', 'Poupança<br>automática', 'var(--success)'], ['landmark', 'Contas e<br>Open Finance', 'var(--primary)'], ['sliders-horizontal', 'Monitor', 'var(--warning)'], ['shield-check', 'Segurança', 'var(--danger)']].map(([i, l, c]) => `<div class="card row g3 ais" style="padding:14px 12px;align-items:center"><span style="color:${c};flex:none">${ic(i, 20)}</span><span class="b14 c-dark" style="line-height:18px">${l}</span></div>`).join('')}</div></div>
     <div class="col g2"><p class="b16 semi c-darker">Perguntas frequentes</p>${L.length ? L.map(([f, k]) => `<div class="card" style="padding:14px 16px"><button type="button" class="row jb w100 g3" data-act="faq" data-k="${k}" aria-expanded="${open === k}" style="text-align:left"><span class="b14 semi c-darker">${f[0]}</span>${ic(open === k ? 'chevron-up' : 'chevron-down', 18, 'c-base')}</button>
       ${open === k ? `<p class="b14 c-dark" style="white-space:pre-line;margin-top:8px">${f[1] ? esc(f[1]) : 'Esta resposta ainda não está disponível nesta versão de teste.'}</p>` : ''}</div>`).join('') : `<p class="b14 c-base">Nenhuma pergunta encontrada para “${esc(p.q)}”.</p>`}</div>
-    <div class="card col g2" style="background:var(--primary-lighter);border-color:transparent"><p class="b16 semi c-darker">Precisa de mais ajuda?</p><p class="b14 c-dark">Se a sua dúvida ainda não foi respondida, entre em contato conosco que poderemos ajudar você.</p>
-      <div class="row g3" style="margin-top:4px"><span class="ico-c sm" style="background:#fff">${ic('mail', 18)}</span><div><p class="b14 bold c-darker">Email</p><p class="cap c-base" style="user-select:all">mepaguei@empreenderdinheiro.com</p></div></div></div>
-    ${btn('Voltar', { v: 'o', act: 'back' })}</div>${homeInd()}`; },
+    <div class="col g2"><p class="b16 semi c-darker">Precisa de mais ajuda?</p><p class="b14 c-dark">Se a sua dúvida ainda não foi respondida, entre em contato conosco que poderemos ajudar você.</p>
+      <div class="card row g3" style="margin-top:4px;align-items:center"><span class="ico-c sm">${ic('mail', 18)}</span><div><p class="b14 bold c-darker">Email</p><p class="cap c-base" style="user-select:all">mepaguei@empreenderdinheiro.com</p></div></div></div></div>`,
+    foot: btn('Voltar', { v: 'o', act: 'back' }) }); },
   onInput: (i) => { if (i.id === 'faq') { const p = stack[stack.length - 1].p; p.q = i.value; p.open = -1; refresh(); } },
   acts: { faq: (b) => { const p = stack[stack.length - 1].p; const k = +b.dataset.k; p.open = p.open === k ? -1 : k; rerender(); }, back: () => back() },
 });
 screen('sobre', {
-  render: () => `${statusBar()}${appHeader('Sobre o Me Paguei')}<div class="scroll px5 col g5" style="display:flex;padding-bottom:20px">
-    <div class="col g2" style="align-items:center;padding-top:8px"><img src="assets/logo-color.png" alt="Me Paguei" width="99" height="60"><span class="badge muted">v1.01.0</span><p class="cap c-base">por Empreender Dinheiro</p></div>
-    <div class="col g2"><p class="h3 c-darker">A empresa</p><p class="b14 c-dark">Fundada em 2017 em Recife (PE), a Empreender Dinheiro é a primeira EdTech do Brasil dedicada à aceleração de Educadores Financeiros.</p><p class="b14 c-dark">Com um time de mais de 115 pessoas, combinamos educação, tecnologia e certificação para transformar a relação das pessoas com o dinheiro. Além da nossa plataforma SaaS para consultores, produzimos o podcast Segredos Financeiros (com média de 50 mil ouvintes mensais) e um Clube do Livro focado em finanças e negócios.</p><p class="b14 c-dark">Ao longo dessa jornada de consultorias, nos deparamos com um fato científico: apenas ensinar não basta. Na correria do dia a dia, preencher planilhas manuais gera cansaço mental e frustração, fazendo a maioria desistir no meio do caminho. Cuidar do dinheiro não deveria ser um fardo.</p></div>
+  cls: 'grad',
+  render: () => gradPage({ title: 'Sobre o Me Paguei', body: `<div class="col g5" style="display:flex">
+    <div class="col g1"><div class="row jb" style="align-items:flex-start"><img src="assets/logo-color.png" alt="Me Paguei" width="99" height="60"><span class="badge muted">v1.01.0</span></div><p class="cap c-base">por Empreender Dinheiro</p></div>
+    <div class="col g2"><p class="h3 c-darker">A empresa</p><p class="b14 c-dark">Fundada em 2017 em Recife (PE), a <b class="semi c-darker">Empreender Dinheiro</b> é a primeira EdTech do Brasil dedicada à aceleração de Educadores Financeiros.</p><p class="b14 c-dark">Com um time de mais de 115 pessoas, combinamos educação, tecnologia e certificação para transformar a relação das pessoas com o dinheiro. Além da nossa plataforma SaaS para consultores, produzimos o <b class="semi c-darker">podcast Segredos Financeiros</b> (com média de 50 mil ouvintes mensais) e um <b class="semi c-darker">Clube do Livro</b> focado em finanças e negócios.</p><p class="b14 c-dark">Ao longo dessa jornada de consultorias, nos deparamos com um fato científico: apenas ensinar não basta. Na correria do dia a dia, preencher planilhas manuais gera cansaço mental e frustração, fazendo a maioria desistir no meio do caminho. Cuidar do dinheiro não deveria ser um fardo.</p></div>
+    <img src="assets/sobre-ed.webp" alt="Equipe da Empreender Dinheiro" style="width:100%;border-radius:var(--r-2xl);display:block">
     <div class="row g2">${[['2017', 'Fundação'], ['115+', 'Colaboradores'], ['50k', 'Ouvintes/mês']].map(([a, b]) => `<div class="card f1 center" style="padding:12px 8px"><p class="h3 c-primary">${a}</p><p class="cap c-base">${b}</p></div>`).join('')}</div>
     <div class="col g2"><p class="h3 c-darker">A ideia por trás do Me Paguei</p><p class="b14 c-dark">O Me Paguei nasce da missão da Empreender Dinheiro de transformar a relação das pessoas com o dinheiro. O nome vem do princípio comportamental do "pague-se primeiro", a regra de separar uma parte da renda para si antes de qualquer despesa.</p><p class="b14 c-dark">É um assistente financeiro baseado em dados compartilhados para adultos economicamente ativos que sentem que o dinheiro foge pelas mãos e precisam vencer a falta de tempo. O Me Paguei auxilia a tomar decisões, a sair da inércia e a ganhar previsibilidade através de mecanismos que automatizam o ato de poupar e analisam e antecipam a vida financeira.</p></div>
-    <div class="col"><p class="b16 semi c-darker">Acesso rápido</p>${[['globe', 'Site', 'empreenderdinheiro.com.br'], ['podcast', 'Podcast Segredos Financeiros', '50 mil ouvintes/mês  - Ouça já'], ['briefcase', 'Consultoria Equity', 'Programa de consultoria patrimonial']].map(([i, t, d]) => `<div class="li"><span class="ico-c sm">${ic(i, 18)}</span><div class="lt"><p class="b14 bold c-darker">${t}</p><p class="cap c-base">${d}</p></div></div>`).join('')}</div>
-    ${btn('Voltar', { v: 'o', act: 'back' })}<p class="cap c-base center">© 2026 Empreender Dinheiro · Me Paguei<br>Todos os direitos reservados</p></div>${homeInd()}`,
+    <div class="col g3"><p class="b16 semi c-darker">Acesso rápido</p>${[['globe', 'Site', 'empreenderdinheiro.com.br'], ['podcast', 'Podcast Segredos Financeiros', '50 mil ouvintes/mês  - Ouça já'], ['briefcase', 'Consultoria Equity', 'Programa de consultoria patrimonial']].map(([i, t, d]) => `<div class="card row g3" style="padding:16px;align-items:center"><span class="ico-c sm">${ic(i, 18)}</span><div class="f1"><p class="b14 bold c-darker">${t}</p><p class="cap c-base">${d}</p></div></div>`).join('')}</div></div>`,
+    foot: btn('Voltar', { v: 'o', act: 'back' }) + `<p class="cap c-base center" style="padding-top:12px">© 2026 Empreender Dinheiro · Me Paguei<br>Todos os direitos reservados</p>` }),
   acts: { back: () => back() },
 });
 
