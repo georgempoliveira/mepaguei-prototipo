@@ -90,6 +90,10 @@ img{display:block}
   .nav{height:calc(82px + env(safe-area-inset-bottom,0px));padding-bottom:env(safe-area-inset-bottom,0px)}
   .scroll,.bhd-in{padding-bottom:env(safe-area-inset-bottom,0px)}
   .scr{height:100%}
+  /* Bluehub: a navbar flutuante sobe acima da área de gestos e o indicador
+     desenhado some — o sistema já desenha o dele no atalho da tela inicial */
+  .bhh-nav{bottom:calc(15px + env(safe-area-inset-bottom,0px))}
+  .bhh-hi{display:none!important}
 }
 
 /* ---------- screens ---------- */
@@ -3689,8 +3693,8 @@ screen('bhHome', {
         <img src="assets/bhh-amplie-foto.webp" alt="Mulher no sofá usando o celular" style="width:100%;height:150px;object-fit:cover;display:block">
         <div class="col" style="gap:12px;padding:20px 20px 24px">
           <p style="font-size:18px;line-height:24px;font-weight:700;color:#fff">Amplie suas proteções</p>
-          <p style="font-size:14px;line-height:22px;font-weight:600;color:#fff">Acompanhamento com psicólogo, plano odontológico, coberturas maiores e outros benefícios, por uma fração do valor de mercado</p>
-          <button type="button" data-go="bhCobertura" style="height:44px;border-radius:9999px;background:#fff;color:var(--bh-ink);font-size:14px;line-height:22px;font-weight:600;margin-top:4px">Conhecer minhas vantagens</button>
+          <p style="font-size:14px;line-height:22px;color:#fff">Acompanhamento com psicólogo, plano odontológico, coberturas maiores e outros benefícios, por uma fração do valor de mercado</p>
+          <button type="button" data-go="bhCobertura" style="height:44px;border-radius:9999px;background:rgba(255,255,255,.88);color:var(--bh-ink);font-size:14px;line-height:22px;font-weight:600;margin-top:4px">Conhecer minhas vantagens</button>
         </div></div></div>
       <div class="bhh-px"><button type="button" data-act="bhSoon" data-n="WhatsApp" style="width:100%;height:100px;background:#fff;border:1px solid var(--bh-line);border-radius:16px;padding:16px;display:flex;align-items:center;gap:16px;text-align:left">
         <span style="width:40px;height:40px;border-radius:10px;background:var(--bh-blue-bg);color:var(--bh-blue);display:flex;align-items:center;justify-content:center;flex:none">${ic('circle-help', 24)}</span>

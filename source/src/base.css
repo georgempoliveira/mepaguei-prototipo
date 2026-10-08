@@ -72,6 +72,10 @@ img{display:block}
   .nav{height:calc(82px + env(safe-area-inset-bottom,0px));padding-bottom:env(safe-area-inset-bottom,0px)}
   .scroll,.bhd-in{padding-bottom:env(safe-area-inset-bottom,0px)}
   .scr{height:100%}
+  /* Bluehub: a navbar flutuante sobe acima da área de gestos e o indicador
+     desenhado some — o sistema já desenha o dele no atalho da tela inicial */
+  .bhh-nav{bottom:calc(15px + env(safe-area-inset-bottom,0px))}
+  .bhh-hi{display:none!important}
 }
 
 /* ---------- screens ---------- */
