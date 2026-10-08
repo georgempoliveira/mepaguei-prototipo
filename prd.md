@@ -238,3 +238,13 @@ para pular direto a qualquer ponto do fluxo. Ao criar uma tela nova, **adicione 
   do cabeçalho, como nas telas de Agenda.
 - **Splash reaproveitada.** `screen('splash')` aceita `{next}`; voltar do Bluehub para o
   Me Paguei passa pela splash em vez de cair direto na home.
+
+- **Configurações e Informações Pessoais (08/10).** Refeitas sobre 8143:23658 e 8369:64638:
+  cabeçalho em gradiente azul, card do usuário em vidro sobre o azul, cada item das listas
+  virou card próprio, bloco "Nossas redes" em caixa azul-clara. Em Informações Pessoais o
+  rótulo fica acima do valor dentro de um card cinza e o título da seção sai do card.
+  **Pessoas próximas saiu da tela** e a foto **não é editável** (vem do BlueHub).
+  Os valores vêm de `S.user`, sem defaults inventados — campo vazio mostra "—"; `seedDemo()`
+  preenche o perfil só onde estiver vazio, para os atalhos do moderador continuarem úteis.
+  Os ícones Instagram/LinkedIn/YouTube não existem mais no Lucide: foram recortados do
+  Figma para `assets/soc-*.png`.

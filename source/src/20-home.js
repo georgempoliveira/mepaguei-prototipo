@@ -194,24 +194,29 @@ screen('notifCfg', {
 });
 
 /* ---------- configurações de sistema ---------- */
+/* cada item é um card próprio, como em 8143:23658 */
 function setRow(icn, t, d, to, danger) {
-  return `<button type="button" class="li" ${to}><span class="ico-c sm" style="${danger ? 'background:var(--danger-bg);color:var(--danger)' : ''}">${ic(icn, 18)}</span><span class="lt col"><span class="b14 bold" style="color:${danger ? 'var(--danger)' : 'var(--ty-darker)'}">${t}</span>${d ? `<span class="cap c-base">${d}</span>` : ''}</span>${ic('chevron-right', 20, 'c-light')}</button>`;
+  return `<button type="button" class="card row g3" ${to} style="text-align:left;padding:16px;border-color:var(--border-lighter)"><span class="ico-c sm" style="${danger ? 'background:var(--danger-bg);color:var(--danger)' : ''}">${ic(icn, 18)}</span><span class="col f1" style="gap:2px"><span class="b14 bold" style="color:${danger ? 'var(--danger)' : 'var(--ty-darker)'}">${t}</span>${d ? `<span class="cap c-base">${d}</span>` : ''}</span>${ic('chevron-right', 20, 'c-light')}</button>`;
 }
 screen('config', {
-  render: () => `${statusBar()}${appHeader('Configurações')}<div class="scroll px5">
-    <div class="card row g3" style="margin:4px 0 20px"><span style="width:56px;height:56px;border-radius:50%;overflow:hidden;flex:none"><img src="${fotoUser() || 'assets/avatar-user.webp'}" alt="" style="width:100%;height:100%;object-fit:cover"></span><div class="f1"><p class="b16 semi c-darker">${esc(S.user.nome || 'Marcelo Pimentel')}</p><p class="b14 c-base" style="overflow-wrap:anywhere">${esc(S.user.email || 'marcelopimentel@email.com')}</p></div></div>
-    <p class="h3 c-darker">Conta</p><div class="col" style="margin-bottom:16px">
+  cls: 'grad',
+  render: () => `${CURVE}${statusBar(true)}
+    <div class="ah light"><button type="button" class="bkb" data-back aria-label="Voltar">${ic('chevron-left', 24)}</button><p class="ttl2" style="color:#fff">Configurações</p><div class="acts"></div></div>
+    <div style="padding:0 20px 20px"><div class="row g3" style="background:rgba(255,255,255,.18);border-radius:var(--r-2xl);padding:16px"><span style="width:56px;height:56px;border-radius:50%;overflow:hidden;flex:none"><img src="${fotoUser() || 'assets/avatar-user.webp'}" alt="" style="width:100%;height:100%;object-fit:cover"></span><div class="f1" style="min-width:0"><p class="b16 semi" style="color:#fff">${esc(S.user.nome || 'Marcelo Pimentel')}</p><p class="b14" style="color:#e9f1fb;overflow-wrap:anywhere">${esc(S.user.email || 'marcelopimentel@email.com')}</p></div></div></div>
+    <div class="sheet" style="background:#fff"><div class="sheet-in" style="gap:12px;background:#fff">
+      <p class="h3 c-darker">Conta</p>
       ${setRow('user', 'Informações Pessoais', 'Nome, telefone, documentos', 'data-go="perfilInfo"')}
-      ${setRow('landmark', 'Consentimento de contas', 'Contas e Open Finance', 'data-act="central"')}
-      ${setRow('bell', 'Notificações', 'Push, e-mail e Whatsapp', 'data-go="notifCfg"')}
-      ${setRow('file-text', 'Termos de Uso e Privacidade', 'Última atualização: out. 2026', 'data-go="termos"')}</div>
-    <p class="h3 c-darker">Suporte</p><div class="col" style="margin-bottom:16px">
-      ${setRow('circle-help', 'Central de Ajuda', 'Dúvidas frequentes e suporte', 'data-go="ajuda"')}
-      ${setRow('info', 'Sobre o Me Paguei', 'Conheça nossa história', 'data-go="sobre"')}
-      ${setRow('log-out', 'Sair da conta', '', 'data-act="logout"', true)}</div>
-    <p class="h3 c-darker">Nossas redes</p><p class="b14 c-base" style="margin-top:4px">Acompanhe o Me Paguei nas redes sociais:</p>
-    <div class="row g3" style="margin:12px 0 24px">${['instagram', 'linkedin', 'youtube'].map(n => `<span class="ico-c" aria-label="${n}">${ic(n, 20)}</span>`).join('')}</div>
-    <div style="padding-bottom:20px">${btn('Voltar para Início', { act: 'home' })}</div></div>${homeInd()}`,
+      ${setRow('link-2', 'Consentimento de contas', 'Contas e Open Finance', 'data-act="central"')}
+      ${setRow('bell-off', 'Notificações', 'Push, e-mail e Whatsapp', 'data-go="notifCfg"')}
+      ${setRow('file-text', 'Termos de Uso e Privacidade', 'Última atualização: out. 2026', 'data-go="termos"')}
+      <p class="h3 c-darker" style="margin-top:8px">Suporte</p>
+      ${setRow('info', 'Central de Ajuda', 'Dúvidas frequentes e suporte', 'data-go="ajuda"')}
+      ${setRow('house', 'Sobre o Me Paguei', 'Conheça nossa história', 'data-go="sobre"')}
+      ${setRow('log-out', 'Sair da conta', '', 'data-act="logout"', true)}
+      <div class="col g2" style="align-items:center;text-align:center;background:var(--primary-lighter);border-radius:var(--r-2xl);padding:20px;margin-top:8px">
+        <p class="b16 semi c-primary">Nossas redes</p><p class="b14 c-dark">Acompanhe o Me Paguei nas redes sociais:</p>
+        <div class="row g3">${['instagram', 'linkedin', 'youtube'].map(n => `<span class="ico-c" aria-label="${n}" style="background:var(--bg-white)"><img src="assets/soc-${n}.png" alt="" width="22" height="22"></span>`).join('')}</div></div>
+      ${btn('Voltar para Início', { act: 'home' })}</div></div>${homeInd()}`,
   acts: {
     central: () => go('central', { tab: 'def' }),
     home: () => reset('home', {}, 'back'),
@@ -220,21 +225,28 @@ screen('config', {
     doLogout: () => { closeOverlays(true); reset('welcome'); },
   },
 });
+/* seção do Figma: título com ícone + "Editar" fora do card, e o card cinza com
+   rótulo em cima e valor embaixo */
 function infoBlock(icn, title, rows, editTo) {
-  return `<div class="card col g3"><div class="row jb"><p class="row g2 b16 semi c-darker">${ic(icn, 18, 'c-primary')} ${title}</p><button type="button" class="row g1 cap semi c-primary" data-act="edit" data-to="${editTo}">${ic('pencil', 14)} Editar</button></div>
-  ${rows.map(([k, v]) => `<p class="b16 c-dark"><b class="c-darker">${k}</b> ${esc(v || '—')}</p>`).join('')}</div>`;
+  return `<div class="col g2">
+    <div class="row jb"><p class="row g2 b16 semi c-darker">${ic(icn, 18, 'c-primary')} ${title}</p><button type="button" class="row g1 cap semi c-primary" data-act="edit" data-to="${editTo}">${ic('pencil', 14)} Editar</button></div>
+    <div class="col g3" style="background:var(--bg-lighter);border-radius:var(--r-2xl);padding:16px">
+      ${rows.map(([k, v]) => `<div class="col" style="gap:2px"><p class="b14 bold c-darker">${k}</p><p class="b14 c-dark">${esc(v || '—')}</p></div>`).join('')}</div></div>`;
 }
 screen('perfilInfo', {
+  cls: 'grad',
   render: () => { const u = S.user;
-    return `${statusBar()}${appHeader('Informações Pessoais')}<div class="scroll px5 col g4" style="display:flex;padding-bottom:20px">
-    <div class="col g2" style="align-items:center"><span style="width:112px;height:112px;border-radius:50%;overflow:hidden"><img src="${fotoUser() || 'assets/avatar-user.webp'}" alt="" style="width:100%;height:100%;object-fit:cover"></span><p class="cap c-base center">Adicione uma foto para deixar o app<br>com a sua cara. (opcional)</p></div>
-    ${infoBlock('user', 'Dados pessoais', [['Gênero:', u.genero || 'Masculino'], ['Data de nascimento:', u.nasc || '12/06/1986'], ['Estado civil:', u.civil || 'Casado']], 'perf1')}
-    ${infoBlock('briefcase', 'Profissional', [['Profissão:', u.profissao || 'Gerente de Projetos'], ['Renda média mensal:', u.renda || 'R$ 10.000,00']], 'perf2')}
-    ${infoBlock('map-pin', 'Endereço', [['CEP:', u.cep || '12345-078'], ['Rua/Logradouro:', u.rua || 'Rua Bione'], ['Número', u.numero || '123'], ['Complemento (opcional)', u.compl || 'Apto. 234, Bloco A'], ['Bairro', u.bairro || 'Bairro do Recife'], ['Cidade:', u.cidade || 'Recife'], ['Estado:', u.uf || 'PE']], 'perf3')}
-    ${infoBlock('phone', 'Contato', [['Número de telefone:', u.cel || '(81) 91234-5678']], 'perf4')}
-    <div class="card col g3"><div class="row jb"><p class="row g2 b16 semi c-darker">${ic('users', 18, 'c-primary')} Pessoas próximas</p><button type="button" class="row g1 cap semi c-primary" data-act="edit" data-to="pessoas">${ic('pencil', 14)} Editar</button></div>
-      ${(u.pessoas.length ? u.pessoas : [{ nome: 'Marcela Pimentel', nasc: '30/06', par: 'Cônjuge' }, { nome: 'Caio Pimentel', nasc: '07/10', par: 'Filho' }, { nome: 'Marisa Santiago', nasc: '02/02', par: 'Mãe' }]).map(m => `<div class="row g3"><span class="ico-c sm" style="font-weight:700;font-size:13px">${esc(m.nome[0])}</span><div><p class="b16 semi c-darker">${esc(m.nome)}</p><p class="b16 c-dark">${esc(m.nasc.slice(0, 5))} - ${esc(m.par)}</p></div></div>`).join('')}</div>
-    ${btn('Voltar', { v: 'o', act: 'back' })}</div>${homeInd()}`; },
+    return `${CURVE}${statusBar(true)}
+    <div class="ah light"><button type="button" class="bkb" data-back aria-label="Voltar">${ic('chevron-left', 24)}</button><p class="ttl2" style="color:#fff">Informações Pessoais</p><div class="acts"></div></div>
+    <div class="col g2" style="align-items:center;padding:4px 20px 24px">
+      <span style="width:112px;height:112px;border-radius:50%;overflow:hidden;border:3px solid rgba(255,255,255,.5)"><img src="${fotoUser() || 'assets/avatar-user.webp'}" alt="" style="width:100%;height:100%;object-fit:cover"></span>
+      <p class="cap center" style="color:#e9f1fb;max-width:240px">Sua foto pode ser alterada no seu perfil do BlueHub.</p></div>
+    <div class="sheet" style="background:#fff"><div class="sheet-in" style="gap:24px;padding-bottom:20px;background:#fff">
+    ${infoBlock('user', 'Dados pessoais', [['Gênero:', u.genero], ['Data de nascimento:', u.nasc], ['Estado civil:', u.civil]], 'perf1')}
+    ${infoBlock('briefcase', 'Profissional', [['Profissão:', u.profissao], ['Renda média mensal:', u.renda]], 'perf2')}
+    ${infoBlock('map-pin', 'Endereço', [['CEP:', u.cep], ['Rua/Logradouro:', u.rua], ['Número', u.numero], ['Complemento (opcional)', u.compl], ['Bairro', u.bairro], ['Cidade:', u.cidade], ['Estado:', u.uf]], 'perf3')}
+    ${infoBlock('phone', 'Contato', [['Número de telefone:', u.cel]], 'perf4')}
+    ${btn('Voltar', { v: 'o', act: 'back' })}</div></div>${homeInd()}`; },
   acts: { edit: (b) => { S.flags.editMode = true; go(b.dataset.to, { edit: true }); }, back: () => back() },
 });
 screen('termos', {
@@ -342,7 +354,12 @@ screen('sobre', {
 
 /* dados de exemplo para "conta em uso" */
 function seedDemo() {
-  Object.assign(S.user, { nome: S.user.nome || 'Marcelo Pimentel', email: S.user.email || 'marcelo.pimentel@gmail.com', cpf: S.user.cpf || '055.865.584-94' });
+  /* só preenche o que estiver vazio: o que o participante digitou nunca é sobrescrito */
+  [['nome', 'Marcelo Pimentel'], ['email', 'marcelo.pimentel@gmail.com'], ['cpf', '055.865.584-94'],
+   ['genero', 'Masculino'], ['nasc', '12/06/1986'], ['civil', 'Casado(a)'], ['profissao', 'Gerente de Projetos'],
+   ['renda', 'R$ 10.000,00'], ['cep', '12345-078'], ['rua', 'Rua Bione'], ['numero', '123'],
+   ['compl', 'Apto. 234, Bloco A'], ['bairro', 'Bairro do Recife'], ['cidade', 'Recife'], ['uf', 'PE'],
+   ['cel', '(81) 91234-5678']].forEach(([k, v]) => { if (!S.user[k]) S.user[k] = v; });
   S.perfilCompleto = true;
   S.contas = ['nubank', 'bradesco', 'itau'];
   S.origem = { bank: 'nubank', conta: 0 }; S.destino = { bank: 'itau', pix: 'marcelo.pimentel@gmail.com' }; S.saldoSeg = 300;
