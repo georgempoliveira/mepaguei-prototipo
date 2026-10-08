@@ -53,8 +53,8 @@ screen('bhCad', {
   render: () => bhScreen({ title: 'Vamos ao seu cadastro', sub: 'Informe os dados abaixo para começarmos.', dots: 1, pt: 12.5, pb: 20.5, pad: '32px 24px 16px',
     body: `<div class="col g6">
       ${field({ id: 'nome', label: 'Nome completo', ph: 'ex: Maria da Silva', bind: 'user.nome' })}
-      ${field({ id: 'cpf', label: 'CPF', ph: 'ex: 123.456.789-00', bind: 'user.cpf', mask: 'cpf', helper: 'Usamos para garantir a segurança da sua conta.' })}
-      ${field({ id: 'email', label: 'E-mail', ph: 'ex: seuemail@email.com', bind: 'user.email', type: 'email', mode: 'email' })}</div>
+      ${field({ id: 'cpf', label: 'CPF', ph: '123.456.789-00', bind: 'user.cpf', mask: 'cpf', helper: 'Usamos para garantir a segurança da sua conta.' })}
+      ${field({ id: 'email', label: 'E-mail', ph: 'seuemail@email.com', bind: 'user.email', type: 'email', mode: 'email' })}</div>
       <div class="col g4" style="margin-top:56px">
       ${bhChk('user.termos', S.user.termos, `<span class="b16 c-darker">Li e aceito as <span class="bh-lnk" role="button" tabindex="0" data-act="terms">Políticas de Privacidade e Termos de Uso</span></span>`)}
       <p class="cap c-base" style="padding-bottom:8px">Você pode ler os documentos clicando no link acima</p></div>`,
@@ -145,7 +145,7 @@ screen('bhLogin', {
   cls: 'bh',
   render: () => bhScreen({ title: 'Entrar', sub: 'Informe seu CPF e senha para acessar seus benefícios.', top: 60, pt: 12, pb: 19, sheet: '#fbfbfb',
     body: `<div class="col g6">
-      ${field({ id: 'lcpf', label: 'CPF', ph: 'ex: 123.456.789-00', bind: 'flags.lcpf', mask: 'cpf' })}
+      ${field({ id: 'lcpf', label: 'CPF', ph: '123.456.789-00', bind: 'flags.lcpf', mask: 'cpf' })}
       ${pwField({ id: 'lpw', label: 'Senha', ph: '************', bind: 'flags.lpw' })}</div>`,
     foot: `${bhBtn('Entrar', { v: 'dk16', next: true, act: 'entrar' })}
       <div class="col g4" style="align-items:center"><p class="b16" style="color:#121212">Não possui uma conta? <button type="button" class="bh-lnk2" data-act="cad">Cadastre-se</button></p><button type="button" class="bh-lnk2 b16" data-act="esqueci">Esqueci a senha</button></div>` }),
@@ -164,7 +164,7 @@ screen('bhLogin', {
 screen('bhEsq', {
   cls: 'bh',
   render: () => bhScreen({ title: 'Recuperar senha', sub: 'Para sua segurança, informe seu CPF e confirme sua identidade para continuar.', top: 60, pt: 12, pb: 19,
-    body: field({ id: 'ecpf', label: 'CPF', ph: 'ex: 123.456.789-00', bind: 'flags.lcpf', mask: 'cpf' }),
+    body: field({ id: 'ecpf', label: 'CPF', ph: '123.456.789-00', bind: 'flags.lcpf', mask: 'cpf' }),
     foot: bhBtn('Enviar código', { next: true, act: 'next' }) }),
   valid: () => (S.flags.lcpf || '').length === 14,
   acts: { next: () => go('bhEsqCod') },

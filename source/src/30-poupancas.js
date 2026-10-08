@@ -248,8 +248,8 @@ function objStep(step, edit) {
   let html = '';
   if (step === 1) html = `${field({ id: 'onome', label: 'Escreva em poucas palavras o seu objetivo', ph: 'Nome do objetivo', bind: 'tmpObj.nome' })}<p class="cap semi c-base">Sugestões</p>
     <div class="row g2" style="flex-wrap:wrap">${OBJ_SUG.map(([i, s]) => `<button type="button" class="chip" data-act="osug" data-v="${s}" style="height:30px;font-size:12px;color:var(--ia);border-color:${o.nome === s ? 'var(--ia)' : '#d9c2f7'};background:${o.nome === s ? 'var(--ia-bg)' : '#fff'}">${ic(i, 14)} ${s}</button>`).join('')}</div>`;
-  if (step === 2) html = `${field({ id: 'ovalor', label: 'Qual valor deseja atingir?', ph: 'ex: R$ 0,00', bind: 'tmpObj.valorTxt', mask: 'brl' })}${miaInsight('Defina um valor possível', 'Lembre-se de definir um valor que respeite sua realidade atual para manter seu planejamento seguro e sem frustrações.')}`;
-  if (step === 3) html = `${field({ id: 'odata', label: 'Data final do objetivo', ph: 'ex: dd/mm/aaaa', bind: 'tmpObj.prazo', mask: 'data', icon: 'calendar-days', helper: 'Escolha quando quer atingir seu objetivo.' })}<p class="fld-h err" id="oerr" hidden>Escolha uma data a partir de amanhã.</p>`;
+  if (step === 2) html = `${field({ id: 'ovalor', label: 'Qual valor deseja atingir?', ph: 'R$ 0,00', bind: 'tmpObj.valorTxt', mask: 'brl' })}${miaInsight('Defina um valor possível', 'Lembre-se de definir um valor que respeite sua realidade atual para manter seu planejamento seguro e sem frustrações.')}`;
+  if (step === 3) html = `${field({ id: 'odata', label: 'Data final do objetivo', ph: 'dd/mm/aaaa', bind: 'tmpObj.prazo', mask: 'data', icon: 'calendar-days', helper: 'Escolha quando quer atingir seu objetivo.' })}<p class="fld-h err" id="oerr" hidden>Escolha uma data a partir de amanhã.</p>`;
   const foot = edit ? btn('Salvar', { cls: 'lg js-next', act: 'objSave' }) + btn('Cancelar', { v: 'o', cls: 'lg', act: 'objCancel' }) : `${dots}${btn(step === 3 ? 'Salvar' : 'Próximo', { cls: 'lg js-next', act: 'objNext', attrs: `data-s="${step}"` })}`;
   return { html: `<div class="col g4" style="min-height:330px">${html}</div>`, foot };
 }
@@ -345,7 +345,7 @@ screen('vfFreq', {
 });
 screen('vfValor', {
   cls: 'grad',
-  render: (p) => ofScreen({ title: p.edit ? 'Editar valor' : 'Definir valor', body: `${field({ id: 'vfv', label: valorLabel(S.tmpVf.freq), ph: 'ex: R$ 0,00', bind: 'tmpVf.valorTxt', mask: 'brl' })}
+  render: (p) => ofScreen({ title: p.edit ? 'Editar valor' : 'Definir valor', body: `${field({ id: 'vfv', label: valorLabel(S.tmpVf.freq), ph: 'R$ 0,00', bind: 'tmpVf.valorTxt', mask: 'brl' })}
     <div class="row g2" style="flex-wrap:wrap">${[50, 100, 200, 500].map(v => `<button type="button" class="chip" data-act="vq" data-v="${v}">${fmtBRL(v, false)}</button>`).join('')}</div>
     ${S.contas.length ? miaInsight('Sugestão da MIA', `Analisei sua margem livre dos últimos meses: guardar até ${fmtBRL(S.tmpVf.freq === 'sem' ? 75 : S.tmpVf.freq === 'quinz' ? 150 : 300, false)} por depósito não deve apertar seu mês.`) : ''}`,
     foot: btn(p.edit ? 'Salvar' : 'Próximo', { next: true, act: 'next' }) }),
@@ -411,7 +411,7 @@ screen('pbValor', {
   render: (p) => { const t = team(S.tmpPb.time);
     return ofScreen({ title: p.edit ? 'Editar valor por vitória' : 'Definir valor por vitória', dots: p.edit ? 0 : 2,
       body: `<div class="card row g3">${teamRow(t.id, '<span class="badge success">Escolhido</span>')}</div><p class="b14 c-dark">O valor escolhido só é transferido para a sua poupança quando o ${t.nome} vencer.</p>
-      ${field({ id: 'pbv', label: 'Valor por vitória', ph: 'ex: R$ 0,00', bind: 'tmpPb.valorTxt', mask: 'brl' })}
+      ${field({ id: 'pbv', label: 'Valor por vitória', ph: 'R$ 0,00', bind: 'tmpPb.valorTxt', mask: 'brl' })}
       <div class="row g2" style="flex-wrap:wrap">${[5, 10, 20, 50].map(v => `<button type="button" class="chip" data-act="vq" data-v="${v}">${fmtBRL(v, false)}</button>`).join('')}</div>
       <div class="card flat col g1"><p class="row g2 b14 semi c-darker">${ic('info', 16, 'c-primary')} Como funciona?</p><p class="b14 c-dark">A transferência será feita entre as contas principal e cofrinho cadastradas por você. Se o seu time não vencer, nenhuma movimentação é feita.</p></div>`,
       foot: btn(p.edit ? 'Salvar' : 'Próximo', { next: true, act: 'next' }) + (p.edit ? '' : btn('Cancelar', { v: 'o', act: 'cancel' })) }); },
@@ -453,7 +453,7 @@ screen('trModo', {
     return ofScreen({ title: 'Troco inteligente', sub: 'Escolha a regra que usaremos para calcular o valor poupado em cada compra.', dots: p.edit ? 0 : 1,
       body: `<div class="radc ${m === 'arred' ? 'on' : ''}" data-act="msel" data-m="arred" role="radio" aria-checked="${m === 'arred'}" style="cursor:pointer"><span class="rad ${m === 'arred' ? 'on' : ''}"><span class="o"></span><span class="lb">Arredondar centavos</span></span><span class="d">Arredonda o valor para o próximo número inteiro e guarda a diferença.<br><b class="c-dark">Exemplo:</b> "Uma compra de R$ 4,50 vira R$ 5,00. Você poupa R$ 0,50."</span></div>
       <div class="radc ${m === 'fixo' ? 'on' : ''}" data-act="msel" data-m="fixo" role="radio" aria-checked="${m === 'fixo'}" style="cursor:pointer"><span class="rad ${m === 'fixo' ? 'on' : ''}"><span class="o"></span><span class="lb">Guardar valor fixo</span></span><span class="d">Escolha um valor exato para guardar em cada compra feita.</span>
-        ${m === 'fixo' ? `<div class="col g2" style="padding-left:30px;margin-top:6px">${field({ id: 'trf', ph: 'ex: R$ 0,00', bind: 'tmpTr.fixoTxt', mask: 'brl' })}<div class="row g2">${[1, 2, 5].map(v => `<button type="button" class="chip f1 jc" data-act="fq" data-v="${v}" style="height:30px;font-size:12px;${parseBRL(S.tmpTr.fixoTxt) === v ? 'border-color:var(--primary-darker);color:var(--primary-darker)' : 'color:var(--primary);border-color:#a9d3f5'}">${fmtBRL(v)}</button>`).join('')}</div></div>` : ''}</div>`,
+        ${m === 'fixo' ? `<div class="col g2" style="padding-left:30px;margin-top:6px">${field({ id: 'trf', ph: 'R$ 0,00', bind: 'tmpTr.fixoTxt', mask: 'brl' })}<div class="row g2">${[1, 2, 5].map(v => `<button type="button" class="chip f1 jc" data-act="fq" data-v="${v}" style="height:30px;font-size:12px;${parseBRL(S.tmpTr.fixoTxt) === v ? 'border-color:var(--primary-darker);color:var(--primary-darker)' : 'color:var(--primary);border-color:#a9d3f5'}">${fmtBRL(v)}</button>`).join('')}</div></div>` : ''}</div>`,
       foot: btn(p.edit ? 'Salvar' : 'Próximo', { next: true, act: 'next' }) }); },
   mount: (el, p) => { if (p.edit && !p.init) { p.init = 1; const o = poupState().troco; S.tmpTr = { modo: o.modo, fixoTxt: o.fixo ? fmtBRL(o.fixo) : '', mult: o.mult }; rerender(); } },
   valid: () => S.tmpTr.modo === 'arred' || (S.tmpTr.modo === 'fixo' && parseBRL(S.tmpTr.fixoTxt) > 0),

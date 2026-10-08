@@ -63,7 +63,7 @@ screen('apos2', {
   render: () => { const ia = idadeAtual(); return apScreen({ title: 'Meta de aposentadoria', dots: 1, sub: 'Defina quando você pretende se aposentar e a renda mensal necessária para manter seu estilo de vida',
     body: `<p class="b14" style="background:var(--bg-lighter);border-radius:var(--r-xl);padding:10px 14px;color:var(--bh-muted)">Idade atual: <b style="color:var(--bh-ink)">${ia} anos</b></p>
       ${field({ id: 'ai', label: 'Idade de aposentadoria', ph: 'ex: 65', bind: 'apos.idadeTxt', mask: 'int' })}<p class="fld-h err" id="aerr" hidden>Escolha uma idade entre ${ia + 1} e 80 anos.</p>
-      ${field({ id: 'ar', label: 'Renda mensal desejada', ph: 'ex: R$ 0,00', bind: 'apos.rendaTxt', mask: 'brl', helper: 'Considere o poder de compra de hoje' })}
+      ${field({ id: 'ar', label: 'Renda mensal desejada', ph: 'R$ 0,00', bind: 'apos.rendaTxt', mask: 'brl', helper: 'Considere o poder de compra de hoje' })}
       ${dica('Adiar a aposentadoria em poucos anos costuma reduzir o aporte mensal necessário.')}`,
     foot: btn('Próximo', { cls: 'lg', next: true, go: 'apos3', attrs: 'style="background:var(--bh-blue)"' }) }); },
   mount: () => { apState(); },
@@ -87,7 +87,7 @@ screen('apos3', {
 function fonteSheet(k) {
   const f = k != null ? apState().fontes[k] : null; S.tmpF = { nome: f ? f.nome : '', valorTxt: f ? fmtBRL(f.valor) : '' };
   sheetForm(`<p class="h4" style="color:var(--bh-ink)">${f ? 'Editar renda' : 'Outras fontes de renda'}</p><p class="b14" style="color:var(--bh-muted)">${f ? 'Ajuste os parâmetros desta receita para recalcular sua projeção.' : 'Cadastre receitas como INSS, aluguéis ou pensões que você espera receber na aposentadoria'}</p>
-    ${field({ id: 'fo', label: 'Origem', ph: 'ex: INSS, aluguel, pensão', bind: 'tmpF.nome' })}${field({ id: 'fv', label: 'Valor mensal', ph: 'ex: R$ 0,00', bind: 'tmpF.valorTxt', mask: 'brl', helper: 'em valores de hoje.' })}`,
+    ${field({ id: 'fo', label: 'Origem', ph: 'ex: INSS, aluguel, pensão', bind: 'tmpF.nome' })}${field({ id: 'fv', label: 'Valor mensal', ph: 'R$ 0,00', bind: 'tmpF.valorTxt', mask: 'brl', helper: 'em valores de hoje.' })}`,
     btn(f ? 'Salvar' : 'Adicionar', { act: 'fSave', cls: 'js-next', attrs: 'style="background:var(--bh-blue)"' }) + (f ? btn('Remover esta fonte', { v: 'do', act: 'fDel' }) : btn('Cancelar', { v: 'o', act: 'dlgClose' })),
     () => S.tmpF.nome.trim() && parseBRL(S.tmpF.valorTxt) > 0);
   S.flags.fK = k;
@@ -99,8 +99,8 @@ Object.assign(GLOBAL_ACTS, {
 screen('apos4', {
   cls: 'bh',
   render: () => apScreen({ title: 'Patrimônio inicial', dots: 3, sub: 'Informe o que você já acumulou e veja a evolução do seu patrimônio ao longo do tempo',
-    body: `${field({ id: 'ap', label: 'Você já possui investimentos?', ph: 'ex: R$ 0,00', bind: 'apos.patTxt', mask: 'brl', helper: 'Informe os valores aplicados em bancos, corretoras ou outras instituições financeiras. Não inclua casa, carro ou terrenos.' })}
-      ${field({ id: 'aa', label: 'Quanto consegue investir por mês?', ph: 'ex: R$ 0,00', bind: 'apos.aporteTxt', mask: 'brl', helper: 'Usamos esse valor como ponto de partida. Na simulação mostramos se ele é suficiente.' })}
+    body: `${field({ id: 'ap', label: 'Você já possui investimentos?', ph: 'R$ 0,00', bind: 'apos.patTxt', mask: 'brl', helper: 'Informe os valores aplicados em bancos, corretoras ou outras instituições financeiras. Não inclua casa, carro ou terrenos.' })}
+      ${field({ id: 'aa', label: 'Quanto consegue investir por mês?', ph: 'R$ 0,00', bind: 'apos.aporteTxt', mask: 'brl', helper: 'Usamos esse valor como ponto de partida. Na simulação mostramos se ele é suficiente.' })}
       <p class="cap" style="color:var(--bh-muted)">Caso não tenha investimentos, basta seguir para o próximo passo.</p>`,
     foot: btn('Próximo', { cls: 'lg', go: 'apos5', attrs: 'style="background:var(--bh-blue)"' }) }),
 });
@@ -125,8 +125,8 @@ function projetoSheet() {
       <div class="seg">${[['saida', 'Saída de capital'], ['entrada', 'Entrada de capital']].map(([k, l]) => `<button type="button" class="${t.tipo === k ? 'on' : ''}" data-act="pTipo" data-k="${k}">${l}</button>`).join('')}</div>
       ${t.tipo === 'saida' ? `<div class="col g2"><p class="fld-l">Categoria</p><div class="row g2" style="flex-wrap:wrap">${['Viagem', 'Veículo', 'Casa', 'Educação', 'Saúde', 'Outro'].map(c => `<button type="button" class="chip" data-act="pCat" data-c="${c}" style="${t.cat === c ? 'background:var(--bh-blue);border-color:var(--bh-blue);color:#fff' : ''}">${c}</button>`).join('')}</div></div>` : ''}
       ${field({ id: 'pn', label: t.tipo === 'saida' ? 'Nome do projeto' : 'De onde vem esse dinheiro', ph: t.tipo === 'saida' ? 'Ex: entrada da casa' : 'Ex: venda de um imóvel', bind: 'tmpP.nome' })}
-      ${field({ id: 'pd', label: t.tipo === 'saida' ? 'Data de execução' : 'Quando você espera receber', ph: 'ex: dd/mm/aaaa', bind: 'tmpP.data', mask: 'data' })}
-      ${field({ id: 'pv', label: 'Valor total', ph: 'ex: R$ 0,00', bind: 'tmpP.valorTxt', mask: 'brl' })}`,
+      ${field({ id: 'pd', label: t.tipo === 'saida' ? 'Data de execução' : 'Quando você espera receber', ph: 'dd/mm/aaaa', bind: 'tmpP.data', mask: 'data' })}
+      ${field({ id: 'pv', label: 'Valor total', ph: 'R$ 0,00', bind: 'tmpP.valorTxt', mask: 'brl' })}`,
       btn('Adicionar', { act: 'pSave', cls: 'js-next', attrs: 'style="background:var(--bh-blue)"' }) + btn('Cancelar', { v: 'o', act: 'dlgClose' }),
       () => { const d = parseData(S.tmpP.data); return S.tmpP.nome.trim() && d && d > hoje() && parseBRL(S.tmpP.valorTxt) > 0 && (S.tmpP.tipo === 'entrada' || S.tmpP.cat); }); };
   S.flags.pDraw = draw; draw();

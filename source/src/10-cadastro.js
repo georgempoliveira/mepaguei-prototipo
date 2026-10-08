@@ -70,8 +70,8 @@ screen('cad1', {
     title: 'Cadastro', sub: 'Para começar, precisamos de alguns dados básicos', step: 'Etapa 1 de 3',
     body: `<div class="col g6">
       ${field({ id: 'nome', label: 'Nome completo', ph: 'ex: Maria da Silva', bind: 'user.nome' })}
-      ${field({ id: 'cpf', label: 'CPF', ph: 'ex: 123.456.789-00', bind: 'user.cpf', mask: 'cpf', helper: 'Usamos seu CPF para garantir a segurança da sua conta.' })}
-      ${field({ id: 'email', label: 'E-mail', ph: 'ex: seuemail@email.com', bind: 'user.email', type: 'email', mode: 'email' })}
+      ${field({ id: 'cpf', label: 'CPF', ph: '123.456.789-00', bind: 'user.cpf', mask: 'cpf', helper: 'Usamos seu CPF para garantir a segurança da sua conta.' })}
+      ${field({ id: 'email', label: 'E-mail', ph: 'seuemail@email.com', bind: 'user.email', type: 'email', mode: 'email' })}
     </div>
     <div class="col g4 mt-auto">
       <div class="chk ${S.user.termos ? 'on' : ''}" data-act="check" data-key="user.termos" role="checkbox" aria-checked="${S.user.termos}" tabindex="0" style="cursor:pointer"><span class="box">${ic('check', 12)}</span><span class="b14 c-darker">Li e aceito as <button type="button" class="lnk" data-act="terms" style="display:inline">Políticas de Privacidade</button> e <button type="button" class="lnk" data-act="terms" style="display:inline">Termos de Uso</button></span></div>
@@ -221,7 +221,7 @@ screen('perf1', {
       <p class="cap c-base center" style="max-width:240px">Sua foto pode ser alterada no seu perfil do BlueHub.</p>
     </div>
     ${selectField({ id: 'gen', label: 'Gênero', bind: 'user.genero', options: ['Feminino', 'Masculino', 'Não-binário', 'Prefiro não informar'] })}
-    ${field({ id: 'nasc', label: 'Quando você nasceu?', ph: 'ex: dd/mm/aaaa', bind: 'user.nasc', mask: 'data' })}`,
+    ${field({ id: 'nasc', label: 'Quando você nasceu?', ph: 'dd/mm/aaaa', bind: 'user.nasc', mask: 'data' })}`,
     foot: btn('Continuar', { next: true, go: 'perf2' }),
   }),
   valid: () => S.user.genero && S.user.nasc.length === 10,
@@ -232,7 +232,7 @@ screen('perf2', {
     title: 'Perfil profissional', sub: 'Estes dados são importantes para compreendermos seu momento atual.', step: '2/4',
     body: `${selectField({ id: 'civil', label: 'Estado Civil', bind: 'user.civil', ph: 'Selecione uma opção', options: ['Solteiro(a)', 'Casado(a)', 'União estável', 'Divorciado(a)', 'Viúvo(a)'], helper: 'Nos ajuda a entender melhor seu momento de vida.' })}
     ${selectField({ id: 'prof', label: 'Profissão', bind: 'user.profissao', ph: 'ex: Assistente Administrativo', options: PROFISSOES })}
-    ${field({ id: 'renda', label: 'Qual o valor da sua renda mensal?', ph: 'ex: R$ 10.000,00', bind: 'user.renda', mask: 'brl', helper: 'Essa informação será utilizada para melhor atender seus interesses no Me Paguei' })}`,
+    ${field({ id: 'renda', label: 'Qual o valor da sua renda mensal?', ph: 'R$ 10.000,00', bind: 'user.renda', mask: 'brl', helper: 'Essa informação será utilizada para melhor atender seus interesses no Me Paguei' })}`,
     foot: btn('Continuar', { next: true, go: 'perf3' }),
   }),
   valid: () => S.user.civil && S.user.profissao.trim() && S.user.renda,
@@ -275,12 +275,12 @@ screen('perf3', {
     const ok = st === 'ok' || st === 'err';
     return gradScreen({
       title: 'Endereço', sub: 'Informe seu endereço residencial para fins de validação cadastral.', step: '3/4',
-      body: `${field({ id: 'cep', label: 'CEP', ph: 'ex: 12345-078', bind: 'user.cep', mask: 'cep', icon: 'search', helper: st === 'load' ? 'Buscando endereço...' : '' })}
+      body: `${field({ id: 'cep', label: 'CEP', ph: '12345-078', bind: 'user.cep', mask: 'cep', icon: 'search', helper: st === 'load' ? 'Buscando endereço...' : '' })}
       ${st === 'err' ? '<p class="fld-h err" style="margin-top:-8px">CEP não encontrado. Confira o número ou preencha o endereço abaixo.</p>' : ''}
-      <div class="row g3 ais">${field({ id: 'rua', label: 'Rua / Logradouro', ph: 'ex: Rua Bione', bind: 'user.rua', dis: !ok, cls: 'f1' })}<div style="width:96px">${field({ id: 'num', label: 'Número', ph: 'ex: 123', bind: 'user.numero', dis: !ok, mode: 'numeric' })}</div></div>
+      <div class="row g3 ais">${field({ id: 'rua', label: 'Rua / Logradouro', ph: 'ex: Rua Bione', bind: 'user.rua', dis: !ok, cls: 'f1' })}<div style="width:96px">${field({ id: 'num', label: 'Número', ph: '123', bind: 'user.numero', dis: !ok, mode: 'numeric' })}</div></div>
       ${field({ id: 'compl', label: 'Complemento', opt: true, ph: 'ex: Apto. 234, Bloco A', bind: 'user.compl', dis: !ok })}
       ${field({ id: 'bairro', label: 'Bairro', ph: 'ex: Bairro do Recife', bind: 'user.bairro', dis: !ok })}
-      <div class="row g3 ais">${field({ id: 'cid', label: 'Cidade', ph: 'ex: Recife', bind: 'user.cidade', dis: !ok, cls: 'f1' })}<div style="width:110px">${field({ id: 'uf', label: 'Estado (UF)', ph: 'ex: PE', bind: 'user.uf', dis: !ok })}</div></div>`,
+      <div class="row g3 ais">${field({ id: 'cid', label: 'Cidade', ph: 'ex: Recife', bind: 'user.cidade', dis: !ok, cls: 'f1' })}<div style="width:110px">${field({ id: 'uf', label: 'Estado (UF)', ph: 'PE', bind: 'user.uf', dis: !ok })}</div></div>`,
       foot: btn('Continuar', { next: true, go: 'perf4' }),
     });
   },
@@ -295,7 +295,7 @@ screen('perf4', {
   cls: 'grad',
   render: () => gradScreen({
     title: 'Informações de contato', sub: 'Insira seu número de telefone para validação de segurança e recebimento de comunicações.', step: '4/4',
-    body: field({ id: 'cel', label: 'Celular', ph: 'ex: (99) 99999-9999', bind: 'user.cel', mask: 'cel', type: 'tel' }),
+    body: field({ id: 'cel', label: 'Celular', ph: '(99) 99999-9999', bind: 'user.cel', mask: 'cel', type: 'tel' }),
     foot: btn('Continuar', { next: true, act: 'next' }),
   }),
   valid: () => S.user.cel.length >= 14,
@@ -386,7 +386,7 @@ screen('login', {
   cls: 'grad',
   render: () => gradScreen({
     title: 'Login', sub: 'Informe seu CPF e senha para acessar seu dinheiro e continuar no piloto automático.',
-    body: `${field({ id: 'lcpf', label: 'CPF', ph: 'ex: 123.456.789-00', bind: 'flags.lcpf', mask: 'cpf' })}
+    body: `${field({ id: 'lcpf', label: 'CPF', ph: '123.456.789-00', bind: 'flags.lcpf', mask: 'cpf' })}
       ${pwField({ id: 'lpw', label: 'Senha', ph: '************', bind: 'flags.lpw' })}`,
     foot: `${btn('Entrar', { next: true, act: 'enter' })}
       <p class="b16 center c-darker">Não possui uma conta? <button type="button" class="lnk2" data-go="cad1">Cadastre-se</button></p>
@@ -398,7 +398,7 @@ screen('login', {
 screen('loginOk', { render: () => '', mount: () => { if (!S.user.nome) Object.assign(S.user, { nome: 'Marcelo Pimentel', email: 'marcelo.pimentel@gmail.com' }); S.perfilCompleto = true; reset('home'); } });
 screen('rec1', {
   cls: 'grad',
-  render: () => gradScreen({ title: 'Recuperar senha', sub: 'Para sua segurança, informe seu CPF e confirme sua identidade para continuar.', body: field({ id: 'rcpf', label: 'CPF', ph: 'ex: 123.456.789-00', bind: 'flags.rcpf', mask: 'cpf' }), foot: btn('Enviar código', { next: true, act: 'next' }) }),
+  render: () => gradScreen({ title: 'Recuperar senha', sub: 'Para sua segurança, informe seu CPF e confirme sua identidade para continuar.', body: field({ id: 'rcpf', label: 'CPF', ph: '123.456.789-00', bind: 'flags.rcpf', mask: 'cpf' }), foot: btn('Enviar código', { next: true, act: 'next' }) }),
   valid: () => (S.flags.rcpf || '').length === 14,
   acts: { next: () => go('token', { kind: 'email', next: 'rec3' }) },
 });
