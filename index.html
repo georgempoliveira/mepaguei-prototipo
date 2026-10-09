@@ -89,10 +89,9 @@ img{display:block}
   /* A área de gestos é absorvida por QUEM ESTÁ POR ÚLTIMO, uma vez só. Antes a folha
      e o rodapé somavam espaçamento e o botão subia demais. */
   .sheet:not(:has(.sheet-foot)),.bhd-sheet:not(:has(.bhd-foot)){padding-bottom:env(safe-area-inset-bottom,0px)}
-  .sheet-foot{padding-bottom:max(16px, env(safe-area-inset-bottom,0px))}
-  .bhd-foot{padding-bottom:max(8px, env(safe-area-inset-bottom,0px))}
+  .sheet-foot{padding-bottom:24px}
   .nav{height:calc(82px + env(safe-area-inset-bottom,0px));padding-bottom:env(safe-area-inset-bottom,0px)}
-  .scroll,.bhd-in{padding-bottom:env(safe-area-inset-bottom,0px)}
+  .scroll,.bhd-in:not(:has(.bhd-foot)){padding-bottom:env(safe-area-inset-bottom,0px)}
   .scr{height:100%}
   /* Bluehub: a navbar flutuante sobe acima da área de gestos e o indicador
      desenhado some — o sistema já desenha o dele no atalho da tela inicial */
@@ -163,7 +162,7 @@ img{display:block}
 .sheet{position:relative;z-index:2;flex:1;min-height:0;background:var(--bg-lighter);border-radius:32px 32px 0 0;display:flex;flex-direction:column;color:var(--ty-darker)}
 .sheet-in{flex:1;min-height:0;overflow-y:auto;scrollbar-width:none;padding:32px 20px 24px;display:flex;flex-direction:column;gap:24px}
 .sheet-in::-webkit-scrollbar{display:none}
-.sheet-foot{flex:none;padding:12px 20px 36px;display:flex;flex-direction:column;gap:12px;background:var(--bg-lighter)}
+.sheet-foot{flex:none;padding:12px 20px 24px;display:flex;flex-direction:column;gap:12px;background:var(--bg-lighter)}
 .grad .hi{background:var(--bg-lighter)}
 
 /* white app header */
@@ -512,7 +511,9 @@ body.cmp .bhh-hi{display:block}
 .bhd-sheet{position:relative;z-index:2;flex:1;min-height:0;border-radius:32px 32px 0 0;display:flex;flex-direction:column;color:var(--ty-darker)}
 .bhd-in{flex:1;min-height:0;overflow-y:auto;scrollbar-width:none;display:flex;flex-direction:column}
 .bhd-in::-webkit-scrollbar{display:none}
-.bhd-foot{margin-top:auto;padding-top:32px;display:flex;flex-direction:column;gap:16px;flex:none}
+/* o padding inline de .bhd-in somava abaixo do rodapé; o rodapé passa a ser o único a dar o respiro */
+.bhd-in:has(.bhd-foot){padding-bottom:0!important}
+.bhd-foot{margin-top:auto;padding-top:32px;padding-bottom:24px;display:flex;flex-direction:column;gap:16px;flex:none}
 .bh .hi{background:transparent}
 .bh .inp{min-height:40px}
 .bh .inp input{padding:7px 0}
