@@ -195,6 +195,8 @@ const BH_TABS = [['bhHome', 'house', 'Início'], ['bhBenef', 'wallet-cards', 'Be
 /* Navbar-Bluehub (flutuante, 351px, r40) + Home Indicator */
 const bhNav = (a) => `<nav class="bhh-nav" aria-label="Menu BlueHub">${BH_TABS.map(([id, i, l]) => `<button type="button" class="${id === a ? 'on' : ''}" data-act="bhtab" data-tab="${id}" ${id === a ? 'aria-current="page"' : ''}><span class="pill">${ic(i, 24)}</span>${l}</button>`).join('')}</nav><div class="bhh-hi hi-bh"><i></i></div>`;
 GLOBAL_ACTS.bhtab = (b) => reset(b.dataset.tab, {}, 'none');
+/* nas abas a pilha tem 1 item so (bhtab usa reset), entao 'voltar' cai na Inicio */
+GLOBAL_ACTS.bhBack = () => { if (stack.length > 1) back(); else reset('bhHome', {}, 'none'); };
 GLOBAL_ACTS.bhSoon = (b) => toast(`${b.dataset.n || 'Este benefício'} abre fora do protótipo`, 'success', 'external-link');
 const bhFoto = (px) => S.user.bhFoto
   ? `<img src="${S.user.bhFoto}" alt="" style="width:100%;height:100%;object-fit:cover">`
@@ -388,7 +390,7 @@ const CART_TEL = [
 screen('bhCart', {
   cls: 'bh-light',
   render: (p) => { const open = p.open ?? 0;
-    return `${statusBar()}<div class="row jc" style="flex:none;padding:8px 20px">${BH_LOGO_D}</div>
+    return `${statusBar()}<div class="row jc" style="flex:none;padding:8px 20px;position:relative">${BH_LOGO_D}<button type="button" data-act="bhBack" aria-label="Voltar" style="position:absolute;left:24px;top:11px;color:var(--bh-ink);display:flex">${ic('chevron-left', 18)}</button></div>
     <div class="scroll"><div class="col" style="gap:20px;padding:8px 24px 20px">
       <p style="font-size:24px;line-height:32px;font-weight:700;color:var(--bh-ink)">Carteirinha</p>
       <div style="position:relative;overflow:hidden;border-radius:20px;padding:20px;background:linear-gradient(120deg,#1b3bd6,#0a1b6b);color:#fff;display:flex;flex-direction:column;gap:14px">
@@ -425,7 +427,7 @@ screen('bhPerfil', {
     return `<div class="scroll" style="background:var(--bh-subtle)">
       <div style="flex:none;position:relative;height:200px;background:var(--bh-blue);border-radius:0 0 28px 28px;padding:56px 24px 24px;display:flex;flex-direction:column;gap:32px">
         ${statusBar(true).replace('class="sb light"', 'class="sb light" style="position:absolute;left:0;right:0;top:0"')}
-        <div class="row" style="height:24px"><button type="button" data-back aria-label="Voltar" style="color:#fff;display:flex">${ic('chevron-left', 24)}</button></div>
+        <div class="row" style="height:24px"><button type="button" data-act="bhBack" aria-label="Voltar" style="color:#fff;display:flex">${ic('chevron-left', 24)}</button></div>
         <div class="row" style="gap:8px;align-items:center">${bhUserEdit()}</div></div>
     <div class="col" style="gap:16px;padding:24px">
       <div style="border-radius:16px;padding:16px;background:linear-gradient(135deg,#1f3fb8,#0b1d5c);color:#fff;display:flex;flex-direction:column;gap:16px">
