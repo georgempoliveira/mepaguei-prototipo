@@ -231,8 +231,8 @@ screen('perf2', {
   render: () => gradScreen({
     title: 'Perfil profissional', sub: 'Estes dados são importantes para compreendermos seu momento atual.', step: '2/4',
     body: `${selectField({ id: 'civil', label: 'Estado Civil', bind: 'user.civil', ph: 'Selecione uma opção', options: ['Solteiro(a)', 'Casado(a)', 'União estável', 'Divorciado(a)', 'Viúvo(a)'], helper: 'Nos ajuda a entender melhor seu momento de vida.' })}
-    ${selectField({ id: 'prof', label: 'Profissão', bind: 'user.profissao', ph: 'ex: Administrador(a)', options: PROFISSOES })}
-    ${field({ id: 'renda', label: 'Qual o valor da sua renda mensal?', ph: 'R$ 10.000,00', bind: 'user.renda', mask: 'brl', helper: 'Essa informação será utilizada para melhor atender seus interesses no Me Paguei' })}`,
+    ${selectField({ id: 'prof', label: 'Profissão', bind: 'user.profissao', ph: 'Selecione uma opção', options: PROFISSOES })}
+    ${field({ id: 'renda', label: 'Qual o valor da sua renda mensal?', ph: 'R$ 1.620,00', bind: 'user.renda', mask: 'brl', helper: 'Essa informação será utilizada para melhor atender seus interesses no Me Paguei' })}`,
     foot: btn('Continuar', { next: true, go: 'perf3' }),
   }),
   valid: () => S.user.civil && S.user.profissao.trim() && S.user.renda,
