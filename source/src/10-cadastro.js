@@ -221,7 +221,7 @@ screen('perf1', {
       <span style="width:128px;height:128px;border-radius:50%;overflow:hidden;background:var(--btn-primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:40px;line-height:48px;font-weight:700">${fotoUser() ? `<img src="${fotoUser()}" alt="" style="width:100%;height:100%;object-fit:cover">` : esc(iniciais(S.user.nome))}</span>
       <p class="cap c-base center" style="max-width:240px">Sua foto pode ser alterada no seu perfil do BlueHub.</p>
     </div>
-    ${selectField({ id: 'gen', label: 'Gênero', bind: 'user.genero', options: ['Feminino', 'Masculino', 'Não-binário', 'Prefiro não informar'] })}
+    ${selectField({ id: 'gen', label: 'Gênero', bind: 'user.genero', options: ['Masculino', 'Feminino', 'Outro', 'Prefiro não informar'] })}
     ${field({ id: 'nasc', label: 'Quando você nasceu?', ph: 'dd/mm/aaaa', bind: 'user.nasc', mask: 'data' })}`,
     foot: btn('Continuar', { next: true, go: 'perf2' }),
   }),
