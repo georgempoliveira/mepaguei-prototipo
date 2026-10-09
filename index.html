@@ -86,7 +86,11 @@ img{display:block}
      faixa escura no atalho), quem está por último na tela cresce para dentro da área
      de gestos e pinta a própria cor até a borda. */
   .hi{display:none!important}
-  .sheet,.bhd-sheet,.bh-sheet{padding-bottom:env(safe-area-inset-bottom,0px)}
+  /* A área de gestos é absorvida por QUEM ESTÁ POR ÚLTIMO, uma vez só. Antes a folha
+     e o rodapé somavam espaçamento e o botão subia demais. */
+  .sheet:not(:has(.sheet-foot)),.bhd-sheet:not(:has(.bhd-foot)){padding-bottom:env(safe-area-inset-bottom,0px)}
+  .sheet-foot{padding-bottom:max(16px, env(safe-area-inset-bottom,0px))}
+  .bhd-foot{padding-bottom:max(8px, env(safe-area-inset-bottom,0px))}
   .nav{height:calc(82px + env(safe-area-inset-bottom,0px));padding-bottom:env(safe-area-inset-bottom,0px)}
   .scroll,.bhd-in{padding-bottom:env(safe-area-inset-bottom,0px)}
   .scr{height:100%}
