@@ -51,7 +51,7 @@ body.cmp .bhh-hi{display:block}
 .bhd-in::-webkit-scrollbar{display:none}
 /* o padding inline de .bhd-in somava abaixo do rodapé; o rodapé passa a ser o único a dar o respiro */
 .bhd-in:has(.bhd-foot){padding-bottom:0!important}
-.bhd-foot{margin-top:auto;padding-top:32px;padding-bottom:24px;display:flex;flex-direction:column;gap:16px;flex:none}
+.bhd-foot{margin-top:auto;padding-top:32px;padding-bottom:32px;display:flex;flex-direction:column;gap:16px;flex:none}
 .bh .hi{background:transparent}
 .bh .inp{min-height:40px}
 .bh .inp input{padding:7px 0}
@@ -115,3 +115,8 @@ body.cmp .bhh-hi{display:block}
 
 /* a navbar do BlueHub é sobreposta: reserva espaço para o conteúdo rolar até o fim */
 .scr:has(.bhh-nav) .scroll{padding-bottom:104px}
+
+/* telas pequenas: o bh.css entra depois do base.css, então o override vem aqui */
+@media (max-width: 600px){
+  .bhd-foot{padding-bottom:24px}
+}

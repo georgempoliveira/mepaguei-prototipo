@@ -211,7 +211,7 @@ screen('obj', {
 
 /* ---------- perfil · etapa 1 de 4 ---------- */
 /* profissões mais comuns do mercado brasileiro (item 12) */
-const PROFISSOES = ['Assistente Administrativo', 'Analista de Sistemas', 'Auxiliar de Serviços Gerais', 'Enfermeiro(a)', 'Motorista', 'Professor(a)', 'Vendedor(a)', 'Técnico(a) de Enfermagem', 'Operador(a) de Caixa', 'Autônomo(a)', 'Outra'];
+const PROFISSOES = ['Administrador(a)', 'Advogado(a)', 'Arquiteto(a)', 'Autônomo(a)', 'Comerciante', 'Contador(a)', 'Designer', 'Empresário(a)', 'Engenheiro(a)', 'Funcionário(a) Público(a)', 'Médico(a)', 'Militar', 'Motorista', 'Professor(a)', 'Profissional da Saúde', 'Profissional de Tecnologia (TI)', 'Psicólogo(a)', 'Vendedor(a)', 'Aposentado(a)', 'Desempregado(a)', 'Dona(o) de Casa', 'Estudante', 'Outros'];
 screen('perf1', {
   cls: 'grad',
   render: () => gradScreen({
@@ -231,7 +231,7 @@ screen('perf2', {
   render: () => gradScreen({
     title: 'Perfil profissional', sub: 'Estes dados são importantes para compreendermos seu momento atual.', step: '2/4',
     body: `${selectField({ id: 'civil', label: 'Estado Civil', bind: 'user.civil', ph: 'Selecione uma opção', options: ['Solteiro(a)', 'Casado(a)', 'União estável', 'Divorciado(a)', 'Viúvo(a)'], helper: 'Nos ajuda a entender melhor seu momento de vida.' })}
-    ${selectField({ id: 'prof', label: 'Profissão', bind: 'user.profissao', ph: 'ex: Assistente Administrativo', options: PROFISSOES })}
+    ${selectField({ id: 'prof', label: 'Profissão', bind: 'user.profissao', ph: 'ex: Administrador(a)', options: PROFISSOES })}
     ${field({ id: 'renda', label: 'Qual o valor da sua renda mensal?', ph: 'R$ 10.000,00', bind: 'user.renda', mask: 'brl', helper: 'Essa informação será utilizada para melhor atender seus interesses no Me Paguei' })}`,
     foot: btn('Continuar', { next: true, go: 'perf3' }),
   }),

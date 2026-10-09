@@ -73,31 +73,7 @@ img{display:block}
 /* Celular: o frame preenche exatamente o viewport. Usa 100% (html/body são position:fixed;inset:0)
    em vez de 100dvh/100vw — no iOS o dvh não acompanha o recolher da barra do navegador e sobrava
    uma faixa do --stage no rodapé. */
-@media (max-width: 600px){
-  /* --vh vem do JS (window.innerHeight): no atalho da tela inicial o iOS não
-     resolve 100%/100dvh para a tela inteira e sobrava faixa no rodapé */
-  html,body{height:var(--vh,100%);overflow:hidden;position:fixed;inset:0;width:100%}
-  #stage{padding:0;display:block;height:var(--vh,100%);gap:0}
-  #phone-wrap{width:100%;height:var(--vh,100%);transform:none!important;margin:0!important}
-  #phone{width:100%;height:var(--vh,100%);border-radius:0;box-shadow:none}
-  html,body,#stage,#phone{touch-action:manipulation;overscroll-behavior:none}
-  .sb{height:max(10px, env(safe-area-inset-top,0px))!important;visibility:hidden}
-  /* Em vez de um espaçador solto no rodapé (que pegava a cor errada e deixava uma
-     faixa escura no atalho), quem está por último na tela cresce para dentro da área
-     de gestos e pinta a própria cor até a borda. */
-  .hi{display:none!important}
-  /* A área de gestos é absorvida por QUEM ESTÁ POR ÚLTIMO, uma vez só. Antes a folha
-     e o rodapé somavam espaçamento e o botão subia demais. */
-  .sheet:not(:has(.sheet-foot)),.bhd-sheet:not(:has(.bhd-foot)){padding-bottom:env(safe-area-inset-bottom,0px)}
-  .sheet-foot{padding-bottom:24px}
-  .nav{height:calc(82px + env(safe-area-inset-bottom,0px));padding-bottom:env(safe-area-inset-bottom,0px)}
-  .scroll,.bhd-in:not(:has(.bhd-foot)){padding-bottom:env(safe-area-inset-bottom,0px)}
-  .scr{height:100%}
-  /* Bluehub: a navbar flutuante sobe acima da área de gestos e o indicador
-     desenhado some — o sistema já desenha o dele no atalho da tela inicial */
-  .bhh-nav{bottom:calc(15px + env(safe-area-inset-bottom,0px))}
-  .bhh-hi{display:none!important}
-}
+
 
 /* ---------- screens ---------- */
 .scr{position:absolute;inset:0;display:flex;flex-direction:column;background:var(--bg-white);overflow:hidden}
@@ -162,7 +138,7 @@ img{display:block}
 .sheet{position:relative;z-index:2;flex:1;min-height:0;background:var(--bg-lighter);border-radius:32px 32px 0 0;display:flex;flex-direction:column;color:var(--ty-darker)}
 .sheet-in{flex:1;min-height:0;overflow-y:auto;scrollbar-width:none;padding:32px 20px 24px;display:flex;flex-direction:column;gap:24px}
 .sheet-in::-webkit-scrollbar{display:none}
-.sheet-foot{flex:none;padding:12px 20px 24px;display:flex;flex-direction:column;gap:12px;background:var(--bg-lighter)}
+.sheet-foot{flex:none;padding:12px 20px 32px;display:flex;flex-direction:column;gap:12px;background:var(--bg-lighter)}
 .grad .hi{background:var(--bg-lighter)}
 
 /* white app header */
@@ -460,6 +436,33 @@ body.cmp .hi{display:block!important;height:34px;flex:none;position:relative;bac
 .log-list b{font-variant-numeric:tabular-nums;color:#51607a;font-weight:600}
 .log-list i{font-style:normal;font-weight:700;color:#1a3151}
 .log-list u{text-decoration:none;color:#51607a}
+
+/* ===== telas pequenas: fica POR ÚLTIMO para vencer as regras de componente ===== */
+@media (max-width: 600px){
+  /* --vh vem do JS (window.innerHeight): no atalho da tela inicial o iOS não
+     resolve 100%/100dvh para a tela inteira e sobrava faixa no rodapé */
+  html,body{height:var(--vh,100%);overflow:hidden;position:fixed;inset:0;width:100%}
+  #stage{padding:0;display:block;height:var(--vh,100%);gap:0}
+  #phone-wrap{width:100%;height:var(--vh,100%);transform:none!important;margin:0!important}
+  #phone{width:100%;height:var(--vh,100%);border-radius:0;box-shadow:none}
+  html,body,#stage,#phone{touch-action:manipulation;overscroll-behavior:none}
+  .sb{height:max(10px, env(safe-area-inset-top,0px))!important;visibility:hidden}
+  /* Em vez de um espaçador solto no rodapé (que pegava a cor errada e deixava uma
+     faixa escura no atalho), quem está por último na tela cresce para dentro da área
+     de gestos e pinta a própria cor até a borda. */
+  .hi{display:none!important}
+  /* A área de gestos é absorvida por QUEM ESTÁ POR ÚLTIMO, uma vez só. Antes a folha
+     e o rodapé somavam espaçamento e o botão subia demais. */
+  .sheet:not(:has(.sheet-foot)),.bhd-sheet:not(:has(.bhd-foot)){padding-bottom:env(safe-area-inset-bottom,0px)}
+  .sheet-foot,.bhd-foot{padding-bottom:24px}
+  .nav{height:calc(82px + env(safe-area-inset-bottom,0px));padding-bottom:env(safe-area-inset-bottom,0px)}
+  .scroll,.bhd-in:not(:has(.bhd-foot)){padding-bottom:env(safe-area-inset-bottom,0px)}
+  .scr{height:100%}
+  /* Bluehub: a navbar flutuante sobe acima da área de gestos e o indicador
+     desenhado some — o sistema já desenha o dele no atalho da tela inicial */
+  .bhh-nav{bottom:calc(15px + env(safe-area-inset-bottom,0px))}
+  .bhh-hi{display:none!important}
+}
 /* BlueHub · Home (Figma 03.01.01 · 15413:36895) */
 .bhh-hdr{background:#fff;flex:none}
 .bhh-hdr > div{background:var(--bh-blue);height:200px;padding:56px 24px 24px;border-radius:0 0 28px 28px;display:flex;flex-direction:column;gap:32px;color:#fff}
@@ -513,7 +516,7 @@ body.cmp .bhh-hi{display:block}
 .bhd-in::-webkit-scrollbar{display:none}
 /* o padding inline de .bhd-in somava abaixo do rodapé; o rodapé passa a ser o único a dar o respiro */
 .bhd-in:has(.bhd-foot){padding-bottom:0!important}
-.bhd-foot{margin-top:auto;padding-top:32px;padding-bottom:24px;display:flex;flex-direction:column;gap:16px;flex:none}
+.bhd-foot{margin-top:auto;padding-top:32px;padding-bottom:32px;display:flex;flex-direction:column;gap:16px;flex:none}
 .bh .hi{background:transparent}
 .bh .inp{min-height:40px}
 .bh .inp input{padding:7px 0}
@@ -577,6 +580,11 @@ body.cmp .bhh-hi{display:block}
 
 /* a navbar do BlueHub é sobreposta: reserva espaço para o conteúdo rolar até o fim */
 .scr:has(.bhh-nav) .scroll{padding-bottom:104px}
+
+/* telas pequenas: o bh.css entra depois do base.css, então o override vem aqui */
+@media (max-width: 600px){
+  .bhd-foot{padding-bottom:24px}
+}
 
 </style>
 <div id="stage">
@@ -1293,7 +1301,7 @@ screen('obj', {
 
 /* ---------- perfil · etapa 1 de 4 ---------- */
 /* profissões mais comuns do mercado brasileiro (item 12) */
-const PROFISSOES = ['Assistente Administrativo', 'Analista de Sistemas', 'Auxiliar de Serviços Gerais', 'Enfermeiro(a)', 'Motorista', 'Professor(a)', 'Vendedor(a)', 'Técnico(a) de Enfermagem', 'Operador(a) de Caixa', 'Autônomo(a)', 'Outra'];
+const PROFISSOES = ['Administrador(a)', 'Advogado(a)', 'Arquiteto(a)', 'Autônomo(a)', 'Comerciante', 'Contador(a)', 'Designer', 'Empresário(a)', 'Engenheiro(a)', 'Funcionário(a) Público(a)', 'Médico(a)', 'Militar', 'Motorista', 'Professor(a)', 'Profissional da Saúde', 'Profissional de Tecnologia (TI)', 'Psicólogo(a)', 'Vendedor(a)', 'Aposentado(a)', 'Desempregado(a)', 'Dona(o) de Casa', 'Estudante', 'Outros'];
 screen('perf1', {
   cls: 'grad',
   render: () => gradScreen({
@@ -1313,7 +1321,7 @@ screen('perf2', {
   render: () => gradScreen({
     title: 'Perfil profissional', sub: 'Estes dados são importantes para compreendermos seu momento atual.', step: '2/4',
     body: `${selectField({ id: 'civil', label: 'Estado Civil', bind: 'user.civil', ph: 'Selecione uma opção', options: ['Solteiro(a)', 'Casado(a)', 'União estável', 'Divorciado(a)', 'Viúvo(a)'], helper: 'Nos ajuda a entender melhor seu momento de vida.' })}
-    ${selectField({ id: 'prof', label: 'Profissão', bind: 'user.profissao', ph: 'ex: Assistente Administrativo', options: PROFISSOES })}
+    ${selectField({ id: 'prof', label: 'Profissão', bind: 'user.profissao', ph: 'ex: Administrador(a)', options: PROFISSOES })}
     ${field({ id: 'renda', label: 'Qual o valor da sua renda mensal?', ph: 'R$ 10.000,00', bind: 'user.renda', mask: 'brl', helper: 'Essa informação será utilizada para melhor atender seus interesses no Me Paguei' })}`,
     foot: btn('Continuar', { next: true, go: 'perf3' }),
   }),
@@ -1866,7 +1874,7 @@ screen('sobre', {
 function seedDemo() {
   /* só preenche o que estiver vazio: o que o participante digitou nunca é sobrescrito */
   [['nome', 'Marcelo Pimentel'], ['email', 'marcelo.pimentel@gmail.com'], ['cpf', '055.865.584-94'],
-   ['genero', 'Masculino'], ['nasc', '12/06/1986'], ['civil', 'Casado(a)'], ['profissao', 'Gerente de Projetos'],
+   ['genero', 'Masculino'], ['nasc', '12/06/1986'], ['civil', 'Casado(a)'], ['profissao', 'Administrador(a)'],
    ['renda', 'R$ 10.000,00'], ['cep', '12345-078'], ['rua', 'Rua Bione'], ['numero', '123'],
    ['compl', 'Apto. 234, Bloco A'], ['bairro', 'Bairro do Recife'], ['cidade', 'Recife'], ['uf', 'PE'],
    ['cel', '(81) 91234-5678']].forEach(([k, v]) => { if (!S.user[k]) S.user[k] = v; });

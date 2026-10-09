@@ -364,7 +364,7 @@ screen('sobre', {
 function seedDemo() {
   /* só preenche o que estiver vazio: o que o participante digitou nunca é sobrescrito */
   [['nome', 'Marcelo Pimentel'], ['email', 'marcelo.pimentel@gmail.com'], ['cpf', '055.865.584-94'],
-   ['genero', 'Masculino'], ['nasc', '12/06/1986'], ['civil', 'Casado(a)'], ['profissao', 'Gerente de Projetos'],
+   ['genero', 'Masculino'], ['nasc', '12/06/1986'], ['civil', 'Casado(a)'], ['profissao', 'Administrador(a)'],
    ['renda', 'R$ 10.000,00'], ['cep', '12345-078'], ['rua', 'Rua Bione'], ['numero', '123'],
    ['compl', 'Apto. 234, Bloco A'], ['bairro', 'Bairro do Recife'], ['cidade', 'Recife'], ['uf', 'PE'],
    ['cel', '(81) 91234-5678']].forEach(([k, v]) => { if (!S.user[k]) S.user[k] = v; });

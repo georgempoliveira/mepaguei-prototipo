@@ -55,31 +55,7 @@ img{display:block}
 /* Celular: o frame preenche exatamente o viewport. Usa 100% (html/body são position:fixed;inset:0)
    em vez de 100dvh/100vw — no iOS o dvh não acompanha o recolher da barra do navegador e sobrava
    uma faixa do --stage no rodapé. */
-@media (max-width: 600px){
-  /* --vh vem do JS (window.innerHeight): no atalho da tela inicial o iOS não
-     resolve 100%/100dvh para a tela inteira e sobrava faixa no rodapé */
-  html,body{height:var(--vh,100%);overflow:hidden;position:fixed;inset:0;width:100%}
-  #stage{padding:0;display:block;height:var(--vh,100%);gap:0}
-  #phone-wrap{width:100%;height:var(--vh,100%);transform:none!important;margin:0!important}
-  #phone{width:100%;height:var(--vh,100%);border-radius:0;box-shadow:none}
-  html,body,#stage,#phone{touch-action:manipulation;overscroll-behavior:none}
-  .sb{height:max(10px, env(safe-area-inset-top,0px))!important;visibility:hidden}
-  /* Em vez de um espaçador solto no rodapé (que pegava a cor errada e deixava uma
-     faixa escura no atalho), quem está por último na tela cresce para dentro da área
-     de gestos e pinta a própria cor até a borda. */
-  .hi{display:none!important}
-  /* A área de gestos é absorvida por QUEM ESTÁ POR ÚLTIMO, uma vez só. Antes a folha
-     e o rodapé somavam espaçamento e o botão subia demais. */
-  .sheet:not(:has(.sheet-foot)),.bhd-sheet:not(:has(.bhd-foot)){padding-bottom:env(safe-area-inset-bottom,0px)}
-  .sheet-foot{padding-bottom:24px}
-  .nav{height:calc(82px + env(safe-area-inset-bottom,0px));padding-bottom:env(safe-area-inset-bottom,0px)}
-  .scroll,.bhd-in:not(:has(.bhd-foot)){padding-bottom:env(safe-area-inset-bottom,0px)}
-  .scr{height:100%}
-  /* Bluehub: a navbar flutuante sobe acima da área de gestos e o indicador
-     desenhado some — o sistema já desenha o dele no atalho da tela inicial */
-  .bhh-nav{bottom:calc(15px + env(safe-area-inset-bottom,0px))}
-  .bhh-hi{display:none!important}
-}
+
 
 /* ---------- screens ---------- */
 .scr{position:absolute;inset:0;display:flex;flex-direction:column;background:var(--bg-white);overflow:hidden}
@@ -144,7 +120,7 @@ img{display:block}
 .sheet{position:relative;z-index:2;flex:1;min-height:0;background:var(--bg-lighter);border-radius:32px 32px 0 0;display:flex;flex-direction:column;color:var(--ty-darker)}
 .sheet-in{flex:1;min-height:0;overflow-y:auto;scrollbar-width:none;padding:32px 20px 24px;display:flex;flex-direction:column;gap:24px}
 .sheet-in::-webkit-scrollbar{display:none}
-.sheet-foot{flex:none;padding:12px 20px 24px;display:flex;flex-direction:column;gap:12px;background:var(--bg-lighter)}
+.sheet-foot{flex:none;padding:12px 20px 32px;display:flex;flex-direction:column;gap:12px;background:var(--bg-lighter)}
 .grad .hi{background:var(--bg-lighter)}
 
 /* white app header */
@@ -442,3 +418,30 @@ body.cmp .hi{display:block!important;height:34px;flex:none;position:relative;bac
 .log-list b{font-variant-numeric:tabular-nums;color:#51607a;font-weight:600}
 .log-list i{font-style:normal;font-weight:700;color:#1a3151}
 .log-list u{text-decoration:none;color:#51607a}
+
+/* ===== telas pequenas: fica POR ÚLTIMO para vencer as regras de componente ===== */
+@media (max-width: 600px){
+  /* --vh vem do JS (window.innerHeight): no atalho da tela inicial o iOS não
+     resolve 100%/100dvh para a tela inteira e sobrava faixa no rodapé */
+  html,body{height:var(--vh,100%);overflow:hidden;position:fixed;inset:0;width:100%}
+  #stage{padding:0;display:block;height:var(--vh,100%);gap:0}
+  #phone-wrap{width:100%;height:var(--vh,100%);transform:none!important;margin:0!important}
+  #phone{width:100%;height:var(--vh,100%);border-radius:0;box-shadow:none}
+  html,body,#stage,#phone{touch-action:manipulation;overscroll-behavior:none}
+  .sb{height:max(10px, env(safe-area-inset-top,0px))!important;visibility:hidden}
+  /* Em vez de um espaçador solto no rodapé (que pegava a cor errada e deixava uma
+     faixa escura no atalho), quem está por último na tela cresce para dentro da área
+     de gestos e pinta a própria cor até a borda. */
+  .hi{display:none!important}
+  /* A área de gestos é absorvida por QUEM ESTÁ POR ÚLTIMO, uma vez só. Antes a folha
+     e o rodapé somavam espaçamento e o botão subia demais. */
+  .sheet:not(:has(.sheet-foot)),.bhd-sheet:not(:has(.bhd-foot)){padding-bottom:env(safe-area-inset-bottom,0px)}
+  .sheet-foot,.bhd-foot{padding-bottom:24px}
+  .nav{height:calc(82px + env(safe-area-inset-bottom,0px));padding-bottom:env(safe-area-inset-bottom,0px)}
+  .scroll,.bhd-in:not(:has(.bhd-foot)){padding-bottom:env(safe-area-inset-bottom,0px)}
+  .scr{height:100%}
+  /* Bluehub: a navbar flutuante sobe acima da área de gestos e o indicador
+     desenhado some — o sistema já desenha o dele no atalho da tela inicial */
+  .bhh-nav{bottom:calc(15px + env(safe-area-inset-bottom,0px))}
+  .bhh-hi{display:none!important}
+}
