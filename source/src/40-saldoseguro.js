@@ -162,18 +162,21 @@ function ssChart(sr, k, sim) {
   const all = sr.days.map(d => d.saldo).concat(sim ? sim.days.map(d => d.saldo) : []).concat([0]);
   const lo = Math.min(...all), hi = Math.max(...all), pad = (hi - lo) * .12 || 100;
   const Y = v => 10 + (1 - (v - (lo - pad)) / ((hi + pad) - (lo - pad))) * (H - 20);
-  const step = arr => arr.map((d, i) => `${i ? 'L' : 'M'}${X(i).toFixed(1)} ${Y(i ? arr[i - 1].saldo : d.prev).toFixed(1)} L${X(i).toFixed(1)} ${Y(d.saldo).toFixed(1)}`).join(' ') + ` L${W} ${Y(arr[29].saldo).toFixed(1)}`;
-  const y0 = Y(0); const line = step(sr.days);
+  // degraus (o saldo segura e salta no dia do lançamento) com os cantos arredondados
+  const pts = arr => { const P = [[X(0), Y(arr[0].prev)]]; arr.forEach((d, i) => { if (i) P.push([X(i), Y(arr[i - 1].saldo)]); P.push([X(i), Y(d.saldo)]); }); P.push([W, Y(arr[29].saldo)]); return P; };
+  const rnd = (P, r = 5) => { let d = `M${P[0][0].toFixed(1)} ${P[0][1].toFixed(1)}`; for (let i = 1; i < P.length - 1; i++) { const [x0, y0] = P[i - 1], [x1, y1] = P[i], [x2, y2] = P[i + 1]; const l1 = Math.hypot(x1 - x0, y1 - y0), l2 = Math.hypot(x2 - x1, y2 - y1); if (!l1 || !l2) continue; const c1 = Math.min(r, l1 / 2), c2 = Math.min(r, l2 / 2); d += ` L${(x1 - (x1 - x0) / l1 * c1).toFixed(1)} ${(y1 - (y1 - y0) / l1 * c1).toFixed(1)} Q${x1.toFixed(1)} ${y1.toFixed(1)} ${(x1 + (x2 - x1) / l2 * c2).toFixed(1)} ${(y1 + (y2 - y1) / l2 * c2).toFixed(1)}`; } const L = P[P.length - 1]; return d + ` L${L[0].toFixed(1)} ${L[1].toFixed(1)}`; };
+  const y0 = Y(0), line = rnd(pts(sr.days));
   const ticks = [0, 7, 14, 21, 29];
   return `<svg id="sschart" width="100%" viewBox="0 0 ${W} ${H + 22}" style="cursor:pointer;touch-action:manipulation" role="img" aria-label="Saldo projetado dia a dia">
-    <defs><clipPath id="ab"><rect x="0" y="0" width="${W}" height="${y0}"/></clipPath><clipPath id="be"><rect x="0" y="${y0}" width="${W}" height="${H}"/></clipPath></defs>
-    <path d="${line} L${W} ${y0} L8 ${y0} Z" fill="#348352" opacity=".14" clip-path="url(#ab)"/><path d="${line} L${W} ${y0} L8 ${y0} Z" fill="#d93a3a" opacity=".14" clip-path="url(#be)"/>
-    <line x1="0" x2="${W}" y1="${y0}" y2="${y0}" stroke="#a3a3a3" stroke-dasharray="4 4"/><text x="4" y="${y0 - 4}" font-size="10" fill="#737373">R$ 0</text>
-    ${sim ? `<path d="${step(sim.days)}" fill="none" stroke="#8b3eea" stroke-width="2" stroke-dasharray="5 3"/>` : ''}
-    <path d="${line}" fill="none" stroke="#404040" stroke-width="2"/>
-    <circle cx="${X(sr.max.k)}" cy="${Y(sr.max.saldo)}" r="4.5" fill="#348352"/><circle cx="${X(sr.min.k)}" cy="${Y(sr.min.saldo)}" r="4.5" fill="#d93a3a"/>
-    <line x1="${X(k)}" x2="${X(k)}" y1="6" y2="${H - 6}" stroke="#1a3151" stroke-width="1"/><circle cx="${X(k)}" cy="${Y((sim || sr).days[k].saldo)}" r="6" fill="#fff" stroke="#1a3151" stroke-width="2"/>
-    ${ticks.map(i => `<text x="${Math.min(W - 16, Math.max(16, X(i)))}" y="${H + 16}" text-anchor="middle" font-size="11" fill="#737373">${ddmm(sr.days[i].d)}</text>`).join('')}
+    <defs><clipPath id="ab"><rect x="0" y="0" width="${W}" height="${y0}"/></clipPath>
+      <linearGradient id="ssfill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--primary);stop-opacity:.22"/><stop offset="1" style="stop-color:var(--primary);stop-opacity:0"/></linearGradient></defs>
+    <path d="${line} L${W} ${y0} L8 ${y0} Z" fill="url(#ssfill)" clip-path="url(#ab)"/>
+    <line x1="0" x2="${W}" y1="${y0}" y2="${y0}" stroke="var(--ty-light)" stroke-dasharray="4 4"/><text x="4" y="${y0 - 4}" font-size="10" fill="var(--ty-base)">R$ 0</text>
+    ${sim ? `<path d="${rnd(pts(sim.days))}" fill="none" stroke="var(--ia)" stroke-width="2" stroke-dasharray="5 3" stroke-linecap="round" stroke-linejoin="round"/>` : ''}
+    <path d="${line}" fill="none" stroke="var(--primary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="${X(sr.max.k)}" cy="${Y(sr.max.saldo)}" r="4.5" fill="var(--success)"/><circle cx="${X(sr.min.k)}" cy="${Y(sr.min.saldo)}" r="4.5" fill="var(--danger)"/>
+    <line x1="${X(k)}" x2="${X(k)}" y1="6" y2="${H - 6}" stroke="var(--primary)" stroke-width="1" opacity=".25"/><circle cx="${X(k)}" cy="${Y((sim || sr).days[k].saldo)}" r="6" fill="#fff" stroke="var(--primary)" stroke-width="2.5"/>
+    ${ticks.map(i => `<text x="${Math.min(W - 16, Math.max(16, X(i)))}" y="${H + 16}" text-anchor="middle" font-size="11" fill="var(--ty-base)">${ddmm(sr.days[i].d)}</text>`).join('')}
   </svg>`;
 }
 function ssProjBody(p, sr) {
